@@ -1,4 +1,4 @@
-IsLocallyOKPartialAffineBasis:=function(ThePartial, TheEXT)
+poly_private@IsLocallyOKPartialAffineBasis:=function(ThePartial, TheEXT)
   local eVert, B, eVal;
   for eVert in TheEXT
   do
@@ -16,14 +16,14 @@ IsLocallyOKPartialAffineBasis:=function(ThePartial, TheEXT)
 end;
 
 
-FindAffineBasisExtension:=function(OldAffineBasis, EXT)
+poly_private@FindAffineBasisExtension:=function(OldAffineBasis, EXT)
   local eVert, PROV;
   for eVert in EXT
   do
     PROV:=ShallowCopy(OldAffineBasis);
     Add(PROV, eVert);
     if RankMat(PROV)=Length(PROV) then
-      if IsLocallyOKPartialAffineBasis(PROV, EXT)=true then
+      if poly_private@IsLocallyOKPartialAffineBasis(PROV, EXT)=true then
         return PROV;
       fi;
     fi;
@@ -32,7 +32,7 @@ FindAffineBasisExtension:=function(OldAffineBasis, EXT)
 end;
 
 
-Kernel_ExtendToCompleteAffineBasis:=function(EXT, StartingPoint)
+poly_private@Kernel_ExtendToCompleteAffineBasis:=function(EXT, StartingPoint)
   local AffBasis, iRank, TheReply, PersoRank;
   PersoRank:=function(EXT)
     if Length(EXT)=0 then
@@ -43,10 +43,8 @@ Kernel_ExtendToCompleteAffineBasis:=function(EXT, StartingPoint)
   AffBasis:=ShallowCopy(StartingPoint);
   for iRank in [PersoRank(AffBasis)+1..PersoRank(EXT)]
   do
-    TheReply:=FindAffineBasisExtension(AffBasis, EXT);
+    TheReply:=poly_private@FindAffineBasisExtension(AffBasis, EXT);
     if TheReply=false then
-#      Print("afBasis=", AffBasis, "\n");
-#      Print("Error, no affine basis found\n");
       return false;
     fi;
     AffBasis:=ShallowCopy(TheReply);
@@ -54,9 +52,9 @@ Kernel_ExtendToCompleteAffineBasis:=function(EXT, StartingPoint)
   return AffBasis;
 end;
 
-ExtendToCompleteAffineBasis:=function(EXT, StartingPoint)
+poly_private@ExtendToCompleteAffineBasis:=function(EXT, StartingPoint)
   local TheAffBas, len, GRP, nbIter, ePerm, EXTperm;
-  TheAffBas:=Kernel_ExtendToCompleteAffineBasis(EXT, StartingPoint);
+  TheAffBas:=poly_private@Kernel_ExtendToCompleteAffineBasis(EXT, StartingPoint);
   if TheAffBas<>false then
     return TheAffBas;
   fi;
@@ -71,7 +69,7 @@ ExtendToCompleteAffineBasis:=function(EXT, StartingPoint)
     fi;
     ePerm:=Random(GRP);
     EXTperm:=Permuted(EXT, ePerm);
-    TheAffBas:=Kernel_ExtendToCompleteAffineBasis(EXTperm, StartingPoint);
+    TheAffBas:=poly_private@Kernel_ExtendToCompleteAffineBasis(EXTperm, StartingPoint);
     if TheAffBas<>false then
       return TheAffBas;
     fi;
@@ -85,7 +83,7 @@ CreateAffineBasis:=function(EXT)
   while(true)
   do
     ePerm:=Random(SymmetricGroup(Length(EXT)));
-    test:=ExtendToCompleteAffineBasis(Permuted(EXT, ePerm), []);
+    test:=poly_private@ExtendToCompleteAffineBasis(Permuted(EXT, ePerm), []);
     nbRun:=nbRun+1;
     if test<>false then
       return test;
@@ -96,25 +94,6 @@ CreateAffineBasis:=function(EXT)
     fi;
   od;
 end;
-
-CreateAffineBasisNumberTry:=function(EXT, MaxNbTry)
-  local ePerm, test, nbRun;
-  nbRun:=0;
-  while(true)
-  do
-    ePerm:=Random(SymmetricGroup(Length(EXT)));
-    test:=ExtendToCompleteAffineBasis(Permuted(EXT, ePerm), []);
-    nbRun:=nbRun+1;
-    if test<>false then
-      return test;
-    fi;
-    if nbRun>MaxNbTry then
-      return false;
-    fi;
-  od;
-end;
-
-
 
 
 

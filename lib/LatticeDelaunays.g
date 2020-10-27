@@ -545,21 +545,14 @@ FuncMethod6_SVR:=function(GramMat, InvariantBasis, AffBas, EXT, typecall, NeedAf
     while(true)
     do
       SVR:=Concatenation(SVR_EXT, SVRappend);
-#      Print("|SVR|=", Length(SVR), "\n");
       DiscInv:=GetPairInv(SVR);
       WeAppend:=false;
       if DiscInv.TheDet=1 and DiscInv.TheRank=n+1 then
         if NeedAffBas=true and Length(SVR)>CriticalLevelForNauty then
           WeAppend:=true;
-#          Print("Before CreateAffineBasisNumberTry\n");
           SVRshortened:=Set(List(SVR, FuncCanonicalizeVector));
           eStart:=GetStartingAffine(SVRshortened);
-#          FileSave:=Concatenation("SVR", String(Length(SVR)));
-#          SYMPOL_PrintMatrix(FileSave, SVR);
-          Print("|eStart|=", Length(eStart), "\n");
           ReturnAffBas:=ExtendToCompleteAffineBasis(SVRshortened, eStart);
-#          ReturnAffBas:=CreateAffineBasisNumberTry(SVR, 250);
-          Print("After CreateAffineBasisNumberTry\n");
           if ReturnAffBas<>false then
             break;
           fi;
