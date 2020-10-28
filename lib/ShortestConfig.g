@@ -38,7 +38,7 @@ SHORT_GetScalMatGeneral:=function(eMat)
       ScalMat_NT[i][j]:=[eDet, rnk];
     od;
   od;
-  ScalMat_Lin:=__VectorConfigurationFullDim_ScalarMat(eMatExt);
+  ScalMat_Lin:=VectorConfigurationFullDim_ScalarMat(eMatExt);
   ScalMat:=[];
   ListOffDiag:=[];
   for i in [1..2*n]

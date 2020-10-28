@@ -3,9 +3,9 @@ EquivariantSearchDualDescription:=function(EXT, PermGRP)
   EXTred:=ColumnReduction(EXT).EXT;
   TheDim:=Length(EXTred[1]);
   nbVert:=Length(EXTred);
-  eTool:=__VectorConfiguration_Invariant_GetTools(EXTred, nbVert);
+  eTool:=VectorConfiguration_Invariant_GetTools(EXTred, nbVert);
   FuncInv:=function(eInc)
-    return __VectorConfiguration_Invariant_ComputeAdvanced(eTool, eInc);
+    return VectorConfiguration_Invariant_ComputeAdvanced(eTool, eInc);
   end;
   ListEnt:=[];
   ListInv:=[];

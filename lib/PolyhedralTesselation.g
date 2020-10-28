@@ -877,7 +877,7 @@ Generic_BoundaryOperatorsFromPolyhedralTesselation:=function(OrbitwiseTesselatio
       TheStab:=eRecIAI.FuncAutomorphism(TheInteriorPt);
       eInv1:=eRecIAI.FuncInvariant(TheInteriorPt);
       TheLimit:=500;
-      eInv2:=__VectorConfiguration_Invariant(EXTsel, TheLimit);
+      eInv2:=LinPolytope_Invariant(EXTsel, TheLimit);
       eInv:=GetMd5sumObj([eInv1, eInv2]);
     else
       TheStab:="unset, if you want generators, use SpannFace_FAC";

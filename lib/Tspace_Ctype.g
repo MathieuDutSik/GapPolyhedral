@@ -458,7 +458,7 @@ end;
 
 CTYP_CharInvariantCtype:=function(TheCtype)
   local ScalarMat, DistMat;
-  ScalarMat:=__VectorConfigurationFullDim_ScalarMat(TheCtype);
+  ScalarMat:=VectorConfigurationFullDim_ScalarMat(TheCtype);
   DistMat:=MappedScalarMatrixDistanceMatrix(ScalarMat);
   return CanonicalStringEdgeColoredGraph(DistMat);
 end;

@@ -2377,11 +2377,11 @@ InfDel_SubDelaunayPolytopesKernel:=function(TheDelaunay, ThePath, ThePathPoly)
   end;
   BF:=InfDel_BankingFormalism(ThePath);
   FuncStabilizer:=function(EXTask)
-    return __VectorConfiguration_Automorphism(EXTask);
+    return LinPolytope_Automorphism(EXTask);
   end;
   FuncIsomorphy:=function(EXT1, EXT2)
     local TheEquiv;
-    TheEquiv:=__VectorConfiguration_Isomorphism(EXT1, EXT2);
+    TheEquiv:=LinPolytope_Isomorphism(EXT1, EXT2);
     if TheEquiv=false then
       return false;
     else

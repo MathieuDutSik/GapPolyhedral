@@ -125,7 +125,7 @@ end;
 
 GetCombinatorialSymmetryGroupFromFacetsOrbitwise:=function(EXT)
   local TheLinearGroup, LORB, eOrb, ListSets, GRP;
-  TheLinearGroup:=__TheCore_Automorphism(EXT);
+  TheLinearGroup:=LinPolytope_Automorphism(EXT);
   LORB:=DualDescriptionStandard(EXT, TheLinearGroup);
   ListSets:=[];
   for eOrb in LORB
@@ -260,7 +260,7 @@ TestProjectiveIsomorphy:=function(EXT1, EXT2)
     return ePermTest;
   fi;
   #
-  GRPlin1:=__TheCore_Automorphism(EXTred1);
+  GRPlin1:=LinPolytope_Automorphism(EXTred1);
   LORB1:=DualDescriptionStandard(EXTred1, GRPlin1);
   ListSets1:=[];
   for eOrb in LORB1
@@ -268,7 +268,7 @@ TestProjectiveIsomorphy:=function(EXT1, EXT2)
     Append(ListSets1, Orbit(GRPlin1, eOrb, OnSets));
   od;
   #
-  GRPlin2:=__TheCore_Automorphism(EXTred2);
+  GRPlin2:=LinPolytope_Automorphism(EXTred2);
   LORB2:=DualDescriptionStandard(EXTred2, GRPlin2);
   ListSets2:=[];
   for eOrb in LORB2
@@ -284,7 +284,7 @@ TestProjectiveIsomorphy:=function(EXT1, EXT2)
 #  g:=RepresentativeAction(SymmetricGroup([1..nbVert]), GRPcomb1, GRPcomb2);
   GRPlinTrans1:=Group(List(GeneratorsOfGroup(GRPlin1), x->Inverse(gPerm)*x*gPerm));
   EXTredTrans1:=Permuted(EXTred1, gPerm);
-  if __TheCore_Automorphism(EXTredTrans1)<>GRPlinTrans1 then
+  if LinPolytope_Automorphism(EXTredTrans1)<>GRPlinTrans1 then
     Error("Incorred group or polytope");
   fi;
   LDCS:=DoubleCosets(GRPcomb2, GRPlinTrans1, GRPlin2);
@@ -561,7 +561,7 @@ GetProjectiveGroupNonDecomposable:=function(EXT)
   if Length(eRecDecomp.ListConn)> 1 then
     Error("The polytope is decomposable and that is not allowed");
   fi;
-  GRPlin:=__TheCore_Automorphism(EXTred);
+  GRPlin:=LinPolytope_Automorphism(EXTred);
   LORB:=DualDescriptionStandard(EXTred, GRPlin);
   ListSets:=[];
   for eOrb in LORB

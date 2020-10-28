@@ -1,6 +1,7 @@
 
 
-__VectorConfigurationFullDim_ScalarMat:=function(EXT)
+
+VectorConfigurationFullDim_ScalarMat:=function(EXT)
   local n, Qmat, eEXT, Qinv, ScalarMat;
   n:=Length(EXT[1]);
   if Length(EXT)<>Length(Set(EXT)) then
@@ -21,7 +22,7 @@ end;
 
 
 
-__VectorConfigurationFullDim_ScalarMat_AddMat:=function(EXT, ListAddMat)
+VectorConfigurationFullDim_ScalarMat_AddMat:=function(EXT, ListAddMat)
   local n, Qmat, eEXT, Qinv, ScalarMat, fEXT, eLine, ListMat, LVal;
   n:=Length(EXT[1]);
   if Length(EXT)<>Length(Set(EXT)) then
@@ -52,7 +53,7 @@ __VectorConfigurationFullDim_ScalarMat_AddMat:=function(EXT, ListAddMat)
 end;
 
 
-__VectorConfiguration_Invariant_GetTools:=function(EXT, TheLimit)
+VectorConfiguration_Invariant_GetTools:=function(EXT, TheLimit)
   local eRec, EXTred, eSelect, n, Qmat, eEXT, Qinv, ListDiagVal, PreListOffDiag, ListOffDiag, iVert, nbVert, eProd;
   eRec:=ColumnReduction(EXT, RankMat(EXT));
   EXTred:=eRec.EXT;
@@ -136,7 +137,7 @@ end;
 
 
 
-__VectorConfiguration_Invariant_Compute:=function(eTool, EXT)
+VectorConfiguration_Invariant_Compute:=function(eTool, EXT)
   local EXTred, n, Qmat, eEXT, Qinv, ListValDiag, ListNbDiag, ListValOff, ListNbOff, iVert, jVert, eScal, pos, nbVert, PreListValDiag, PreListNbDiag, PreListValOff, PreListNbOff, ePerm;
   EXTred:=List(EXT, x->x{eTool.eSelect});
   n:=Length(EXTred[1]);
@@ -184,7 +185,7 @@ __VectorConfiguration_Invariant_Compute:=function(eTool, EXT)
 end;
 
 
-__VectorConfiguration_Invariant_ComputeAdvanced:=function(eTool, eInc)
+VectorConfiguration_Invariant_ComputeAdvanced:=function(eTool, eInc)
   local nbVert, ListScal, nbDiag, nbOff, eVect1, eVect2, eVect3, diffInc, eVal, eV, eScal, pos, eLen, diffLen, eProd, i, j;
   nbVert:=Length(eTool.EXTred);
   nbDiag:=Length(eTool.ListDiagVal);
@@ -233,10 +234,10 @@ end;
 
 
 
-__VectorConfiguration_Invariant:=function(EXT, TheLimit)
+VectorConfiguration_Invariant:=function(EXT, TheLimit)
   local eTool;
-  eTool:=__VectorConfiguration_Invariant_GetTools(EXT, TheLimit);
-  return __VectorConfiguration_Invariant_Compute(eTool, EXT);
+  eTool:=VectorConfiguration_Invariant_GetTools(EXT, TheLimit);
+  return VectorConfiguration_Invariant_Compute(eTool, EXT);
 end;
 
 
@@ -244,7 +245,7 @@ end;
 LinPolytope_Invariant:=function(EXT)
   local TheLimit;
   TheLimit:=500;
-  return __VectorConfiguration_Invariant(EXT, TheLimit);
+  return VectorConfiguration_Invariant(EXT, TheLimit);
 end;
 
 LinPolytope_InvariantMD5:=function(EXT)
@@ -276,15 +277,6 @@ LinPolytope_InvariantMD5:=function(EXT)
   return rec(s:=eStr);
 end;
 
-
-
-# those vectors should not have a zero in first coordinate
-__TheCore_Automorphism:=function(EXT)
-  local ScalarMat;
-  ScalarMat:=__VectorConfigurationFullDim_ScalarMat(EXT);
-  return AutomorphismGroupColoredGraph(ScalarMat);
-end;
-
 Get_RecScalColor:=function(EXT, GramMat)
   local GetScalarColor, GetLineColor, nbVert;
   GetScalarColor:=function(i,j)
@@ -305,8 +297,6 @@ end;
 LinPolytope_Automorphism_Scalable:=function(EXT, GramMat)
   local eRecScalColor;
   eRecScalColor:=Get_RecScalColor(EXT, GramMat);
-#  Print("We have eRecScalColor\n");
-#  Print("|EXT|=", Length(EXT), "\n");
   return AutomorphismGroupColoredGraph_Scalable(eRecScalColor);
 end;
 
@@ -314,26 +304,13 @@ end;
 
 __TheCore_Isomorphism:=function(EXT1, EXT2)
   local ScalarMat1, ScalarMat2, TheReply;
-  ScalarMat1:=__VectorConfigurationFullDim_ScalarMat(EXT1);
-  ScalarMat2:=__VectorConfigurationFullDim_ScalarMat(EXT2);
+  ScalarMat1:=VectorConfigurationFullDim_ScalarMat(EXT1);
+  ScalarMat2:=VectorConfigurationFullDim_ScalarMat(EXT2);
   return IsIsomorphicColoredGraph(ScalarMat1, ScalarMat2);
 end;
 
 
-
-__VectorConfigurationFullDim_Automorphism:=function(EXT)
-  local PermGRP, PermGens, MatrGens, MatrGRP, phi;
-  PermGRP:=__TheCore_Automorphism(EXT);
-  PermGens:=GeneratorsOfGroup(PermGRP);
-  MatrGens:=List(PermGens, x->FindTransformation(EXT, EXT, x));
-  MatrGRP:=Group(MatrGens);
-  phi:=GroupHomomorphismByImagesNC(PermGRP, MatrGRP, PermGens, MatrGens);
-  return rec(PermGroup:=PermGRP, MatrixGroup:=PersoGroupMatrix(MatrGens, Length(EXT[1])), phi:=phi);
-end;
-
-
-
-__VectorConfigurationFullDim_Isomorphism:=function(EXT1, EXT2)
+VectorConfigurationFullDim_Isomorphism:=function(EXT1, EXT2)
   local test, ePerm;
   test:=__TheCore_Isomorphism(EXT1, EXT2);
   if test=false then
@@ -467,23 +444,9 @@ end;
 
 
 
-__VectorConfiguration_Automorphism:=function(EXT)
-  local EXTred;
-  EXTred:=ColumnReduction(EXT, RankMat(EXT)).EXT;
-  return __TheCore_Automorphism(EXTred);
-end;
-
-
 LinPolytope_Automorphism_Simple:=function(EXT, GramMat)
   local ScalarMat;
   ScalarMat:=EXT*GramMat*TransposedMat(EXT);
-  return AutomorphismGroupColoredGraph(ScalarMat);
-end;
-
-
-__TheCore_Automorphism:=function(EXT)
-  local ScalarMat;
-  ScalarMat:=__VectorConfigurationFullDim_ScalarMat(EXT);
   return AutomorphismGroupColoredGraph(ScalarMat);
 end;
 
@@ -521,7 +484,7 @@ GetScalarMatrix_PolytopeStabSubset:=function(EXT, EXTsub)
   local eSet, EXTred, ScalarMat, nbVert, RedoneScalarMat, eLine, iVert, jVert, eValMatr, eVal;
   eSet:=Set(List(EXTsub, x->Position(EXT, x)));
   EXTred:=ColumnReduction(EXT, RankMat(EXT)).EXT;
-  ScalarMat:=__VectorConfigurationFullDim_ScalarMat(EXTred);
+  ScalarMat:=VectorConfigurationFullDim_ScalarMat(EXTred);
   nbVert:=Length(EXTred);
   RedoneScalarMat:=[];
   for iVert in [1..nbVert]
@@ -573,7 +536,7 @@ GetScalarMatrix_PolytopeStabSubset_AddMat:=function(EXT, EXTsub, ListAddMat)
   if RankMat(EXT)<>Length(EXT[1]) then
     Error("Rank error in _AddMat function");
   fi;
-  ScalarMat:=__VectorConfigurationFullDim_ScalarMat_AddMat(EXT, ListAddMat);
+  ScalarMat:=VectorConfigurationFullDim_ScalarMat_AddMat(EXT, ListAddMat);
   nbVert:=Length(EXT);
   RedoneScalarMat:=[];
   for iVert in [1..nbVert]
@@ -722,7 +685,7 @@ LinPolytope_Automorphism_MemoryEff:=function(EXT, eRecStrategy)
   local nbVert, eTool, GRPreturn, iDist, eDist, Gra, iExt, jExt, IsAnAutomorphismGroup, ListRank, ListOrdered, SetRank, Pos, i, j, u, GetGroupForValue, GetGroupForValue_meth1, GetGroupForValue_meth2, eSetV, eSortPerm, EXTred, ListSizes, SetV, TheLimit, iVert, jVert, eScal, pos, ListFreq, GetSetV, GetListFreq, ListFreqInv, eGRP, nbDist;
   TheLimit:=-467;
   EXTred:=ColumnReduction(EXT).EXT;
-  eTool:=__VectorConfiguration_Invariant_GetTools(EXTred, TheLimit);
+  eTool:=VectorConfiguration_Invariant_GetTools(EXTred, TheLimit);
   nbVert:=Length(EXT);
   GetSetV:=function()
     local iVert, jVert, eScal;
@@ -736,21 +699,6 @@ LinPolytope_Automorphism_MemoryEff:=function(EXT, eRecStrategy)
       od;
     od;
     nbDist:=Length(SetV);
-    Print("|SetV|=", Length(SetV), "\n");
-  end;
-  GetListFreq:=function()
-    local iVert, jVert, eScal, pos, ePerm;
-    ListFreq:=ListWithIdenticalEntries(Length(SetV), 0);
-    for iVert in [1..nbVert-1]
-    do
-      for jVert in [iVert+1..nbVert]
-      do
-        eScal:=EXTred[iVert]*eTool.Qinv*EXTred[jVert];
-        pos:=Position(SetV, eScal);
-        ListFreq[pos]:=ListFreq[pos]+1;
-      od;
-    od;
-    Print("Coll(ListFreq)=", Collected(ListFreq), "\n");
   end;
   IsAnAutomorphismGroup:=function(GRP)
     local eGen, i, j, i2, j2, eScal1, eScal2;
@@ -875,7 +823,6 @@ LinPolytope_Automorphism_MemoryEff:=function(EXT, eRecStrategy)
   end;
   GetSetV();
   if eRecStrategy.method="frequency" then
-    GetListFreq();
     ListFreqInv:=List(ListFreq, x->1/x);
     eSortPerm:=SortingPerm(ListFreqInv);
   elif eRecStrategy.method="group size" then
@@ -926,16 +873,8 @@ end;
 
 
 
-__VectorConfiguration_Isomorphism:=function(EXT1, EXT2)
-  local EXTred1, EXTred2;
-  EXTred1:=ColumnReduction(EXT1, RankMat(EXT1)).EXT;
-  EXTred2:=ColumnReduction(EXT2, RankMat(EXT2)).EXT;
-  return __TheCore_Isomorphism(EXTred1, EXTred2);
-end;
-
 LinPolytope_Isomorphism_Simple:=function(EXT1, GramMat1, EXT2, GramMat2)
   local eEquiv, ScalarMat1, ScalarMat2;
-#  Print("LinPolytope_Isomorphism |EXT1|=", Length(EXT1), " |EXT2|=", Length(EXT2), "\n");
   ScalarMat1:=EXT1*GramMat1*TransposedMat(EXT1);
   ScalarMat2:=EXT2*GramMat2*TransposedMat(EXT2);
   eEquiv:=IsIsomorphicColoredGraph(ScalarMat1, ScalarMat2);
@@ -1037,7 +976,7 @@ end;
 CanonicalReorderingVertices:=function(EXT)
   local nbVert, ScalarMat, CanonDesc, EXTcan, iCan, iOrig, eBigMat, eInvMat, EXT_ret;
   nbVert:=Length(EXT);
-  ScalarMat:=__VectorConfigurationFullDim_ScalarMat(EXT);
+  ScalarMat:=VectorConfigurationFullDim_ScalarMat(EXT);
   CanonDesc:=CanonicalFormColoredGraph(ScalarMat);
   EXTcan:=[];
   for iCan in [1..nbVert]
@@ -1132,9 +1071,6 @@ end;
 
 
 
-#
-# Function below is buggy. It does not compute correctly the
-# Delaunay in dimension 5 from the Delaunay in dimension 6.
 KernelLinPolytopeIntegral_Isomorphism_Subspaces:=function(EXT1, EXT2, GRP2, eEquiv)
   local n, eBasis1, eBasis2, EXTbas1, EXTbas2, TheMatEquiv, ListMatrGens, eGen, TheMat, GRPspace, eLatt1, eLatt2, eRec1, eRec2, eSpaceEquiv, eMatFinal;
   Print("Begin KernelLinPolytopeIntegral_Isomorphism_Subspaces\n");
@@ -1144,7 +1080,6 @@ KernelLinPolytopeIntegral_Isomorphism_Subspaces:=function(EXT1, EXT2, GRP2, eEqu
   EXTbas1:=List(EXT1, x->SolutionMat(eBasis1, x));
   EXTbas2:=List(EXT2, x->SolutionMat(eBasis2, x));
   TheMatEquiv:=FindTransformation(EXTbas1, EXTbas2, eEquiv);
-  Print("After FindTransformation\n");
   ListMatrGens:=[];
   for eGen in GeneratorsOfGroup(GRP2)
   do
@@ -1159,9 +1094,7 @@ KernelLinPolytopeIntegral_Isomorphism_Subspaces:=function(EXT1, EXT2, GRP2, eEqu
   if eRec1.TheMult<>eRec2.TheMult then
     return false;
   fi;
-#  Print("Before call to LinearSpace_Equivalence\n");
   eSpaceEquiv:=LinearSpace_Equivalence(GRPspace, eRec1.TheMat, eRec2.TheMat);
-#  Print("After call to LinearSpace_Equivalence\n");
   if eSpaceEquiv=fail then
     return false;
   fi;
@@ -1206,14 +1139,8 @@ KernelLinPolytopeIntegral_Automorphism_Subspaces:=function(EXT, GRP)
   fi;
   eBasis:=GetZbasis(EXT);
   EXTbas:=List(EXT, x->SolutionMat(eBasis, x));
-#  Print("|GRP|=", Order(GRP), "\n");
   ListPermGens:=GeneratorsOfGroup(GRP);
-  ListMatrGens:=[];
-  for eGen in ListPermGens
-  do
-    TheMat:=FindTransformation(EXTbas, EXTbas, eGen);
-    Add(ListMatrGens, TheMat);
-  od;
+  ListMatrGens:=List(ListPermGens, eGen->FindTransformation(EXTbas, EXTbas, eGen));
   GRPmatr:=Group(ListMatrGens);
   LattToStab:=RemoveFractionMatrix(Inverse(eBasis));
   #

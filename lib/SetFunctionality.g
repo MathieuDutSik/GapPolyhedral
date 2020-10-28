@@ -343,10 +343,10 @@ end;
 POLY_GetFunctionSet_MatrixInvariant:=function(EXT, TheGroup, TheLimit)
   local FuncGetInitialDisc, FuncInvariant, FuncIsomorphy, FuncInvariantUpdate, OrderLincStabilizer, GetOrbitIntersection;
   FuncGetInitialDisc:=function()
-    return __VectorConfiguration_Invariant_GetTools(EXT, TheLimit);
+    return VectorConfiguration_Invariant_GetTools(EXT, TheLimit);
   end;
   FuncInvariant:=function(Odisc, Linc)
-    return __VectorConfiguration_Invariant_ComputeAdvanced(Odisc, Linc);
+    return VectorConfiguration_Invariant_ComputeAdvanced(Odisc, Linc);
   end;
   FuncIsomorphy:=function(Linc1, Linc2)
     return RepresentativeAction(TheGroup, Linc1, Linc2, OnSets)<>fail;

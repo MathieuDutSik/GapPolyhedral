@@ -171,14 +171,14 @@ Matroid_AutomorphismGroupVectorSystem:=function(ListVect)
   local ListVectRed, ListVectTot;
   ListVectRed:=ColumnReduction(ListVect).EXT;
   ListVectTot:=Matroid_AntipodalSaturation(ListVectRed);
-  return __VectorConfiguration_Automorphism(ListVectTot);
+  return LinPolytope_Automorphism(ListVectTot);
 end;
 
 Matroid_AutomorphismGroupVectorSystemUnsaturated:=function(ListVect)
   local ListVectRed, ListVectTot, GRPtot, NewListPermGens, eGen, eList, eVect, pos, jpos, fVect;
   ListVectRed:=ColumnReduction(ListVect).EXT;
   ListVectTot:=Matroid_AntipodalSaturation(ListVectRed);
-  GRPtot:=__VectorConfiguration_Automorphism(ListVectTot);
+  GRPtot:=LinPolytope_Automorphism(ListVectTot);
   NewListPermGens:=[];
   for eGen in GeneratorsOfGroup(GRPtot)
   do
@@ -209,7 +209,7 @@ Matroid_IsIsomorphicVectorSystem:=function(ListVect1, ListVect2)
   ListVectRed2:=ColumnReduction(ListVect2).EXT;
   ListVectTot1:=Matroid_AntipodalSaturation(ListVectRed1);
   ListVectTot2:=Matroid_AntipodalSaturation(ListVectRed2);
-  return __VectorConfiguration_Isomorphism(ListVectTot1, ListVectTot2);
+  return LinPolytope_Isomorphism(ListVectTot1, ListVectTot2);
 end;
 
 Matroid_IsIsomorphicVectorSystemUnsaturated:=function(ListVect1, ListVect2)
@@ -218,7 +218,7 @@ Matroid_IsIsomorphicVectorSystemUnsaturated:=function(ListVect1, ListVect2)
   ListVectRed2:=ColumnReduction(ListVect2).EXT;
   ListVectTot1:=Matroid_AntipodalSaturation(ListVectRed1);
   ListVectTot2:=Matroid_AntipodalSaturation(ListVectRed2);
-  eEquiv:=__VectorConfiguration_Isomorphism(ListVectTot1, ListVectTot2);
+  eEquiv:=LinPolytope_Isomorphism(ListVectTot1, ListVectTot2);
   NewEquiv:=[];
   for eVect in ListVectRed1
   do

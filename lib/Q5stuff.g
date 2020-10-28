@@ -443,7 +443,7 @@ Q5_GetPolyhedraH3:=function()
   od;
   nbV:=Length(ListVert12Cell_Q5);
   ListScal:=List([1..nbV], x->ListVert12Cell_Q5[x]*ListVert12Cell_Q5[1]);
-  GRP1:=__TheCore_Automorphism(ListVert12Cell_Q5);
+  GRP1:=LinPolytope_Automorphism(ListVert12Cell_Q5);
 #  Print("|GRP1|=", Order(GRP1), "\n");
 #  Print("CollScal=", Collected(ListScal), "\n");
   eScal:=-E(5)^2-E(5)^3;

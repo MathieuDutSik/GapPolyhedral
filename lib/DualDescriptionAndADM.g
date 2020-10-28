@@ -1224,7 +1224,7 @@ GetIAI_FromEXT_GRP:=function(EXT, GRP, TheLimit)
       od;
       return PersoGroupPerm(ListGen);
     fi;
-    return __VectorConfiguration_Automorphism(EXTask);
+    return LinPolytope_Automorphism(EXTask);
   end;
   FuncIsomorphy:=function(EXT1, EXT2)
     local ePerm, ListInc1, ListInc2, TheReply;
@@ -1242,7 +1242,7 @@ GetIAI_FromEXT_GRP:=function(EXT, GRP, TheLimit)
       fi;
     fi;
     Print(" |EXT1|=", Length(EXT1), " |EXT2|=", Length(EXT2), "\n");
-    TheReply:=__VectorConfiguration_Isomorphism(EXT1, EXT2);
+    TheReply:=LinPolytope_Isomorphism(EXT1, EXT2);
     if TheReply=false then
       return false;
     else
@@ -1251,7 +1251,7 @@ GetIAI_FromEXT_GRP:=function(EXT, GRP, TheLimit)
   end;
   FuncInvariant:=function(EXT)
     local eInv;
-    eInv:=__VectorConfiguration_Invariant(EXT, TheLimit);
+    eInv:=LinPolytope_Invariant(EXT, TheLimit);
     return eInv;
   end;
   return rec(FuncInvariant:=FuncInvariant,
