@@ -580,7 +580,7 @@ TSPACE_GetExtremeRayFunctions:=function(eCase)
     Add(ListPermGens, PermList(eList));
   od;
   PermGrpExtRays:=Group(ListPermGens);
-  Qmat:=Get_QinvMatrix(ListExtRaysCanonicalized);
+  Qmat:=poly_private@Get_QinvMatrix(ListExtRaysCanonicalized);
   for ePermGen in ListPermGens
   do
     for i in [1..nbRay]

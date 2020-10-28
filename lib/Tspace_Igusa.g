@@ -172,7 +172,7 @@ DUAL_InquireRec:=function(ePrefix, EXT, GRP)
       return RecRead.ListOrb;
     fi;
     if Length(EXT)>10000 then
-      eEquiv:=LinPolytope_IsomorphismHeuristic(RecRead.EXT, EXT);
+      eEquiv:=poly_private@LinPolytope_IsomorphismHeuristic(RecRead.EXT, EXT);
       if eEquiv<>false then
         Print("eEquiv <> false\n");
         GRPconj:=Group(List(GeneratorsOfGroup(RecRead.GRP), x->Inverse(eEquiv)*x*eEquiv));

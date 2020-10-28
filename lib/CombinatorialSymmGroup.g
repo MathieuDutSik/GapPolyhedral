@@ -251,7 +251,7 @@ TestProjectiveIsomorphy:=function(EXT1, EXT2)
   if Length(EXTred1[1])<>Length(EXTred2[1]) then
     return false;
   fi;
-  eListTest:=__TheCore_Isomorphism(EXTred1, EXTred2);
+  eListTest:=LinPolytope_Isomorphism(EXTred1, EXTred2);
   if eListTest<>false then
     ePermTest:=PermList(eListTest);
     if KernelTestProjectiveEquivalence(EXTred1, EXTred2, ePermTest).reply=false then

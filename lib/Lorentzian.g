@@ -231,7 +231,6 @@ LORENTZ_SearchInitialFullDim:=function(LorMat)
     OnlyShortest:="false";
     ListPosVect:=LORENTZ_FindPositiveVectors(LorMat, PosVect, MaxScal, "total", OnlyShortest);
     ListIsotrop:=Filtered(ListPosVect, x->x*LorMat*x=0);
-    Print("MaxScal=", MaxScal, " |ListNegVect|=", Length(ListPosVect), " |ListIsotrop|=", Length(ListIsotrop), "\n");
     if RankMat(ListIsotrop)=n then
       break;
     fi;
@@ -245,14 +244,11 @@ LORENTZ_SearchInitialIsotropSpec:=function(LorMat, PosVect)
   local n, MaxScal, ListPosVect, ListIsotrop, ListScal, eScal, eSet, OnlyShortest;
   n:=Length(LorMat);
   MaxScal:=PosVect*LorMat*PosVect;
-  Print("PosVect=", PosVect, " MaxScal=", MaxScal, "\n");
   while(true)
   do
     OnlyShortest:=false;
     ListPosVect:=LORENTZ_FindPositiveVectors(LorMat, PosVect, MaxScal, "total", OnlyShortest);
     ListIsotrop:=Filtered(ListPosVect, x->x*LorMat*x=0);
-    Print("MaxScal=", MaxScal, " |ListPosVect|=", Length(ListPosVect), " |ListIsotrop|=", Length(ListIsotrop), "\n");
-#    Print("ListIsotrop=", ListIsotrop, "\n");
     if Length(ListIsotrop)>0 then
       ListScal:=List(ListIsotrop, x->x*LorMat*PosVect);
       eScal:=Minimum(Difference(Set(ListScal), [0]));
@@ -280,7 +276,6 @@ end;
 
 LORENTZ_GetDeterminingVectFamily:=function(LorMat, eFamEXT)
   local eVectDef, ListScal, MaxScal, ListVect, TheDet, AffBas, TheSel, ListCollScal, LColl, LSize, LType, nbCase, iCase, ePerm, LTypeS, ListVectB, CurrDet, eListSel, TestVect, NewDet, OnlyShortest;
-  Print("Running LORENTZ_GetDeterminingVectFamily |eFamEXT|=", Length(eFamEXT), "\n");
   eVectDef:=LORENTZ_GetDefiningIneq(LorMat, eFamEXT);
   ListScal:=List(eFamEXT, x->x*LorMat*eVectDef);
   if Length(Set(ListScal))<>1 then
@@ -288,7 +283,6 @@ LORENTZ_GetDeterminingVectFamily:=function(LorMat, eFamEXT)
   fi;
   MaxScal:=ListScal[1];
   TheDet:=AbsInt(DeterminantMat(BaseIntMat(eFamEXT)));
-#  Print("MaxScal=", MaxScal, " det=", TheDet, "\n");
   if TheDet=1 then
     return eFamEXT;
   fi;
@@ -350,14 +344,10 @@ end;
 
 LORENTZ_ComputeStabilizer:=function(LorMat, eFamEXT)
   local Qinv, GRPrat, ListMatrGen, test, ListVect, GRPtot, ListPermGen, ListMatrGenB, eGen, eMatr, eList, GRPint, GRPintMatr, eVect, testB, ListPGen, phi, TheStrategy;
-  Qinv:=Get_QinvMatrix(eFamEXT);
-  Print("|eFamEXT|=", Length(eFamEXT), "\n");
+  Qinv:=poly_private@Get_QinvMatrix(eFamEXT);
   GRPrat:=LinPolytope_AutomorphismStabSubset_AddMat(eFamEXT, eFamEXT, [Qinv, LorMat]);
-  Print("|GRPrat|=", Order(GRPrat), "\n");
   ListPGen:=GeneratorsOfGroup(GRPrat);
-  Print("Before ListMatrGen construction\n");
   ListMatrGen:=List(ListPGen, x->FindTransformation(eFamEXT, eFamEXT, x));
-  Print("After ListMatrGen construction\n");
   test:=First(ListMatrGen, x->IsIntegralMat(x)=false);
   if test=fail then
     GRPintMatr:=Group(ListMatrGen);
@@ -366,9 +356,7 @@ LORENTZ_ComputeStabilizer:=function(LorMat, eFamEXT)
   fi;
   TheStrategy:=2;
   if TheStrategy=1 then
-    Print("Before ListVect computation\n");
     ListVect:=LORENTZ_GetDeterminingVectFamily(LorMat, eFamEXT);
-    Print("det(EXT)=", DeterminantMat(BaseIntMat(eFamEXT)), " |ListVect|=", Length(ListVect), "\n");
     GRPtot:=LinPolytope_AutomorphismStabSubset_AddMat(ListVect, eFamEXT, [LorMat]);
     ListPermGen:=[];
     ListMatrGenB:=[];
@@ -396,7 +384,6 @@ end;
 LORENTZ_GetAnsatzGraphInformation:=function(LorMat, eFamEXT, Qmat, HeuristicScal)
   local nbVert, ThePartition, TheListAdjacency, i, eList, j, eScal, ScalarMat, DistMat, korig, pos, LineScalar, iVert, jVert, SetV, n, SecVal;
   nbVert:=Length(eFamEXT);
-  Print("Computing ScalarMat for nbVert=", nbVert, "\n");
   ScalarMat:=[];
   for i in [1..nbVert]
   do
@@ -419,9 +406,7 @@ LORENTZ_GetAnsatzGraphInformation:=function(LorMat, eFamEXT, Qmat, HeuristicScal
     od;
     Add(ScalarMat, LineScalar);
   od;
-  Print("We have ScalarMat\n");
   if HeuristicScal.UseDiagonal then
-    Print("Using the diagonal\n");
     DistMat:=MappedScalarMatrixDistanceMatrix(ScalarMat);
     SetV:=__SetValue(DistMat);
     korig:=Length(SetV);
@@ -431,7 +416,6 @@ LORENTZ_GetAnsatzGraphInformation:=function(LorMat, eFamEXT, Qmat, HeuristicScal
     return rec(ThePartition:=ThePartition, ListAdjacency:=TheListAdjacency);
   else
     SetV:=__SetValue(ScalarMat);
-    Print("Not using the diagonal |SetV|=", Length(SetV), "\n");
     if Length(SetV)=2 then
       SecVal:=SetV[2];
       ThePartition:=[[1..nbVert]];
@@ -495,22 +479,13 @@ end;
 # Thus what we do is reduce to a common scalar product
 LORENTZ_ComputeStabilizer_Specific:=function(LorMat, eFamEXT, TheHeuristic)
   local RecAnsatz, GRPpermA, GRPpermB, GRPpermExt, Qmat, TheSub, ListMatrGens, ListPermGens;
-  Print("Beginning of LORENTZ_ComputeStabilizer_Specific\n");
-  Qmat:=Get_QinvMatrix(eFamEXT);
-  Print("We have Qmat\n");
+  Qmat:=poly_private@Get_QinvMatrix(eFamEXT);
   TheSub:=LORENTZ_GetAnsatzSubpolytope(LorMat, eFamEXT, Qmat, TheHeuristic.HeuristicSub);
-  Print("We have TheSub |TheSub|=", Length(TheSub), "\n");
-  Print("Det(eFamEXT)=", AbsInt(DeterminantMat(BaseIntMat(eFamEXT))), " Det(eFamEXT{TheSub})=", AbsInt(DeterminantMat(BaseIntMat(eFamEXT{TheSub}))), "\n");
   RecAnsatz:=LORENTZ_GetAnsatzGraphInformation(LorMat, eFamEXT{TheSub}, Qmat, TheHeuristic.HeuristicScal);
-  Print("We have RecAnsatz\n");
   GRPpermA:=SymmetryGroupVertexColoredGraphAdjList(RecAnsatz.ListAdjacency, RecAnsatz.ThePartition);
-  Print("We have GRPpermA |GRPpermA|=", Order(GRPpermA), "\n");
   GRPpermB:=KernelLinPolytopeIntegral_Automorphism_Subspaces(eFamEXT{TheSub}, GRPpermA).GRPperm;
-  Print("We have GRPpermB |GRPpermB|=", Order(GRPpermB), "\n");
   ListMatrGens:=List(GeneratorsOfGroup(GRPpermB), x->FindTransformation(eFamEXT{TheSub}, eFamEXT{TheSub}, x));
-  Print("We have ListMatrGens\n");
   ListPermGens:=GetListPermGens(eFamEXT, ListMatrGens);
-  Print("We have ListPermGens\n");
   GRPpermExt:=Group(ListPermGens);
   return LORENTZ_ComputeFundamentalStabInfo(LorMat, eFamEXT, GRPpermExt);
 end;
@@ -537,11 +512,9 @@ end;
 
 LORENTZ_TestEquivalence_General:=function(LorMat1, LorMat2, eFamEXT1, eFamEXT2)
   local Qinv1, Qinv2, eEquiv, eEquivB, eMatr, TheStrategy, ListVect1, ListVect2, eMatrB, GRP2;
-  Qinv1:=Get_QinvMatrix(eFamEXT1);
-  Qinv2:=Get_QinvMatrix(eFamEXT2);
-  Print("Before LinPolytope_IsomorphismStabSubset_AddMat |eFamEXT1|=", Length(eFamEXT1), " |eFamEXT2|=", Length(eFamEXT2), "\n");
+  Qinv1:=poly_private@Get_QinvMatrix(eFamEXT1);
+  Qinv2:=poly_private@Get_QinvMatrix(eFamEXT2);
   eEquiv:=LinPolytope_IsomorphismStabSubset_AddMat(eFamEXT1, eFamEXT1, eFamEXT2, eFamEXT2, [Qinv1, LorMat1], [Qinv2, LorMat2]);
-  Print("After LinPolytope_IsomorphismStabSubset_AddMat\n");
   if eEquiv=false then
     return false;
   fi;
@@ -560,15 +533,11 @@ LORENTZ_TestEquivalence_General:=function(LorMat1, LorMat2, eFamEXT1, eFamEXT2)
     eMatrB:=FindTransformation(ListVect1, ListVect2, eEquivB);
   fi;
   if TheStrategy=2 then
-    Print("Before LinPolytope_AutomorphismStabSubset_AddMat\n");
     GRP2:=LinPolytope_AutomorphismStabSubset_AddMat(eFamEXT2, eFamEXT2, [Qinv2, LorMat2]);
-    Print("After LinPolytope_AutomorphismStabSubset_AddMat\n");
     eMatrB:=KernelLinPolytopeIntegral_Isomorphism_Subspaces(eFamEXT1, eFamEXT2, GRP2, eEquiv);
     if eMatrB=false then
-      Print("Subspaces algo returns false\n");
       return false;
     fi;
-    Print("We have eMatrB\n");
   fi;
   return LORENTZ_TestEquivalence_CheckAndReturn(LorMat1, LorMat2, eFamEXT1, eFamEXT2, eMatrB);
 end;
@@ -577,38 +546,27 @@ end;
 
 LORENTZ_TestEquivalence_Specific:=function(LorMat1, LorMat2, eFamEXT1, eFamEXT2, TheHeuristic)
   local RecAnsatz1, RecAnsatz2, test, eMatrB, Qmat1, Qmat2, TheSub1, TheSub2;
-  Print("Beginning of LORENTZ_TestEquivalence_Specific\n");
   #
-  Qmat1:=Get_QinvMatrix(eFamEXT1);
-  Print("We have Qmat1\n");
+  Qmat1:=poly_private@Get_QinvMatrix(eFamEXT1);
   TheSub1:=LORENTZ_GetAnsatzSubpolytope(LorMat1, eFamEXT1, Qmat1, TheHeuristic.HeuristicSub);
-  Print("We have TheSub1\n");
   RecAnsatz1:=LORENTZ_GetAnsatzGraphInformation(LorMat1, eFamEXT1{TheSub1}, Qmat1, TheHeuristic.HeuristicScal);
-  Print("We have RecAnsatz1\n");
   #
-  Qmat2:=Get_QinvMatrix(eFamEXT2);
-  Print("We have Qmat2\n");
+  Qmat2:=poly_private@Get_QinvMatrix(eFamEXT2);
   TheSub2:=LORENTZ_GetAnsatzSubpolytope(LorMat2, eFamEXT2, Qmat2, TheHeuristic.HeuristicSub);
   if Length(TheSub1)<>Length(TheSub2) then
-    Print("Returning false at this case |TheSub1|=", Length(TheSub1), " |TheSub2|=", Length(TheSub2), "\n");
     return false;
   fi;
-  Print("We have TheSub2\n");
   RecAnsatz2:=LORENTZ_GetAnsatzGraphInformation(LorMat2, eFamEXT2{TheSub2}, Qmat2, TheHeuristic.HeuristicScal);
-  Print("We have RecAnsatz2\n");
   #
   if TheHeuristic.BlockMethod="PolytopeIntegral" then
     eMatrB:=LinPolytopeIntegral_Isomorphism(eFamEXT1{TheSub1}, eFamEXT2{TheSub2});
   else
     test:=EquivalenceVertexColoredGraphAdjList(RecAnsatz1.ListAdjacency, RecAnsatz2.ListAdjacency, RecAnsatz1.ThePartition);
-    Print("We have test\n");
     if test=false then
-      Print("Returning false at second case\n");
       return false;
     fi;
     eMatrB:=FindTransformation(eFamEXT1{TheSub1}, eFamEXT2{TheSub2}, PermList(test));
   fi;
-  Print("We have eMatrB\n");
   if eMatrB=false then
     return false;
   fi;
@@ -794,8 +752,6 @@ LORENTZ_PrintInfinityInformation:=function(eRecComplex)
       Add(ListListMatch, Set(eListMatch));
     od;
     if Length(ListListMatch[TheDim])<>nbCusp then
-      Print("nbPerf=", nbPerf, " nbCusp=", nbCusp, "\n");
-      Print("iPerf=", iPerf, " ListListMatch=", ListListMatch, "\n");
       IsConjectureOk:=false;
     fi;
   od;
@@ -880,11 +836,7 @@ end;
 # But the cost of computing ListVect can be tremendous, so better not to
 # in general.
 LORENTZ_Invariant:=function(LorMat, eFamEXT)
-#  local ListVect;
-#  ListVect:=LORENTZ_GetDeterminingVectFamily(LorMat, eFamEXT);
-#  return GetScalarMatrixInvariant_PolytopeStabSubset_AddMat(ListVect, eFamEXT, [LorMat]);
-  Print("Computing invariant for det(LorMat)=", DeterminantMat(LorMat), " |eFamEXT|=", Length(eFamEXT), "\n");
-  return GetScalarMatrixInvariant_PolytopeStabSubset_AddMat(eFamEXT, eFamEXT, [LorMat]);
+  return poly_private@GetScalarMatrixInvariant_PolytopeStabSubset_AddMat(eFamEXT, eFamEXT, [LorMat]);
 end;
 
 
@@ -940,7 +892,6 @@ LORENTZ_EnumeratePerfect:=function(LorMat)
     eRecStab:=LORENTZ_ComputeStabilizer(LorMat, eFamEXT);
     eNewRec:=rec(eRecStab:=eRecStab, eInv:=eInv, eFamEXT:=eFamEXT, Status:="NO");
     Add(ListFamily, eNewRec);
-    Print("Now |ListFamily|=", Length(ListFamily), " new: |EXT|=", Length(eFamEXT), " |G|=", Order(eRecStab.GRP_int), "\n");
     return rec(iFamily:=Length(ListFamily), eEquiv:=IdentityMat(Length(LorMat)));
   end;
   eInitial:=LORENTZ_GetOnePerfect(LorMat, "isotrop");
@@ -968,16 +919,13 @@ LORENTZ_EnumeratePerfect:=function(LorMat)
         ListIso:=ListFamily[iOrb].eFamEXT;
         EXT:=List(ListIso, x->Concatenation([1], x));
         TheGRP:=ListFamily[iOrb].eRecStab.GRP_int;
-        Print("Working with |EXT|=", Length(EXT), " |GRP|=", Order(TheGRP), "\n");
         ListOrb:=__ListFacetByAdjacencyDecompositionMethod(EXT, TheGRP, DataPolyhedral, BF);
         nbOrbFac:=Length(ListOrb);
         ListAdj:=[];
-        Print("nbOrbitTreated=", nbOrbitTreated, " |ListFamily|=", Length(ListFamily), "\n");
         for iOrbFac in [1..nbOrbFac]
         do
           eOrb:=ListOrb[iOrbFac];
           EXTfacet:=ListIso{eOrb};
-          Print("   iOrbFac=", iOrbFac, "/", nbOrbFac, " |eOrb|=", Length(eOrb), "\n");
           eRec:=LORENTZ_DoFlipping(LorMat, ListIso, eOrb, "isotrop");
           eAdj:=FuncInsertVectFamily(eRec.ListTotal);
           EXTneigh:=ListFamily[eAdj.iFamily].eFamEXT*eAdj.eEquiv;
@@ -1344,10 +1292,8 @@ LORENTZ_EnumeratePerfect_DelaunayScheme:=function(LorMat, RecInput)
   FuncInvariant:=function(eRec, EXT)
     local pos, Qmat;
     pos:=Position(ListVertAnsatz, Length(EXT));
-    Print("FunInvariant pos=", pos, "\n");
     if pos<>fail then
-      Qmat:=Get_QinvMatrix(EXT);
-      Print("We have Qmat\n");
+      Qmat:=poly_private@Get_QinvMatrix(EXT);
       return Collected(List(EXT, x->[x*LorMat*x, x*Qmat*x]));
     else
       return LORENTZ_Invariant(LorMat, EXT);
@@ -1407,7 +1353,6 @@ LORENTZ_PrintEnumerationResult:=function(output, LorMat, ePrefix)
     eFileGRP:=Concatenation(ePrefix, "ListGRP/DelaunayGroup", String(i));
     if IsExistingFilePlusTouch(eFileEXT) then
       EXT:=ReadAsFunction(eFileEXT)();
-      Print("i=", i, " |EXT|=", Length(EXT), "\n");
       eDet:=AbsInt(DeterminantMat(BaseIntMat(EXT)));
       eSize:=Length(EXT);
       eInv:=ReadAsFunction(eFileINV)();
@@ -1723,7 +1668,6 @@ G_WriteToFile:=function(FileName, TheTotalRec)
     od;
     Add(LL_Corresp, L_Corresp);
   od;
-  Print("d=", d, " nbPerf=", nbPerf, "\n");
   #
   RemoveFileIfExist(FileName);
   output:=OutputTextFile(FileName, true);
@@ -1822,7 +1766,6 @@ PariExportResultSpecific:=function(d)
   nbPerf:=Length(RecPerf.ListPerf);
   #
   HMat:=RecPerf.HMat;
-  Print("Printing results for d = ", d, "\n");
   AllInfoFile:=Concatenation("Perfect_Pari_", String(d));
   RemoveFileIfExist(AllInfoFile);
   output:=OutputTextFile(AllInfoFile, true);
@@ -1892,7 +1835,6 @@ PresentResultSpecific:=function(d)
   nbPerf:=Length(RecPerf.ListPerf);
   #
   HMat:=RecPerf.HMat;
-  Print("Printing results for d = ", d, "\n");
   AllInfoFile:=Concatenation("AllInfo_Sch2_", String(d));
   RemoveFileIfExist(AllInfoFile);
   output:=OutputTextFile(AllInfoFile, true);
@@ -1921,7 +1863,6 @@ GetGlobalInformation:=function()
   while(true)
   do
     FileSave:=Concatenation("DATAgangl/Perf_Sch2_compl_", String(d));
-    Print("d=", d, "\n");
     if IsExistingFilePlusTouch(FileSave) then
       RecPerf:=ReadAsFunction(FileSave)();
       nbPerf:=Length(RecPerf.ListPerf);
