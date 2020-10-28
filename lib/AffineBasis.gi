@@ -77,7 +77,8 @@ poly_private@ExtendToCompleteAffineBasis:=function(EXT, StartingPoint)
   od;
 end;
 
-CreateAffineBasis:=function(EXT)
+InstallGlobalFunction(CreateAffineBasis,
+function(EXT)
   local ePerm, test, nbRun;
   nbRun:=0;
   while(true)
@@ -93,33 +94,30 @@ CreateAffineBasis:=function(EXT)
       return false;
     fi;
   od;
-end;
+end);
 
 
 
 
 
-#
-# Polytope is the list of vertices
-# Graph is the skeleton of the polytope
-# Group is the symmetry group of the polytope (usually equal to the 
-# symmetry group of the skeleton graph)
-FindAllOrbitAffineBasis:=function(Polytope, Group)
+
+InstallGlobalFunction(FindAllOrbitAffineBasis,
+function(EXT, GRP)
   local Dimension, FuncLinear;
-  Dimension:=RankMat(Polytope);
+  Dimension:=RankMat(EXT);
   FuncLinear:=function(eCand)
     local Matr, ePos, iVert, Solu, eV;
     Matr:=[];
     for ePos in eCand
     do
-      Add(Matr, Polytope[ePos]);
+      Add(Matr, EXT[ePos]);
     od;
     if RankMat(Matr)<Length(eCand) then
       return false;
     fi;
-    for iVert in Difference([1..Length(Polytope)], eCand)
+    for iVert in Difference([1..Length(EXT)], eCand)
     do
-      Solu:=SolutionMat(Matr, Polytope[iVert]);
+      Solu:=SolutionMat(Matr, EXT[iVert]);
       if Solu<>fail then
         for eV in Solu
         do
@@ -131,39 +129,31 @@ FindAllOrbitAffineBasis:=function(Polytope, Group)
     od;
     return true;
   end;
-  return FindOrbitSubGraphs(Length(Polytope), Group, FuncLinear, Dimension);
-end;
+  return FindOrbitSubGraphs(Length(EXT), GRP, FuncLinear, Dimension);
+end);
 
 #
 # Find all orbits of independent points in the polytope
 # (Their determinant can be any non-negative integer a priori)
-FindAllOrbitIndependent:=function(Polytope, Group)
+InstallGlobalFunction(FindAllOrbitIndependent,
+function(EXT, GRP)
   local Dimension, FuncLinear;
-  Dimension:=RankMat(Polytope);
+  Dimension:=RankMat(EXT);
   FuncLinear:=function(eCand)
-    local Matr, ePos, iVert, Solu, eV;
-    Matr:=[];
-    for ePos in eCand
-    do
-      Add(Matr, Polytope[ePos]);
-    od;
-    if RankMat(Matr)<Length(eCand) then
-      return false;
-    fi;
-    return true;
+    local Matr;
+    Matr:=List(eCand, x->EXT[ePos]);
+    return RankMat(Matr)=Length(eCand);
   end;
-  return FindOrbitSubGraphs(Length(Polytope), Group, FuncLinear, Dimension);
-end;
+  return FindOrbitSubGraphs(Length(EXT), GRP, FuncLinear, Dimension);
+end);
 
 
 
 
 
 
-#
-#
-# AffineBasis is a sequence of numbers refering to elements of the polytope
-TestAffineBasis:=function(EXT, AffineBasis)
+InstallGlobalFunction(TestAffineBasis,
+function(EXT, AffineBasis)
   local Matr, eEXT, B;
   Matr:=EXT{AffineBasis};
   for eEXT in EXT
@@ -177,5 +167,5 @@ TestAffineBasis:=function(EXT, AffineBasis)
     fi;
   od;
   return true;
-end;
+end);
 
