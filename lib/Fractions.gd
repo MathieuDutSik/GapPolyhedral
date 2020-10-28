@@ -1,0 +1,11 @@
+DeclareGlobalFunction("FractionMod1");
+DeclareGlobalFunction("GetFractionAsReal");
+DeclareGlobalFunction("FractionModPW");
+DeclareGlobalFunction("RemoveFractionPlusCoef");
+DeclareGlobalFunction("RemoveFraction");
+DeclareGlobalFunction("RemoveFractionCanonic");
+DeclareGlobalFunction("RemoveFractionMatrixPlusCoef");
+DeclareGlobalFunction("RemoveFractionMatrix");
+DeclareGlobalFunction("LowerInteger");
+DeclareGlobalFunction("UpperInteger");
+DeclareGlobalFunction("NearestInteger");
