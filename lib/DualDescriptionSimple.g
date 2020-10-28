@@ -14,7 +14,7 @@ FileNautyToGRAPE:=Filename(DirectoriesPackagePrograms("MyPolyhedral"),"NautyToGR
 
 
 
-OutputGroup:=function(GroupExt, nbExt, FileGroup)
+poly_private@OutputGroup:=function(GroupExt, nbExt, FileGroup)
   local output, ListGens, nbGen, eGen, eList, i;
   ListGens:=GeneratorsOfGroup(GroupExt);
   nbGen:=Length(ListGens);
@@ -34,10 +34,7 @@ end;
 
 
 
-#
-#
-# Pass from one description to the other using RAW cdd program
-DualDescription_Rational:=function(EXT)
+DualDescription:=function(EXT)
   local FileExt, FileIne, FileIneNude, output, FAC, FileErr, EXTred;
   if Length(Set(List(EXT,Length)))<>1 then
     Error("DualDescription_Rational: Input should be vectors of the same length");
@@ -71,25 +68,6 @@ DualDescription_Rational:=function(EXT)
   RemoveFile(FileIne);
   RemoveFile(FileIneNude);
   return FAC;
-end;
-
-
-
-DualDescription_General_Code:=function(EXT)
-  local Nval;
-  if IsMatrixRational(EXT)=true then
-    return DualDescription_Rational(EXT);
-  fi;
-  Error("You have to build your own arithmetic");
-end;
-
-
-DualDescription:=function(EXT)
-  if IsMatrixRational(EXT)=true then
-    return DualDescription_Rational(EXT);
-  fi;
-  Print("Need to put arithmetic or use DualDescriptionGeneralCode\n");
-  Error("You have to build your own arithmetic");
 end;
 
 
@@ -129,6 +107,8 @@ DualDescriptionSets:=function(EXT)
   return List(FACproj, x->Filtered([1..Length(EXTproj)], y->EXTproj[y]*x=0));
 end;
 
+
+
 RemoveRedundancyByDualDescription_Kernel:=function(EXT)
   local eSelect, EXTproj, FACproj, eSet, len, idx, FACinc;
   if Length(EXT)=1 then
@@ -151,24 +131,14 @@ RemoveRedundancyByDualDescription_Kernel:=function(EXT)
   return Set(EXT{eSet});
 end;
 
+
+
 RemoveRedundancyByDualDescription:=function(EXT0)
   local EXT1, EXT2, EXT3;
   EXT1:=Filtered(EXT0, x->x*x>0);
   EXT2:=List(EXT1, RemoveFraction);
   EXT3:=Set(EXT2);
   return RemoveRedundancyByDualDescription_Kernel(EXT3);
-end;
-
-
-WriteCddInputVertices:=function(FileName, EXT)
-  local output;
-  output:=OutputTextFile(FileName, true);
-  AppendTo(output, "V-representation\n");
-  AppendTo(output, "begin\n");
-  AppendTo(output, Length(EXT), "  ", Length(EXT[1]), "  integer\n");
-  WriteMatrix(output, EXT);
-  AppendTo(output, "end\n");
-  CloseStream(output);
 end;
 
 
@@ -272,7 +242,7 @@ __DualDescriptionLRS_Reduction:=function(EXT, GroupExt, ThePath)
   WriteMatrix(output, EXTnew);
   CloseStream(output);
   #
-  OutputGroup(GroupExt, Length(EXTnew), FileGroup);
+  poly_private@OutputGroup(GroupExt, Length(EXTnew), FileGroup);
   #
   Exec(FileIsoReduction, " ", FileData, " ", FileMetaData, " ", FileGroup, " ", FileSupport, " ", FileScratch, " ", FileOutput, "2>", FileError);
   ListInc:=ReadAsFunction(FileOutput)();
@@ -365,7 +335,7 @@ __DualDescriptionDoubleDescMethod_Reduction:=function(EXT, GroupExt, ThePath, Th
   WriteMatrix(output, EXTnew);
   CloseStream(output);
   #
-  OutputGroup(GroupExt, Length(EXTnew), FileGroup);
+  poly_private@OutputGroup(GroupExt, Length(EXTnew), FileGroup);
   #
   TheCommand:=Concatenation(FileIsoReduction, " ", FileData, " ", FileMetaData, " ", FileGroup, " ", FileSupport, " ", FileScratch, " ", FileOutput, " 2>", FileError);
 #  Print("TheCommand=", TheCommand, "\n");
