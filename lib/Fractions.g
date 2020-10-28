@@ -1,62 +1,32 @@
-GetContinuedFraction:=function(eFrac)
-  local eNum, eDen, h, eRes, eF, eFracRed, TheDecomp;
-  eNum:=NumeratorRat(eFrac);
-  eDen:=DenominatorRat(eFrac);
-  h:=eNum mod eDen;
-  eRes:=(eNum - h)/eDen;
-  TheDecomp:=[eRes];
-  eFracRed:=eFrac - eRes;
-  while(true)
-  do
-    if eFracRed=0 then
-      break;
-    fi;
-    eF:=1/eFracRed;
-    eNum:=NumeratorRat(eF);
-    eDen:=DenominatorRat(eF);
-    h:=eNum mod eDen;
-    eRes:=(eNum - h)/eDen;
-    Add(TheDecomp, eRes);
-    eFracRed:=eF - eRes;
-  od;
-  return TheDecomp;
-end;
-
-FractionMod1:=function(eFrac)
+InstallGlobalFunction(FractionMod1,
+function(eFrac)
   local a, b;
   b:=NumeratorRat(eFrac);
   a:=DenominatorRat(eFrac);
   return (b mod a)/a;
-end;
-
-ContinuousFraction:=function(eFrac, TheLevel)
-  local TheRes, TheInt, TheCont;
-  if IsInt(eFrac)=true then
-    return eFrac;
-  fi;
-  TheRes:=FractionMod1(eFrac);
-  TheInt:=eFrac-TheRes;
-  if TheLevel=0 then
-    return TheInt;
-  fi;
-  TheCont:=ContinuousFraction(1/TheRes, TheLevel-1);
-  return TheInt+1/TheCont;
-end;
+end);
 
 
-GetFractionAsReal:=function(TheFrac)
+
+InstallGlobalFunction(GetFractionAsReal,
+function(TheFrac)
   return TheFrac + 0.0;
-end;
+end);
 
-FractionModPW:=function(eVal, pw)
+
+
+InstallGlobalFunction(FractionModPW,
+function(eVal, pw)
   local a, b;
   b:=NumeratorRat(eVal);
   a:=DenominatorRat(eVal);
   return ((b*pw) mod a)/(a*pw);
-end;
+end);
 
 
-RemoveFractionPlusCoef:=function(TheList)
+
+InstallGlobalFunction(RemoveFractionPlusCoef,
+function(TheList)
   local Den, List1, L, iCol, eVal, TheMult;
   if TheList*TheList=0 then
     return rec(TheVect:=TheList, TheMult:=1);
@@ -77,14 +47,17 @@ RemoveFractionPlusCoef:=function(TheList)
     Error("Deep incoherence");
   fi;
   return rec(TheVect:=List1/L, TheMult:=TheMult);
-end;
+end);
 
-RemoveFraction:=function(TheList)
+InstallGlobalFunction(RemoveFraction,
+function(TheList)
   return RemoveFractionPlusCoef(TheList).TheVect;
-end;
+end);
 
 
-RemoveFractionCanonic:=function(TheList)
+
+InstallGlobalFunction(RemoveFractionCanonic,
+function(TheList)
   local eVect, pos, eSign;
   eVect:=RemoveFraction(TheList);
   pos:=First([1..Length(eVect)], x->eVect[x]<>0);
@@ -97,9 +70,10 @@ RemoveFractionCanonic:=function(TheList)
     eSign:=-1;
   fi;
   return eVect*eSign;
-end;
+end);
 
-RemoveFractionMatrixPlusCoef:=function(OneMat)
+InstallGlobalFunction(RemoveFractionMatrixPlusCoef,
+function(OneMat)
   local Den, OneMat1, L, eLine, eCol;
   Den:=1;
   for eLine in OneMat
@@ -125,18 +99,19 @@ RemoveFractionMatrixPlusCoef:=function(OneMat)
     Error("Deep incoherence");
   fi;
   return rec(TheMat:=(1/L)*OneMat1, TheMult:=Den/L);
-end;
+end);
 
-RemoveFractionMatrix:=function(OneMat)
+
+
+InstallGlobalFunction(RemoveFractionMatrix,
+function(OneMat)
   return RemoveFractionMatrixPlusCoef(OneMat).TheMat;
-end;
+end);
 
 
 
-#
-#
-# larger integer smaller than eFrac
-LowerInteger:=function(eFrac)
+InstallGlobalFunction(LowerInteger,
+function(eFrac)
   local a, b, r;
   if IsInt(eFrac)=true then
     return eFrac;
@@ -145,13 +120,12 @@ LowerInteger:=function(eFrac)
   b:=DenominatorRat(eFrac);
   r:=a mod b;
   return (a-r)/b;
-end;
+end);
 
 
-#
-#
-# smaller integer larger than eFrac
-UpperInteger:=function(eFrac)
+
+InstallGlobalFunction(UpperInteger,
+function(eFrac)
   local a, b, r;
   if IsInt(eFrac)=true then
     return eFrac;
@@ -160,10 +134,12 @@ UpperInteger:=function(eFrac)
   b:=DenominatorRat(eFrac);
   r:=a mod b;
   return (a+b-r)/b;
-end;
+end);
 
 
-NearestInteger:=function(eFrac)
+
+InstallGlobalFunction(NearestInteger,
+function(eFrac)
   local eLow, eUpp, eDistLower, eDistUpper;
   eLow:=LowerInteger(eFrac);
   eUpp:=UpperInteger(eFrac);
@@ -174,6 +150,6 @@ NearestInteger:=function(eFrac)
   else
     return eUpp;
   fi;
-end;
+end);
 
 
