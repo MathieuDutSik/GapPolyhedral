@@ -1,4 +1,3 @@
-FileSVWrite_QN:=Filename(DirectoriesPackagePrograms("MyPolyhedral"),"svWrite_QN");
 FileSV:=Filename(DirectoriesPackagePrograms("MyPolyhedral"),"sv");
 FileSV_gmp_read:=Filename(DirectoriesPackagePrograms("MyPolyhedral"),"sv_gmp_read");
 FileSV_exact:=Filename(DirectoriesPackagePrograms("MyPolyhedral"),"sv_exact");

@@ -442,7 +442,7 @@ end;
 
 
 GetSpaceRealQuadratic:=function(n, eSum, eProd)
-  local TheDiscriminant, ListMult, pos, ListMatrix, i, j, eMat, ListBC, TheBasis, GetFromPair, eRecBC, Bmat, Cmat, SuperMat, Imultiplication, IsInSL, IsInGL, TrivialFilter, eDelta, alpha, IsTotallyPositive, eRecDecompo, GetPair;
+    local TheDiscriminant, ListMult, pos, ListMatrix, i, j, eMat, ListBC, TheBasis, GetFromPair, eRecBC, Bmat, Cmat, SuperMat, Imultiplication, IsInSL, IsInGL, TrivialFilter, eDelta, alpha, IsTotallyPositive, eRecDecompo, GetPair, QN_IsPositive;
   if CorrectnessRealQuadratic(eSum, eProd)=false then
     Error("Incorrect discriminant, retry");
   fi;
@@ -538,6 +538,27 @@ GetSpaceRealQuadratic:=function(n, eSum, eProd)
       return true;
     fi;
     return false;
+  end;
+  QN_IsPositive:=function(Nval, eX)
+      local p, q, h, eElt;
+      eElt:=QN_GetExpression(Nval, eX);
+      p:=eElt[1];
+      q:=eElt[2];
+      if p=0 and q=0 then
+          return false;
+      fi;
+      if p>=0 and q>=0 then
+          return true;
+      fi;
+      if p<=0 and q<=0 then
+          return false;
+      fi;
+      h:=p*p-Nval*q*q;
+      if h*p>0 then
+          return true;
+      else
+          return false;
+      fi;
   end;
   IsTotallyPositive:=function(eMat)
     local ePair, Amat, Bmat, alpha1, alpha2, eMatRes1, eMatRes2, TheDet1, TheDet2, test1, test2;

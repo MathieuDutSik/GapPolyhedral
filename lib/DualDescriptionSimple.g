@@ -225,57 +225,6 @@ DualDescriptionAdjacencies:=function(EXT)
 end;
 
 
-__DualDescriptionCDD_QN:=function(Nval, EXT, GroupExt, ThePath)
-  local FileExt, FileIne, FileLog, FileDdl, FileIneNude, output, LPFAC, RPL, eFac, ePair, eSub, EXT2, EXTnew, eVal, DimEXT, eEXT, FAC2, eVect, eNewVect, NvalueFile;
-#  Print("Entering polyhedral function CDD QN Nval=", Nval, " |GRP|=", Order(GroupExt), "\n");
-  FileExt:=Concatenation(ThePath,"CDD_Project_QN.ext");
-  FileIne:=Concatenation(ThePath,"CDD_Project_QN.ine");
-  FileLog:=Concatenation(ThePath,"CDD_Project_QN.log");
-  FileDdl:=Concatenation(ThePath,"CDD_Project_QN.ddl");
-  FileIneNude:=Filename(POLYHEDRAL_tmpdir,"CDD_Project_QN.ine.Nude");
-  #
-  NvalueFile:="/tmp/InitialN";
-  RemoveFileIfExist(NvalueFile);
-  output:=OutputTextFile(NvalueFile, true);;
-  AppendTo(output, " ", Nval, "\n");
-  CloseStream(output);
-  #
-  eSub:=__ProjectionFrame(EXT);
-  EXT2:=List(EXT, x->x{eSub});
-  if TestConicness(EXT2) then
-    EXTnew:=ShallowCopy(EXT2);
-  else
-    EXTnew:=List(EXT2, x->Concatenation([0], x));
-  fi;
-  DimEXT:=Length(EXTnew[1]);
-  #
-  WriteMatrixQN(Nval, FileExt, EXTnew);
-  Exec(FileLCDD_QN, " ", FileExt, " 2> ", FileLog, " > ", FileIne);
-  Exec(FileNudify, " ", FileIne, " > ", FileIneNude);
-  LPFAC:=ReadVectorFile(FileIneNude);
-  FAC2:=[];
-  for eVect in LPFAC
-  do
-    eNewVect:=List([1..DimEXT], x->eVect[2*x-1] + Sqrt(Nval)*eVect[2*x]);
-    Add(FAC2, eNewVect);
-  od;
-  if Length(FAC2)=0 then
-    Error("Error in __DualDescriptionCDD_QN");
-  fi;
-  RemoveFile(FileExt);
-  RemoveFile(FileIne);
-  RemoveFile(FileLog);
-  RemoveFile(FileDdl);
-  RemoveFile(FileIneNude);
-  RPL:=OnSetsGroupFormalism(500).OrbitGroupFormalism(EXTnew, GroupExt, "/irrelevant/", false);
-  for eFac in FAC2
-  do
-    RPL.FuncInsert(Filtered([1..Length(EXTnew)], x->EXTnew[x]*eFac=0));
-  od;
-  return RPL.FuncListOrbitIncidence();
-end;
-
-
 __DualDescriptionLRS_Reduction:=function(EXT, GroupExt, ThePath)
   local eSub, EXT2, EXT3, FileExt, FileOut, FileData, FileGroup, FileMetaData, FileSupport, FileScratch, FileOutput, FileError, output, DimEXT, test, EXTnew, ListInc;
 #  Print("Entering polyhedral function LRS_Reduction |GRP|=", Order(GroupExt), "\n");
