@@ -1260,21 +1260,7 @@ EnumerationProcedureLtypeStandard:=function(eCase, PathSave, IsSaving, MemorySav
   RepartPath:=Concatenation(PathSave, "Repartitionning/");
   Exec("mkdir -p ", RepartPath);
   DataPolyhedralTiling:=rec(PathSAVE:=RepartPath, Saving:=IsSaving);
-  if IsMatrixFamilyRational(eCase.Basis) then
-    DataPolyhedralTiling.DualDescriptionFunction:=__DualDescriptionLRS_Reduction;
-  else
-    for Nval in [2,5]
-    do
-      if QN_IsMatrixFamily(Nval, eCase.Basis)=true then
-        NvalCopy:=Nval;
-        MyDualDescription:=function(EXT, GroupExt, ThePath)
-          return __DualDescriptionCDD_QN(NvalCopy, EXT, GroupExt, ThePath);
-        end;
-        DataPolyhedralTiling.DualDescriptionFunction:=MyDualDescription;
-        DataPolyhedralTiling.Nval:=Nval;
-      fi;
-    od;
-  fi;
+  DataPolyhedralTiling.DualDescriptionFunction:=__DualDescriptionLRS_Reduction;
   if eCase.IsBravaisSpace=false then
     GetDiscInfo:=function(GramMat)
       local TheAutGroup;

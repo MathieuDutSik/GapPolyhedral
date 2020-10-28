@@ -864,85 +864,6 @@ end;
 
 
 
-__ProjectionLiftingFramework_QN:=function(Nval, EXT, OneInc)
-  local eSub, EXTproj, EXTproj2, FuncLift, IsPosi;
-  eSub:=__ProjectionFrame(EXT);
-  EXTproj:=List(EXT, x->x{eSub});
-  EXTproj2:=EXTproj{OneInc};
-  # TheInc is a subset of [1..Length(OneInc)]
-  IsPosi:=function(eX)
-    return QN_IsPositive(Nval, eX);
-  end;
-  FuncLift:=function(TheInc)
-    local LINCR, VMA, ListCase, eExt, VO, EXT1, iD, EXT2, det12, iElt, EXTN, det1N, det2N, LV, test, S, iV, eV, eInc, VCE;
-    LINCR:=EXTproj2{TheInc};
-    if TestConicness(EXTproj) then
-      Add(LINCR, FacetOfInfinity(Length(LINCR[1])) );
-    fi;
-    VMA:=NullspaceMat(TransposedMat(LINCR));
-    if Length(VMA)<>2 then
-      Error("We have an incoherence in ProjectionLiftingFramework");
-    fi;
-    ListCase:=[];
-    for eExt in EXTproj
-    do
-      VO:=[VMA[1]*eExt, VMA[2]*eExt];
-      if VO<>[0,0] then
-        Add(ListCase, VO);
-      fi;
-    od;
-    EXT1:=ListCase[1];
-    iD:=2;
-    while(true)
-    do
-      EXT2:=ListCase[iD];
-      det12:=EXT2[2]*EXT1[1]-EXT2[1]*EXT1[2];
-      if (det12<>0) then
-        break;
-      fi;
-      iD:=iD+1;
-    od;
-    for iElt in [iD+1..Length(ListCase)]
-    do
-      EXTN:=ListCase[iElt];
-      det1N:=EXTN[2]*EXT1[1]-EXTN[1]*EXT1[2];
-      det2N:=EXTN[2]*EXT2[1]-EXTN[1]*EXT2[2];
-      if IsPosi(det1N*det2N) then
-        if IsPosi(det12*det1N) then
-          EXT2:=ShallowCopy(EXTN);
-          det12:=det1N;
-        else
-          EXT1:=ShallowCopy(EXTN);
-          det12:=-det2N;
-        fi;
-      fi;
-    od;
-    if IsPosi(det12) then
-      LV:=[[-EXT1[2], EXT1[1]], [EXT2[2], -EXT2[1]]];
-    else
-      LV:=[[EXT1[2], -EXT1[1]], [-EXT2[2], EXT2[1]]];
-    fi;
-    test:=[1,1];
-    S:=[];
-    for iV in [1,2]
-    do
-      eV:=LV[iV];
-      S[iV]:=eV[1]*VMA[1]+eV[2]*VMA[2];
-      for eInc in EXTproj2
-      do
-        if S[iV]*eInc<>0 then
-          test[iV]:=0;
-        fi;
-      od;
-    od;
-    VCE:=S[Position(test, 0)];
-    return Filtered([1..Length(EXTproj)], x->EXTproj[x]*VCE=0);
-  end;
-  return rec(FuncLift:=FuncLift);
-end;
-
-
-
 
 # in this new version all incidences are encoded by sets.
 __ProjectionLiftingFramework_Rational:=function(EXT, OneInc)
@@ -1034,12 +955,6 @@ __ProjectionLiftingFramework:=function(EXT, OneInc)
   if IsMatrixRational(EXT)=true then
     return __ProjectionLiftingFramework_Rational(EXT, OneInc);
   fi;
-  for Nval in [2,5]
-  do
-    if QN_IsMatrix(Nval, EXT)=true then
-      return __ProjectionLiftingFramework_QN(Nval, EXT, OneInc);
-    fi;
-  od;
   Error("You have to build your own arithmetic");
 end;
 
@@ -1310,27 +1225,8 @@ GetStandardFCT_DualDescriptionStandard:=function(EXT, PermGRP)
         GetInitialRays:=GetInitialRays_LinProg,
         ThePath:=TmpDir,
         GroupFormalism:=OnSetsGroupFormalism(500));
-  if IsMatrixRational(EXT) then
-    DataPolyhedral.DualDescriptionFunction:=__DualDescriptionLRS_Reduction;
-    DataPolyhedral.GetInitialRays:=GetInitialRays_LinProg;
-  else
-    IsMatch:=false;
-    for Nval in [2,5]
-    do
-      if QN_IsMatrix(Nval, EXT) then
-        NvalCopy:=Nval;
-        MyDualDescription:=function(EXT, GroupExt, ThePath)
-          return __DualDescriptionCDD_QN(NvalCopy, EXT, GroupExt, ThePath);
-        end;
-        DataPolyhedral.DualDescriptionFunction:=MyDualDescription;
-        DataPolyhedral.GetInitialRays:=GetInitialRays_LinProg;
-        IsMatch:=true;
-      fi;
-    od;
-    if IsMatch=false then
-      Error("Put your arithmetic here");
-    fi;
-  fi;
+  DataPolyhedral.DualDescriptionFunction:=__DualDescriptionLRS_Reduction;
+  DataPolyhedral.GetInitialRays:=GetInitialRays_LinProg;
   return rec(FuncStabilizer:=FuncStabilizer,
              FuncIsomorphy:=FuncIsomorphy,
              FuncInvariant:=FuncInvariant,

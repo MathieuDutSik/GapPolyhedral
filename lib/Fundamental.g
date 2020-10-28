@@ -772,12 +772,6 @@ GetArithmeticityMatrix_General_Code:=function(EXT)
   if IsMatrixRational(EXT)=true then
     return GetFunctionSetRational();
   fi;
-  for Nval in [2,5]
-  do
-    if QN_IsMatrix(Nval, EXT)=true then
-      return QN_GetFunctionSet(Nval);
-    fi;
-  od;
   Error("Please program the function here");
 end;
 
@@ -797,12 +791,6 @@ GetArithmeticityVector_General_Code:=function(EXT)
   if IsVectorRational(EXT)=true then
     return GetFunctionSetRational();
   fi;
-  for Nval in [2,5]
-  do
-    if QN_IsVector(Nval, EXT)=true then
-      return QN_GetFunctionSet(Nval);
-    fi;
-  od;
   Error("Please program the function here");
 end;
 
@@ -821,12 +809,6 @@ GetArithmeticityMatrixVector_General_Code:=function(EXT, eVect)
   if IsMatrixRational(EXT)=true and IsVectorRational(eVect)=true then
     return GetFunctionSetRational();
   fi;
-  for Nval in [2,5]
-  do
-    if QN_IsMatrix(Nval, EXT)=true and QN_IsVector(Nval, eVect)=true then
-      return QN_GetFunctionSet(Nval);
-    fi;
-  od;
   Error("Please program the function here");
 end;
 
@@ -2042,18 +2024,6 @@ __FindFacetInequality:=function(EXT, ListIncidence)
     RemoveFrac:=RemoveFraction;
     return __FindFacetInequalityGeneral(EXT, ListIncidence, IsPos, RemoveFrac).eIneq;
   fi;
-  for Nval in [2,5]
-  do
-    if QN_IsMatrix(Nval, EXT)=true then
-      IsPos:=function(x)
-        return QN_IsPositive(Nval, x);
-      end;
-      RemoveFrac:=function(x)
-        return x;
-      end;
-      return __FindFacetInequalityGeneral(EXT, ListIncidence, IsPos, RemoveFrac).eIneq;
-    fi;
-  od;
 end;
 
 RandomPolytopePoint:=function(EXT)
