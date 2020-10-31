@@ -1,0 +1,15 @@
+DeclareGlobalFunction("DatabaseTotallyRealCubicFields");
+DeclareGlobalFunction("PrintDefinitionField");
+DeclareGlobalFunction("DirectSumGramMatrices");
+DeclareGlobalFunction("LatticeDnPlus");
+DeclareGlobalFunction("ClassicalSporadicLattices");
+DeclareGlobalFunction("GetListNiemeier");
+DeclareGlobalFunction("GetListNiemeierNice");
+DeclareGlobalFunction("LatticeDn");
+DeclareGlobalFunction("LatticeAn");
+DeclareGlobalFunction("LatticeE6");
+DeclareGlobalFunction("LatticeE7");
+DeclareGlobalFunction("LatticeE8");
+DeclareGlobalFunction("ClassicalExtremeDelaunayPolytopes");
+DeclareGlobalFunction("ErdahlInfiniteSequence");
+DeclareGlobalFunction("Dutour_InfiniteSerie");
