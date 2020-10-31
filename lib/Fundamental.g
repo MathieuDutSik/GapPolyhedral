@@ -1,191 +1,66 @@
 FileGetDate:=Filename(DirectoriesPackagePrograms("MyPolyhedral"),"GetDate");
 FileRatToString:=Filename(DirectoriesPackagePrograms("MyPolyhedral"),"RatToString");
-FileLattLll:=Filename(DirectoriesPackagePrograms("MyPolyhedral"),"LATT_lll");
 
 
-PrevIdx:=function(NBU, idx)
+
+InstallGlobalFunction(PrevIdx,
+function(NBU, idx)
   if idx=1 then
     return NBU;
   else
     return idx-1;
   fi;
-end;
+end);
 
-NextIdx:=function(NBU, idx)
+
+
+InstallGlobalFunction(NextIdx,
+function(NBU, idx)
   if idx=NBU then
     return 1;
   else
     return idx+1;
   fi;
-end;
+end);
 
 
 #
 # k must be smaller than NBU
-NextKIdx:=function(NBU, idx, k)
+InstallGlobalFunction(NextKIdx,
+function(NBU, idx, k)
   if idx<=NBU-k then
     return idx+k;
   else
     return idx+k-NBU;
   fi;
-end;
+end);
 
 
-PrevKIdx:=function(NBU, idx, k)
+
+InstallGlobalFunction(PrevKIdx,
+function(NBU, idx, k)
   if idx>=k+1 then
     return idx-k;
   else
     return idx+NBU-k;
   fi;
-end;
+end);
 
 
-#
-# k must be smaller than NBU
-NextKIdx:=function(NBU, idx, k)
-  if idx<=NBU-k then
-    return idx+k;
-  else
-    return idx+k-NBU;
-  fi;
-end;
 
-
-PrevKIdx:=function(NBU, idx, k)
-  if idx>=k+1 then
-    return idx-k;
-  else
-    return idx+NBU-k;
-  fi;
-end;
-
-
-PersoGroupPerm:=function(ListGen)
+InstallGlobalFunction(PersoGroupPerm,
+function(ListGen)
   if Length(ListGen)=0 then
     return Group(());
   else
     return Group(ListGen);
   fi;
-end;
-
-
-#
-# k must be smaller than NBU
-NextKIdx:=function(NBU, idx, k)
-  if idx<=NBU-k then
-    return idx+k;
-  else
-    return idx+k-NBU;
-  fi;
-end;
-
-
-PrevKIdx:=function(NBU, idx, k)
-  if idx>=k+1 then
-    return idx-k;
-  else
-    return idx+NBU-k;
-  fi;
-end;
-
-
-PersoGroupPerm:=function(ListGen)
-  if Length(ListGen)=0 then
-    return Group(());
-  else
-    return Group(ListGen);
-  fi;
-end;
-
-
-#
-#
-# larger integer smaller than eFrac
-LowerInteger:=function(eFrac)
-  local a, b, r;
-  if IsInt(eFrac)=true then
-    return eFrac;
-  fi;
-  a:=NumeratorRat(eFrac);
-  b:=DenominatorRat(eFrac);
-  r:=a mod b;
-  return (a-r)/b;
-end;
-
-
-#
-#
-# smaller integer larger than eFrac
-UpperInteger:=function(eFrac)
-  local a, b, r;
-  if IsInt(eFrac)=true then
-    return eFrac;
-  fi;
-  a:=NumeratorRat(eFrac);
-  b:=DenominatorRat(eFrac);
-  r:=a mod b;
-  return (a+b-r)/b;
-end;
-
-
-#
-# k must be smaller than NBU
-NextKIdx:=function(NBU, idx, k)
-  if idx<=NBU-k then
-    return idx+k;
-  else
-    return idx+k-NBU;
-  fi;
-end;
-
-
-PrevKIdx:=function(NBU, idx, k)
-  if idx>=k+1 then
-    return idx-k;
-  else
-    return idx+NBU-k;
-  fi;
-end;
-
-
-PersoGroupPerm:=function(ListGen)
-  if Length(ListGen)=0 then
-    return Group(());
-  else
-    return Group(ListGen);
-  fi;
-end;
+end);
 
 
 
-
-
-GetIndexRealizintTheSort:=function(eList)
-  local len, eListExt, SetListExt, TheValue, ListIdx, i;
-  len:=Length(eList);
-  eListExt:=List([1..len], x->[eList[x], x]);
-  SetListExt:=Set(eListExt);
-  #
-  TheValue:="unset";
-  if Position(eList, TheValue)<>fail then
-    Error("An unclever bug");
-  fi;
-  ListIdx:=[];
-  for i in [1..len]
-  do
-    if TheValue<>SetListExt[i][1] then
-      TheValue:=SetListExt[i][1];
-      Add(ListIdx, SetListExt[i][2]);
-    fi;
-  od;
-  return ListIdx;
-end;
-
-
-
-
-
-BinomialStdvect_Increment:=function(n, k, eVect)
+InstallGlobalFunction(BinomialStdvect_Increment,
+function(n, k, eVect)
   local retVect, i, xy2, test;
   retVect:=[];
   for i in [1..k]
@@ -215,11 +90,11 @@ BinomialStdvect_Increment:=function(n, k, eVect)
     test:=true;
   fi;
   return rec(eVect:=retVect, test:=test);
-end;
+end);
 
 
-# Check if a matrix if of the form alpha * (V^t * V)
-IsRankOneMatrix:=function(SymMat)
+InstallGlobalFunction(IsRankOneMatrix,
+function(SymMat)
   local eRec, n, ListP, ListM, fMat, eCoeff, eVal, pos, i, V;
   eRec:=RemoveFractionMatrixPlusCoef(SymMat);
   n:=Length(eRec.TheMat);
@@ -273,12 +148,12 @@ IsRankOneMatrix:=function(SymMat)
     Error("We have a bug to resolve 2");
   fi;
   return rec(result:=true, coeff:=eCoeff, V:=V);
-end;
+end);
 
 
 
-
-PowerSet_Increment:=function(n, k, eVect)
+InstallGlobalFunction(PowerSet_Increment,
+function(n, k, eVect)
   local retVect, i, FirstValue;
   retVect:=[];
   for i in [1..n]
@@ -303,71 +178,13 @@ PowerSet_Increment:=function(n, k, eVect)
     retVect[i]:=1;
   od;
   return rec(eVect:=retVect, test:=true);
-end;
-
-
-SAGE_NullspaceMat:=function(eMat)
-  local FileIn, FileOut, output, IsFirst, eLine, eVal, nbRow, nbCol, TheRes, TheCommand;
-  FileIn:=Filename(POLYHEDRAL_tmpdir, "Nullspace.sage");
-  FileOut:=Filename(POLYHEDRAL_tmpdir, "Nullspace.output");
-  output:=OutputTextFile(FileIn, true);
-  nbRow:=Length(eMat);
-  nbCol:=Length(eMat[1]);
-  AppendTo(output, "A = MatrixSpace(RationalField(),", nbRow, ",", nbCol, ")");
-  AppendTo(output, "([");
-  IsFirst:=true;
-  for eLine in eMat
-  do
-    for eVal in eLine
-    do
-      if IsFirst=false then
-        AppendTo(output, ",");
-      fi;
-      IsFirst:=false;
-      AppendTo(output, eVal);
-    od;
-  od;
-  AppendTo(output, "])\n");
-  AppendTo(output, "eKer = A.kernel()\n");
-  AppendTo(output, "eKerB = eKer.basis()\n");
-  AppendTo(output, "dim=len(eKerB)\n");
-  AppendTo(output, "strO=\"return [\"\n");
-  AppendTo(output, "for i in range(dim):\n");
-  AppendTo(output, "    if (i>0):\n");
-  AppendTo(output, "        strO += \",\"\n");
-  AppendTo(output, "    strO += \"[\"\n");
-  AppendTo(output, "    for j in range(", nbRow, "):\n");
-  AppendTo(output, "        if (j>0):\n");
-  AppendTo(output, "            strO += \",\"\n");
-  AppendTo(output, "        strO += str(eKerB[i][j])\n");
-  AppendTo(output, "    strO += \"]\"\n");
-  AppendTo(output, "strO += \"];\"\n");
-  AppendTo(output, "print strO\n");
-  CloseStream(output);
-  #
-  TheCommand:=Concatenation("sage ", FileIn, " > ", FileOut);
-  Exec(TheCommand);
-  TheRes:=ReadAsFunction(FileOut)();
-  RemoveFileIfExist(FileOut);
-  RemoveFileIfExist(FileIn);
-  return List(TheRes, RemoveFraction);
-end;
-
-
-NullspaceMatMultiProg:=function(eMat)
-  local nbRowMin, nbColMin;
-  nbRowMin:=700;
-  nbColMin:=700;
-  if Length(eMat) > nbRowMin and Length(eMat[1]) > nbColMin then
-    return SAGE_NullspaceMat(eMat);
-  fi;
-  return NullspaceMat(eMat);
-end;
+end);
 
 
 
 # this procedure Build the Set:  Seto x Seto x .... x Seto
-BuildSet:=function(n, Seto)
+InstallGlobalFunction(BuildSet,
+function(n, Seto)
   local DO, i, iCol, U, V,C, eVal;
   DO:=[[]];
   for iCol in [1..n]
@@ -385,118 +202,14 @@ BuildSet:=function(n, Seto)
     od;
   od;
   return DO;
-end;
-
-
-
-Pari_WriteMatrix:=function(output, TheMat)
-  local nbLine, iLine, nbCol, iCol;
-  AppendTo(output, "[");
-  nbLine:=Length(TheMat);
-  for iLine in [1..nbLine]
-  do
-    nbCol:=Length(TheMat[iLine]);
-    for iCol in [1..nbCol]
-    do
-      if iCol>1 then
-        AppendTo(output, ",");
-      fi;
-      AppendTo(output, TheMat[iLine][iCol]);
-    od;
-    if iLine<nbLine then
-      AppendTo(output, ";\n");
-    fi;
-  od;
-  AppendTo(output, "]");
-end;
-
-PariB_WriteMatrix:=function(output, TheMat)
-  local nbLine, iLine, nbCol, iCol;
-  AppendTo(output, "[");
-  nbLine:=Length(TheMat);
-  for iLine in [1..nbLine]
-  do
-    nbCol:=Length(TheMat[iLine]);
-    AppendTo(output, "[");
-    for iCol in [1..nbCol]
-    do
-      if iCol>1 then
-        AppendTo(output, ",");
-      fi;
-      AppendTo(output, TheMat[iLine][iCol]);
-    od;
-    AppendTo(output, "]");
-    if iLine<nbLine then
-      AppendTo(output, ",\n");
-    fi;
-  od;
-  AppendTo(output, "]");
-end;
-
-
-PariC_WriteListMatrix:=function(output, NameListMat, ListMat)
-  local nbMat, iMat, eMat, nbLine, iLine, eLine, nbCol, iCol;
-  nbMat:=Length(ListMat);
-  for iMat in [1..nbMat]
-  do
-    eMat:=ListMat[iMat];
-    nbLine:=Length(eMat);
-    AppendTo(output, "U", iMat, "= [");
-    for iLine in [1..nbLine]
-    do
-      AppendTo(output, "[");
-      eLine:=eMat[iLine];
-      nbCol:=Length(eLine);
-      for iCol in [1..nbCol]
-      do
-        AppendTo(output, eLine[iCol]);
-        if iCol<nbCol then
-          AppendTo(output, ",");
-        fi;
-      od;
-      AppendTo(output, "]");
-      if iLine<nbLine then
-        AppendTo(output, ",");
-      fi;
-    od;
-    AppendTo(output, "]\n");
-  od;
-  AppendTo(output, NameListMat, " = [");
-  for iMat in [1..nbMat]
-  do
-    AppendTo(output, "U", iMat);
-    if iMat<nbMat then
-      AppendTo(output, ",");
-    fi;
-  od;
-  AppendTo(output, "]");
-end;
+end);
 
 
 
 
 
-Matrix_GetNNZ_L1norm:=function(eMat)
-  local eNorm_L1, eNNZ, eLine, eVal;
-  eNorm_L1:=0;
-  eNNZ:=0;
-  for eLine in eMat
-  do
-    for eVal in eLine
-    do
-      eNorm_L1:=eNorm_L1 + AbsInt(eVal);
-      if eVal<>0 then
-        eNNZ:=eNNZ+1;
-      fi;
-    od;
-  od;
-  Print([eNorm_L1, eNNZ]);
-  return [eNorm_L1, eNNZ];
-end;
-
-
-
-ExpressPairsAsCycle:=function(ListPair)
+InstallGlobalFunction(ExpressPairsAsCycle,
+function(ListPair)
   local nbPair, ListStatus, ThePoint, RetList, jPair, iPair;
   nbPair:=Length(ListPair);
   ListStatus:=ListWithIdenticalEntries(nbPair,0);
@@ -513,11 +226,12 @@ ExpressPairsAsCycle:=function(ListPair)
     ListStatus[jPair]:=1;
   od;
   return RetList;
-end;
+end);
 
 
 
-UndoCollected:=function(ListColl)
+InstallGlobalFunction(UndoCollected,
+function(ListColl)
   local TheRet, eColl, i;
   TheRet:=[];
   for eColl in ListColl
@@ -528,32 +242,13 @@ UndoCollected:=function(ListColl)
     od;
   od;
   return TheRet;
-end;
+end);
 
 
 
 
-Pari_WriteVector:=function(output, eVect)
-  local iCol, nbCol;
-  AppendTo(output, "[");
-  nbCol:=Length(eVect);
-  for iCol in [1..nbCol]
-  do
-    if iCol>1 then
-      AppendTo(output, ",");
-    fi;
-    AppendTo(output, eVect[iCol]);
-  od;
-  AppendTo(output, "]");
-end;
-
-
-
-
-
-
-
-GetMatrixCoset:=function(eMat)
+InstallGlobalFunction(GetMatrixCoset,
+function(eMat)
   local eDet, TheDim, ListCoset, eMatBas, ListStatus, FuncInsert, IsFinished, nbCos, iCos, i, eNewVect;
   eDet:=AbsInt(DeterminantMat(eMat));
   TheDim:=Length(eMat);
@@ -595,12 +290,12 @@ GetMatrixCoset:=function(eMat)
     Error("Error in coset determination");
   fi;
   return ListCoset;
-end;
+end);
 
 
 
-# this procedure Build the Set:  Seto1 x Seto2 x .... x SetoN
-BuildSetMultiple:=function(ListSeto)
+InstallGlobalFunction(BuildSetMultiple,
+function(ListSeto)
   local DO, eSet, C, eC, eVal, U;
   DO:=[[]];
   for eSet in ListSeto
@@ -618,21 +313,12 @@ BuildSetMultiple:=function(ListSeto)
     od;
   od;
   return DO;
-end;
+end);
 
 
-BuildSetMultipleB:=function(ListSiz)
-  local ListS, eSiz;
-  ListS:=[];
-  for eSiz in ListSiz
-  do
-    Add(ListS, [1..eSiz]);
-  od;
-  return BuildSetMultiple(ListS);
-end;
 
-
-SetSelect:=function(eList)
+InstallGlobalFunction(SetSelect,
+function(eList)
   local eReordPerm, ePermInv, eListReord, TheSet, TheSelect, len, i, eElt, iBis, ThePrev, eSet, TheListSets;
   eReordPerm:=SortingPerm(eList);
   ePermInv:=eReordPerm^(-1);
@@ -667,15 +353,19 @@ SetSelect:=function(eList)
     Add(TheListSets, eSet);
   fi;
   return rec(TheSet:=TheSet, TheSelect:=TheSelect, TheListSets:=TheListSets);
-end;
+end);
 
 
 
-Isobarycenter:=function(EXT)
+InstallGlobalFunction(Isobarycenter,
+function(EXT)
   return Sum(EXT)/Length(EXT);
-end;
+end);
 
-AntipodalDecomposition:=function(EXT)
+
+
+InstallGlobalFunction(AntipodalDecomposition,
+function(EXT)
   local eIso, len, ListPair, i, eEXT, fEXT, j;
   eIso:=Isobarycenter(EXT);
   len:=Length(EXT);
@@ -690,29 +380,40 @@ AntipodalDecomposition:=function(EXT)
     fi;
   od;
   return ListPair;
-end;
+end);
 
 
 
-VectorMod1:=function(eVect)
+InstallGlobalFunction(VectorMod1,
+function(eVect)
   return List(eVect, FractionMod1);
-end;
+end);
 
-PeriodicVectorMod1:=function(eVect)
+
+
+InstallGlobalFunction(PeriodicVectorMod1,
+function(eVect)
   return Concatenation([1], List(eVect{[2..Length(eVect)]}, FractionMod1));
-end;
+end);
 
-PeriodicOnClassesMod1:=function(x, eElt)
+
+
+InstallGlobalFunction(PeriodicOnClassesMod1,
+function(x, eElt)
   return PeriodicVectorMod1(x*eElt);
-end;
+end);
 
-OnClassesMod1:=function(eClass, eMat)
+
+
+InstallGlobalFunction(OnClassesMod1,
+function(eClass, eMat)
   return VectorMod1(eClass*eMat);
-end;
+end);
 
 
 
-IsVectorRational:=function(eVect)
+InstallGlobalFunction(IsVectorRational,
+function(eVect)
   local eX;
   for eX in eVect
   do
@@ -721,9 +422,12 @@ IsVectorRational:=function(eVect)
     fi;
   od;
   return true;
-end;
+end);
 
-IsMatrixRational:=function(eMat)
+
+
+InstallGlobalFunction(IsMatrixRational,
+function(eMat)
   local eVect;
   for eVect in eMat
   do
@@ -732,99 +436,14 @@ IsMatrixRational:=function(eMat)
     fi;
   od;
   return true;
-end;
-
-IsMatrixFamilyRational:=function(ListMat)
-  local eMat;
-  for eMat in ListMat
-  do
-    if IsMatrixRational(eMat)=false then
-      return false;
-    fi;
-  od;
-  return true;
-end;
-
-
-
-
-GetFunctionSetRational:=function()
-  local IsPositive, IsStrictlyPositive, IsNegative, IsStrictlyNegative;
-  IsPositive:=function(x)
-    return x>=0;
-  end;
-  IsStrictlyPositive:=function(x)
-    return x>0;
-  end;
-  IsNegative:=function(x)
-    return x<=0;
-  end;
-  IsStrictlyNegative:=function(x)
-    return x<0;
-  end;
-  return rec(nature:="rational", IsPositive:=IsPositive, IsStrictlyPositive:=IsStrictlyPositive, IsNegative:=IsNegative, IsStrictlyNegative:=IsStrictlyNegative);
-end;
-
-
-GetArithmeticityMatrix_General_Code:=function(EXT)
-  local Nval;
-#  Print(NullMat(5));
-  if IsMatrixRational(EXT)=true then
-    return GetFunctionSetRational();
-  fi;
-  Error("Please program the function here");
-end;
-
-
-GetArithmeticityMatrix:=function(EXT)
-  local Nval;
-  if IsMatrixRational(EXT)=true then
-    return GetFunctionSetRational();
-  fi;
-  Error("Please program the function here");
-end;
-
-
-
-GetArithmeticityVector_General_Code:=function(EXT)
-  local Nval;
-  if IsVectorRational(EXT)=true then
-    return GetFunctionSetRational();
-  fi;
-  Error("Please program the function here");
-end;
-
-
-GetArithmeticityVector:=function(EXT)
-  local Nval;
-  if IsVectorRational(EXT)=true then
-    return GetFunctionSetRational();
-  fi;
-  Error("Please program the function here");
-end;
-
-
-GetArithmeticityMatrixVector_General_Code:=function(EXT, eVect)
-  local Nval;
-  if IsMatrixRational(EXT)=true and IsVectorRational(eVect)=true then
-    return GetFunctionSetRational();
-  fi;
-  Error("Please program the function here");
-end;
-
-GetArithmeticityMatrixVector:=function(EXT, eVect)
-  local Nval;
-  if IsMatrixRational(EXT)=true and IsVectorRational(eVect)=true then
-    return GetFunctionSetRational();
-  fi;
-  Error("Please program the function here");
-end;
+end);
 
 
 
 
 
-GetCollectedList:=function(AppliSet, FCT)
+InstallGlobalFunction(GetCollectedList,
+function(AppliSet, FCT)
   local RetListKeys, RetListOcc, ListKeys, ListOcc, RetListSizes, FuncInsert, i, eKey, pos, g, TheCollected;
   ListKeys:=[];
   ListOcc:=[];
@@ -845,29 +464,12 @@ GetCollectedList:=function(AppliSet, FCT)
   RetListSizes:=List(RetListOcc, Length);
   TheCollected:=List([1..Length(ListKeys)], x->[RetListKeys[x], RetListSizes[x]]);
   return rec(ListKeys:=RetListKeys, ListOcc:=RetListOcc, ListSizes:=RetListSizes, TheCollected:=TheCollected);
-end;
+end);
 
 
 
-SetAutGroupCanonicalLabellingPerso:=function(gamma)
-  local nbTry;
-  nbTry:=0;
-  while(true)
-  do
-    nbTry:=nbTry+1;
-    SetAutGroupCanonicalLabelling(gamma);
-    if gamma.canonicalLabelling=fail then
-      Unbind(gamma.canonicalLabelling);
-      Print("We have ", nbTry, " failure in canonicalization procedure\n");
-    else
-      break;
-    fi;
-  od;
-end;
-
-
-
-TestConicness:=function(FAC)
+InstallGlobalFunction(TestConicness,
+function(FAC)
   local eVal;
   for eVal in FAC
   do
@@ -876,16 +478,18 @@ TestConicness:=function(FAC)
     fi;
   od;
   return true;
-end;
+end);
 
-FacetOfInfinity:=function(n)
+InstallGlobalFunction(FacetOfInfinity,
+function(n)
   local VZ;
   VZ:=ListWithIdenticalEntries(n, 0);
   VZ[1]:=1;
   return VZ;
-end;
+end);
 
-IsIntegralVector:=function(eVect)
+InstallGlobalFunction(IsIntegralVector,
+function(eVect)
   local eVal;
   for eVal in eVect
   do
@@ -894,11 +498,12 @@ IsIntegralVector:=function(eVect)
     fi;
   od;
   return true;
-end;
+end);
 
 
 
-IsIntegralMat:=function(eMat)
+InstallGlobalFunction(IsIntegralMat,
+function(eMat)
   local eLine, eVal;
   for eLine in eMat
   do
@@ -910,13 +515,14 @@ IsIntegralMat:=function(eMat)
     od;
   od;
   return true;
-end;
+end);
 
 
 
 
 
-IsProportionalVector:=function(eVect1, eVect2)
+InstallGlobalFunction(IsProportionalVector,
+function(eVect1, eVect2)
   local n, eSet1, eSet2, eSetTest;
   n:=Length(eVect1);
   if n<>Length(eVect2) then
@@ -928,14 +534,12 @@ IsProportionalVector:=function(eVect1, eVect2)
     return false;
   fi;
   eSetTest:=Set(List(eSet1, x->eVect1[x]/eVect2[x]));
-  if Length(eSetTest)<>1 then
-    return false;
-  fi;
-  return true;
-end;
+  return Length(eSetTest)=1;
+end);
 
 
-TestForRepetition:=function(ListVect)
+InstallGlobalFunction(TestForRepetition,
+function(ListVect)
   local i, j, nbVect, n, LIdx1, LIdx2, ListQuot;
   nbVect:=Length(ListVect);
   n:=Length(ListVect[1]);
@@ -960,46 +564,30 @@ TestForRepetition:=function(ListVect)
     od;
   od;
   return false;
-end;
+end);
 
 
 
-CorrectedRankMat:=function(Mat);
+InstallGlobalFunction(ZeroRankMat,
+function(Mat);
   if Length(Mat)=0 then
     return 0;
   else
     return RankMat(Mat);
   fi;
-end;
+end);
 
 
 
-
-
-
-ApproximationVector:=function(eVect, Lev)
+InstallGlobalFunction(ApproximationVector,
+function(eVect, Lev)
   return List(Lev*eVect, NearestInteger)/Lev;
-end;
+end);
 
 
 
-
-RightCosetIntersection:=function(G, Rcoset)
-  local eX, IeX, H, eInt, eList;
-  eX:=Representative(Rcoset);
-  IeX:=eX^(-1);
-  H:=ActingDomain(Rcoset);
-  eInt:=Intersection(H, G);
-  eList:=Filtered(RightTransversal(G, eInt), y->y*IeX in H);
-  if Length(eList)=0 then
-    return [];
-  else
-    return RightCoset(eInt, eList[1]);
-  fi;
-end;
-
-
-GetDate:=function()
+InstallGlobalFunction(GetDate,
+function()
   local FileD1, FileD2, reply;
   FileD1:=Filename(POLYHEDRAL_tmpdir,"DateFile1");
   FileD2:=Filename(POLYHEDRAL_tmpdir,"DateFile2");
@@ -1009,91 +597,58 @@ GetDate:=function()
   RemoveFile(FileD1);
   RemoveFile(FileD2);
   return reply;
-end;
-
-
-#
-# With this call we get trully random input.
-#
-RandomScrambling:=function()
-  local eNB, eSum, i;
-  eNB:=GetDate() mod 10000;
-  eSum:=0;
-  for i in [1..eNB]
-  do
-    eSum:=eSum + Random([1..10]);
-  od;
-  Print("RandomScrambling eSum=", eSum, "\n");
-end;
+end);
 
 
 
-
-
-
-RandomSubset:=function(eSet, k)
+InstallGlobalFunction(RandomSubset,
+function(eSet, k)
   local i, sSet, V, h;
   sSet:=[];
   V:=ListWithIdenticalEntries(Length(eSet), 1);
-  for i in [1..k]
+  len:=0;
+  while(true)
   do
-    while(true)
-    do
-      h:=Random([1..Length(eSet)]);
-      if V[h]=1 then
-        V[h]:=0;
-        Add(sSet, eSet[h]);
-        break;
+    h:=Random([1..Length(eSet)]);
+    if V[h]=1 then
+      V[h]:=0;
+      Add(sSet, eSet[h]);
+      len:=len+1;
+      if len=k then
+          return Set(sSet);
       fi;
-    od;
+    fi;
   od;
-  return Set(sSet);
-end;
-
-
-CanonicalizeNullspace:=function(eMat)
-  local k, len, eSub, eSubMat;
-  k:=Length(eMat);
-  len:=Length(eMat[1]);
-  eSub:=RandomSubset([1..len],k);
-  eSubMat:=List(eMat, x->x{eSub});
-  return List(Inverse(eSubMat) * eMat, RemoveFraction);
-end;
+end);
 
 
 
-
-WriteVector:=function(outputarg, eLine)
+InstallGlobalFunction(WriteVector,
+function(outputarg, eLine)
   local eVal;
   for eVal in eLine
   do
     WriteAll(outputarg, Concatenation(" ", String(eVal)));
   od;
   WriteAll(outputarg, "\n");
-end;
-
-WriteVectorComma:=function(outputarg, eLine)
-  local eVal, len, i;
-  len:=Length(eLine);
-  WriteAll(outputarg, String(eLine[1]));
-  for i in [2..len]
-  do
-    WriteAll(outputarg, Concatenation(", ", String(eLine[i])));
-  od;
-  WriteAll(outputarg, "\n");
-end;
+end);
 
 
 
-WriteMatrix:=function(outputarg, eMat)
+
+InstallGlobalFunction(WriteMatrix,
+function(outputarg, eMat)
   local eEXT;
   for eEXT in eMat
   do
     WriteVector(outputarg, eEXT);
   od;
-end;
+end);
 
-CPP_WriteMatrix:=function(output, eMat)
+
+
+InstallGlobalFunction(CPP_WriteMatrix,
+function(output, eMat)
   local nbRow, nbCol, iRow, iCol;
   nbRow:=Length(eMat);
   nbCol:=Length(eMat[1]);
@@ -1106,54 +661,12 @@ CPP_WriteMatrix:=function(output, eMat)
     od;
     AppendTo(output, "\n");
   od;
-end;
-
-
-CheckLLL_cppImplementation:=function(GramMat)
-  local FileIn, FileOut, output, TheCommand, recLLL, res, TheRemainder, TheTrans;
-  FileIn:=Filename(POLYHEDRAL_tmpdir, "LAT_lll.in");
-  FileOut:=Filename(POLYHEDRAL_tmpdir, "LAT_lll.out");
-  output:=OutputTextFile(FileIn, true);
-  CPP_WriteMatrix(output, GramMat);
-  CloseStream(output);
-  TheCommand:=Concatenation(FileLattLll, " ", FileIn, " ", FileOut);
-  Exec(TheCommand);
-  recLLL:=ReadAsFunction(FileOut)();
-  RemoveFileIfExist(FileIn);
-  RemoveFileIfExist(FileOut);
-  #
-  res:=LLLReducedGramMat(GramMat);
-  TheRemainder:=res.remainder;
-  TheTrans:=res.transformation;
-  if TheRemainder<>recLLL.GramMat or TheTrans<>recLLL.Pmat then
-    Error("Find inconsistency for LLL between GAP and CPP versions (supposed to be the same)");
-  fi;
-end;
+end);
 
 
 
-
-CddOutput:=function(Filename, Vect)
-  local eVal, eV, output;
-  output:=OutputTextFile(Filename, true);;
-  for eV in Vect
-  do
-    for eVal in eV
-    do
-      AppendTo(output, " ", eVal);
-    od;
-    AppendTo(output, "\n");
-  od;
-  CloseStream(output);
-end;
-
-
-
-
-
-
-
-RowReduction:=function(arg)
+InstallGlobalFunction(RowReduction,
+function(arg)
   local MatrixWork, rankMatrixWork, PreSelect, Irr, rank, pos, TE, SelectSet;
   if IsBound(arg[4]) then
     Error("Too many argument to this function");
@@ -1201,9 +714,12 @@ RowReduction:=function(arg)
     pos:=pos+1;
   od;
   return rec(EXT:=Irr, Select:=SelectSet);
-end;
+end);
 
-ColumnReduction:=function(arg)
+
+
+InstallGlobalFunction(ColumnReduction,
+function(arg)
   local MatrixWork, rankMatrixWork, PreSelect, rep;
   if IsBound(arg[4]) then
     Error("Too many argument to this function");
@@ -1224,10 +740,12 @@ ColumnReduction:=function(arg)
   fi;
   rep:=RowReduction(TransposedMat(MatrixWork), rankMatrixWork, PreSelect);
   return rec(EXT:=TransposedMat(rep.EXT), Select:=rep.Select);
-end;
+end);
 
 
-ColumnReductionExten:=function(EXT)
+
+InstallGlobalFunction(ColumnReductionExten,
+function(EXT)
   local eRec, eRecRow, EXTproj, EXTredProj, eMatBack, NSP;
   eRec:=ColumnReduction(EXT);
   eRecRow:=RowReduction(EXT);
@@ -1236,11 +754,12 @@ ColumnReductionExten:=function(EXT)
   eMatBack:=Inverse(EXTredProj)*EXTproj;
   NSP:=NullspaceMat(TransposedMat(EXT));
   return rec(EXT:=eRec.EXT, Select:=eRec.Select, eMatBack:=eMatBack, NSP:=NSP);
-end;
+end);
 
 
 
-TranslateElement:=function(eElt, LSET, Action)
+InstallGlobalFunction(TranslateElement,
+function(eElt, LSET, Action)
   local eList, iElt, Pos;
   eList:=[];
   for iElt in [1..Length(LSET)]
@@ -1253,9 +772,12 @@ TranslateElement:=function(eElt, LSET, Action)
     Add(eList, Pos);
   od;
   return eList;
-end;
+end);
 
-GcdVector:=function(TheVector)
+
+
+InstallGlobalFunction(GcdVector,
+function(TheVector)
   local eVal, TheVectorRed, LSred, LS1, ListCoef;
   if Length(TheVector)=1 then
     eVal:=TheVector[1];
@@ -1272,9 +794,12 @@ GcdVector:=function(TheVector)
   LS1:=Gcdex(TheVector[1], LSred.TheGcd);
   ListCoef:=Concatenation([LS1.coeff1], LS1.coeff2*LSred.ListCoef);
   return rec(TheGcd:=LS1.gcd, ListCoef:=ListCoef);
-end;
+end);
 
-GetZbasis:=function(ListElements)
+
+
+InstallGlobalFunction(GetZbasis,
+function(ListElements)
   local TheDim, ListEqua, TheBasis, InvMatrix, eSet, GetOneBasis, ComputeSpeedingElements, FuncInsert, eElt, eEltRed, eSol, eLine, TheMult, DoCheck;
   if Length(ListElements)=0 then
     Print("|ListElements|=", Length(ListElements), "\n");
@@ -1379,31 +904,22 @@ GetZbasis:=function(ListElements)
     od;
   fi;
   return TheBasis;
-end;
+end);
 
-SaturationDeterminant:=function(ListVect)
-  local n, eBasis, NSP, TotalBasis, ListSol, eRedMat;
-  n:=Length(ListVect[1]);
-  eBasis:=GetZbasis(ListVect);
-  if RankMat(eBasis)=n then
-    return DeterminantMat(eBasis);
-  fi;
-  NSP:=NullspaceIntMat(TransposedMat(ListVect));
-  TotalBasis:=NullspaceIntMat(TransposedMat(NSP));
-  ListSol:=List(ListVect, x->SolutionMat(TotalBasis, x));
-  eRedMat:=BaseIntMat(ListSol);
-  return DeterminantMat(eRedMat);
-end;
 
-TranslateGroup:=function(GRP, LSET, Action)
+
+InstallGlobalFunction(TranslateGroup,
+function(GRP, LSET, Action)
   if Order(GRP)=1 then
     return Group(());
   fi;
   return Group(List(GeneratorsOfGroup(GRP), x->PermList(TranslateElement(x, LSET, Action))));
-end;
+end);
 
 
-TranslateGroupPlusHomomorphism:=function(GRP, LSET, Action)
+
+InstallGlobalFunction(TranslateGroupPlusHomomorphism,
+function(GRP, LSET, Action)
   local LGen, GenNew, GrpNew, phi;
   if Order(GRP)=1 then
     return Group(());
@@ -1413,7 +929,7 @@ TranslateGroupPlusHomomorphism:=function(GRP, LSET, Action)
   GrpNew:=Group(GenNew);
   phi:=GroupHomomorphismByImagesNC(GRP, GrpNew, LGen, GenNew);
   return rec(GRP:=GrpNew, phi:=phi);
-end;
+end);
 
 
 
@@ -1422,7 +938,8 @@ end;
 # this procedure either returns false if the graph are not isomorphic or
 # the list [.....] where the element in i-th position is the position of
 # the i-th vertex of Graph1 in Graph2
-IsIsomorphicGraphDutourVersion:=function(Graph1, Graph2)
+InstallGlobalFunction(IsIsomorphicGraphDutourVersion,
+function(Graph1, Graph2)
   local g1, g2, g;
   if IsIsomorphicGraph(Graph1, Graph2)=false then
     return false;
@@ -1432,12 +949,13 @@ IsIsomorphicGraphDutourVersion:=function(Graph1, Graph2)
     g:=g1^(-1)*g2;
     return List([1..Graph1.order], x->OnPoints(x, g));
   fi;
-end;
+end);
 
 #
 #
 # Select the element of Vect whose set of values belongs to ValueSet
-SelectValuedVect:=function(Vect, ValueSet)
+InstallGlobalFunction(SelectValuedVect,
+function(Vect, ValueSet)
   local Selected, eVect;
   Selected:=[];
   for eVect in Vect
@@ -1447,10 +965,12 @@ SelectValuedVect:=function(Vect, ValueSet)
     fi;
   od;
   return Selected;
-end;
+end);
 
 
-FindTransformation:=function(ListVert1, ListVert2, eGen)
+
+InstallGlobalFunction(FindTransformation,
+function(ListVert1, ListVert2, eGen)
   local eMat1, eMat2, iVert, jVert, rnk, Irr1, Irr2, rank, pos, TE, TheMat, test1, test2;
   eMat1:=[];
   eMat2:=[];
@@ -1496,7 +1016,7 @@ FindTransformation:=function(ListVert1, ListVert2, eGen)
     return fail;
   fi;
   return TheMat;
-end;
+end);
 
 
 
@@ -1506,7 +1026,8 @@ end;
 #
 # this procedure work with either all first coordinate equal to 0
 # or all first coordinate equal to 1.
-TranslateToMatrixGroup:=function(EXT, GrpEXT)
+InstallGlobalFunction(TranslateToMatrixGroup,
+function(EXT, GrpEXT)
   local Tconic, Dimension, FuncPermToMatrix, eGen, ListGeneratorMatrixGroup, MatrixElt;
   Tconic:=TestConicness(EXT);
   Print("Tconic=", Tconic, "\n");
@@ -1525,18 +1046,12 @@ TranslateToMatrixGroup:=function(EXT, GrpEXT)
     return Group([IdentityMat(Length(EXT))]);
   fi;
   return Group(ListGeneratorMatrixGroup);
-end;
+end);
 
 
 
-
-
-
-
-
-
-
-SkeletonGraphDirect:=function(EXT, FAC)
+InstallGlobalFunction(SkeletonGraphDirect,
+function(EXT, FAC)
   local Gra, DimAdj, iEXT, jEXT, Mat, eFac;
   Gra:=NullGraph(Group(()), Length(EXT));
   if TestConicness(FAC)=true then
@@ -1555,35 +1070,20 @@ SkeletonGraphDirect:=function(EXT, FAC)
           Add(Mat, eFac);
         fi;
       od;
-      if DimAdj=CorrectedRankMat(Mat) then
+      if DimAdj=ZeroRankMat(Mat) then
         AddEdgeOrbit(Gra, [iEXT,jEXT]);
         AddEdgeOrbit(Gra, [jEXT,iEXT]);
       fi;
     od;
   od;
   return Gra;
-end;
+end);
 
 
 
 
-
-
-
-
-
-#
-# select the set of coordinates in SET
-ProjectingCone:=function(OBJ, SET)
-  return List(OBJ, x->x{SET});
-end;
-
-
-
-
-
-
-TranslateGroupExtToFac:=function(GroupExt, EXT, FAC)
+InstallGlobalFunction(TranslateGroupExtToFac,
+function(GroupExt, EXT, FAC)
   local ListDesc, eFac, ListInc, iExt;
   ListDesc:=[];
   for eFac in FAC
@@ -1591,97 +1091,22 @@ TranslateGroupExtToFac:=function(GroupExt, EXT, FAC)
     Add(ListDesc, Filtered([1..Length(EXT)], x->EXT[iExt]*eFac=0));
   od;
   return TranslateGroup(GroupExt, ListDesc, OnSets);
-end;
+end);
 
 
-
-
-
-
-
-
-
-GraphBySubgraph:=function(Graph, SubGraph)
-  local nba, A, i, j, eVert;
-  nba:=Graph.order+1;
-  A:=NullGraph(Group(()), nba);
-  for i in [1..nba-1]
-  do
-    for j in [1..nba-1]
-    do
-      if IsEdge(Graph,[i,j])=true then
-        AddEdgeOrbit(A, [i,j]);
-      fi;
-    od;
-  od;
-  for eVert in SubGraph
-  do
-    AddEdgeOrbit(A, [eVert, nba]);
-    AddEdgeOrbit(A, [nba, eVert]);
-  od;
-  return A;
-end;
-
-
-
-#
-#
-#
-# Test if two subgraphs are isomorph under the group of Graph
-TestIsomorphySubGraph:=function(Graph, SubGraph1, SubGraph2)
-  local nba, A, B, i, j, eVert;
-  nba:=Graph.order+1;
-  A:=NullGraph(Group(()), nba);
-  B:=NullGraph(Group(()), nba);
-  for i in [1..nba-1]
-  do
-    for j in [1..nba-1]
-    do
-      if IsEdge(Graph,[i,j])=true then
-	AddEdgeOrbit(A, [i,j]);
-	AddEdgeOrbit(B, [i,j]);
-      fi;
-    od;
-  od;
-  for eVert in SubGraph1
-  do
-    AddEdgeOrbit(A, [eVert, nba]);
-    AddEdgeOrbit(A, [nba, eVert]);
-  od;
-  for eVert in SubGraph2
-  do
-    AddEdgeOrbit(B, [eVert, nba]);
-    AddEdgeOrbit(B, [nba, eVert]);
-  od;
-  return IsIsomorphicGraph(A,B);
-end;
-
-
-
-
-
-
-PersoGroupMatrix:=function(ListGen, n)
+InstallGlobalFunction(PersoGroupMatrix,
+function(ListGen, n)
   if Length(ListGen)=0 then
     return Group(IdentityMat(n));
   else
     return Group(ListGen);
   fi;
-end;  
-
-
-PersoGroupPerm:=function(ListGen)
-  if Length(ListGen)=0 then
-    return Group(());
-  else
-    return Group(ListGen);
-  fi;
-end;
+end);
 
 
 
-
-SecondReduceGroupAction:=function(TheGroup, SmallSet)
+InstallGlobalFunction(SecondReduceGroupAction,
+function(TheGroup, SmallSet)
   local ListGens, eGen, ListPos;
   ListGens:=[];
   if Length(SmallSet)<>Length(Set(SmallSet)) then
@@ -1693,26 +1118,14 @@ SecondReduceGroupAction:=function(TheGroup, SmallSet)
     Add(ListGens, PermList(ListPos));
   od;
   return PersoGroupPerm(ListGens);
-end;
-
-SecondReduceGroupActionPlusHom:=function(TheGroup, SmallSet)
-  local SecondGRP, phi, ListGens, eGen, NewListGens;
-  NewListGens:=[];
-  ListGens:=GeneratorsOfGroup(TheGroup);
-  for eGen in ListGens
-  do
-    Add(NewListGens, PermList(List(SmallSet, x->Position(SmallSet, OnPoints(x, eGen)))));
-  od;
-  SecondGRP:=PersoGroupPerm(NewListGens);
-  phi:=GroupHomomorphismByImagesNC(TheGroup, SecondGRP, ListGens, NewListGens);
-  return rec(SecondGRP:=SecondGRP, phi:=phi);
-end;
+end);
 
 
 
 # we complete a suitable vector family to
 # a Z-spanning family of vectors
-SubspaceCompletion:=function(eBasis, n)
+InstallGlobalFunction(SubspaceCompletion,
+function(eBasis, n)
   local RSE, d, A1, A2, TheProd, A1bis, i, j, FullBasis, TheCompletion;
   RSE:=SmithNormalFormIntegerMatTransforms(eBasis);
   d:=Length(eBasis);
@@ -1747,27 +1160,27 @@ SubspaceCompletion:=function(eBasis, n)
   FullBasis:=Inverse(A1bis)*Inverse(A2);
   TheCompletion:=FullBasis{[d+1..n]};
   return TheCompletion;
-end;
+end);
 
 # Find an orthonormal basis to eBasis
-SubspaceCompletionRational:=function(eBasis, n)
+InstallGlobalFunction(SubspaceCompletionRational,
+function(eBasis, n)
   if Length(eBasis)=0 then
     return IdentityMat(n);
   fi;
   return NullspaceMat(TransposedMat(eBasis));
-end;
+end);
 
 
-CongrMap:=function(eMat)
+InstallGlobalFunction(CongrMap,
+function(eMat)
   return TransposedMat(Inverse(eMat));
-end;
+end);
 
 
 
-#
-#
-# test if the polytope is symmetric
-IsCentrallySymmetric:=function(EXT)
+InstallGlobalFunction(IsCentrallySymmetric,
+function(EXT)
   local eVert, eCent;
   eCent:=Sum(EXT)/Length(EXT);
   for eVert in EXT
@@ -1777,98 +1190,25 @@ IsCentrallySymmetric:=function(EXT)
     fi;
   od;
   return true;
-end;
-
-
-#
-#
-# this procedure either returns false if the graph are not isomorphic or
-# the list [.....] where the element in i-th position is the position of
-# the i-th vertex of Graph1 in Graph2
-IsIsomorphicGraphDutourVersion:=function(Graph1, Graph2)
-  local iVertex, ListMapping, g1, g2;
-  if IsIsomorphicGraph(Graph1, Graph2)=false then
-    return false;
-  else
-    ListMapping:=[];
-    g1:=Graph1.canonicalLabelling;
-    g2:=Graph2.canonicalLabelling;
-    g1:=g1^(-1);
-    for iVertex in [1..Graph1.order]
-    do
-      ListMapping[iVertex]:=OnPoints(OnPoints(iVertex, g1), g2);
-    od;
-    return ListMapping;
-  fi;
-end;
+end);
 
 
 
-
-
-OrderJordanHolderDecomposition:=function(Grp)
-  local LN, ListQuotientSequenceSubgroup, GRP;
-  ListQuotientSequenceSubgroup:=[];
-  GRP:=Grp;
-  while(Order(GRP)>1)
-  do
-    LN:=MaximalNormalSubgroups(GRP);
-    Add(ListQuotientSequenceSubgroup, Order(GRP)/Order(LN[1]));
-    GRP:=LN[1];
-  od;
-  return ListQuotientSequenceSubgroup;
-end;
-
-
-
-#
-#
-# a function for quotient group (valid for permutation groups)
-QuotientPermutationGroup:=function(Grp, NormalSubGroup)
-  local O, Gens, ListNewGen, PList, eElt, eGen, eO, jLin, Quotient, CanonicSurjection;
-  if IsNormal(Grp, NormalSubGroup)=false then
-    return false;
-  fi;
-  O:=Orbits(NormalSubGroup, Grp, OnRight);
-#  Print("Cosets found\n");
-  Gens:=GeneratorsOfGroup(Grp);
-  ListNewGen:=[];
-  for eGen in Gens
-  do
-    PList:=[];
-    for eO in O
-    do
-      eElt:=eO[1]*eGen;
-      for jLin in [1..Length(O)]
-      do
-        if eElt in O[jLin] then
-          Add(PList, jLin);
-        fi;
-      od;
-    od;
-    Add(ListNewGen, PermList(PList));
-  od;
-  Quotient:=Group(ListNewGen);
-  CanonicSurjection:=GroupHomomorphismByImages(Grp, Quotient, Gens, ListNewGen);
-  if Kernel(CanonicSurjection)<>NormalSubGroup then
-    Error("We have inconsistency in the quotient computation");
-  fi;
-  return rec(Classes:=ShallowCopy(O), Quotient:=Quotient, CanonicSurjection:=CanonicSurjection);
-end;
-
-__ProjectionFrame:=function(EXT)
+InstallGlobalFunction(ProjectionFrame,
+function(EXT)
   local rnk, EXTred;
   EXTred:=ShallowCopy(EXT);
   if TestConicness(EXTred) then
     Add(EXTred, FacetOfInfinity(Length(EXTred[1])) );
   fi;
   return ColumnReduction(EXTred, RankMat(EXTred)).Select;
-end;
+end);
 
 
 
 # return the largest integer p such that p^n <= C
-GetLowestPower:=function(n, C)
+InstallGlobalFunction(GetLowestPower,
+function(n, C)
   local p;
   if C < 1 then
     Error("We need C greater or equal to 1");
@@ -1881,9 +1221,12 @@ GetLowestPower:=function(n, C)
     fi;
     p:=p+1;
   od;
-end;
+end);
 
-GetPositionAntipodal:=function(ListVect, eVect)
+
+
+InstallGlobalFunction(GetPositionAntipodal,
+function(ListVect, eVect)
   local pos;
   pos:=Position(ListVect, eVect);
   if pos<>fail then
@@ -1894,26 +1237,12 @@ GetPositionAntipodal:=function(ListVect, eVect)
     return pos;
   fi;
   return fail;
-end;
-
-
-HilbertMatrix:=function(n)
-  local TheMat, i, j;
-  TheMat:=NullMat(n,n);
-  for i in [1..n]
-  do
-    for j in [1..n]
-    do
-      TheMat[i][j]:=1/(i+j-1);
-    od;
-  od;
-  return TheMat;
-end;
+end);
 
 
 
-
-GetListPermGens:=function(ListVect, ListMatrGens)
+InstallGlobalFunction(GetListPermGens,
+function(ListVect, ListMatrGens)
   local eSperm, ListPermGens, ListVectSet, ListVectRed, eMatrGen, ListVectImg, eNewPerm;
   eSperm:=SortingPerm(ListVect);
   ListPermGens:=[];
@@ -1932,12 +1261,13 @@ GetListPermGens:=function(ListVect, ListMatrGens)
     fi;
   od;
   return ListPermGens;
-end;
+end);
 
 
 # We use newton identities for converting the
 # symmetric identities into power sums.
-GetNewtonSums:=function(ListE, ThePowExpo)
+InstallGlobalFunction(GetNewtonSums,
+function(ListE, ThePowExpo)
   local ListPowSums, TheDeg, k, GetEvalue, eSum, j;
   ListPowSums:=[];
   TheDeg:=Length(ListE);
@@ -1962,14 +1292,18 @@ GetNewtonSums:=function(ListE, ThePowExpo)
     Add(ListPowSums, eSum);
   od;
   return ListPowSums;
-end;
+end);
 
-IsVectorIrreducible:=function(eVect)
+
+
+InstallGlobalFunction(IsVectorIrreducible,
+function(eVect)
   return GcdVector(eVect).TheGcd=1;
-end;
+end);
 
 
-__FindFacetInequalityGeneral:=function(EXT, ListIncidence, IsPos, RemoveFrac)
+InstallGlobalFunction(FindFacetInequalityGeneral,
+function(EXT, ListIncidence, IsPos, RemoveFrac)
   local ListV, NLE, NSP, NewNSP, IsPosRes, IsNegRes, eVert, V, TheDim, eScal;
   ListV:=EXT{ListIncidence};
   if TestConicness(EXT) then
@@ -2003,47 +1337,36 @@ __FindFacetInequalityGeneral:=function(EXT, ListIncidence, IsPos, RemoveFrac)
     NewNSP:=-NewNSP;
   fi;
   return rec(success:=true, eIneq:=NewNSP);
-end;
+end);
 
 
-__FindFacetInequalityAndTest:=function(EXT, ListIncidence)
+
+InstallGlobalFunction(FindFacetInequalityAndTest,
+function(EXT, ListIncidence)
   local IsPos, RemoveFrac;
   IsPos:=function(x)
     return x>0;
   end;
   RemoveFrac:=RemoveFraction;
-  return __FindFacetInequalityGeneral(EXT, ListIncidence, IsPos, RemoveFrac);
-end;
+  return FindFacetInequalityGeneral(EXT, ListIncidence, IsPos, RemoveFrac);
+end);
 
-__FindFacetInequality:=function(EXT, ListIncidence)
+
+
+InstallGlobalFunction(FindFacetInequality,
+function(EXT, ListIncidence)
   local IsPos, RemoveFrac, Nval;
   if IsMatrixRational(EXT)=true then
     IsPos:=function(x)
       return x>0;
     end;
     RemoveFrac:=RemoveFraction;
-    return __FindFacetInequalityGeneral(EXT, ListIncidence, IsPos, RemoveFrac).eIneq;
+    return FindFacetInequalityGeneral(EXT, ListIncidence, IsPos, RemoveFrac).eIneq;
   fi;
-end;
+end);
 
-RandomPolytopePoint:=function(EXT)
-  local siz, TheDim, eSumPt, eSum, eEXT, h, eInsidePt, ePrism;
-  siz:=10;
-  TheDim:=Length(EXT[1]);
-  eSumPt:=ListWithIdenticalEntries(TheDim,0);
-  eSum:=0;
-  for eEXT in EXT
-  do
-    h:=Random([0..siz]);
-    eSum:=eSum + h;
-    eSumPt:=eSumPt + h*eEXT;
-  od;
-  eInsidePt:=eSumPt/eSum;
-  return eInsidePt;
-end;
-
-
-GetIndexOfVectorFamily:=function(EXT)
+InstallGlobalFunction(GetIndexOfVectorFamily,
+function(EXT)
   local n, NSP, TotalBasis, ListSol;
   n:=Length(EXT[1]);
   if RankMat(EXT)=n then
@@ -2053,59 +1376,22 @@ GetIndexOfVectorFamily:=function(EXT)
   TotalBasis:=NullspaceIntMat(TransposedMat(NSP));
   ListSol:=List(EXT, x->SolutionMat(TotalBasis,x));
   return AbsInt(DeterminantMat(BaseIntMat(ListSol)));
-end;
-
-SYMPOL_PrintMatrixCppCode:=function(output, TitleMat, eMat)
-  local nbRow, nbCol, eRec, iRow, iCol;
-  nbRow:=Length(eMat);
-  nbCol:=Length(eMat[1]);
-  eRec:=RemoveFractionMatrixPlusCoef(eMat);
-  AppendTo(output, "template<typename T>\n");
-  AppendTo(output, "MyMatrix<T> ", TitleMat, "()\n");
-  AppendTo(output, "{\n");
-  AppendTo(output, "  T eDen=", eRec.TheMult, ";\n");
-  AppendTo(output, "  std::vector<std::vector<T>> ListListNum={");
-  for iRow in [1..nbRow]
-  do
-    if iRow>1 then
-      AppendTo(output, ",");
-    fi;
-    AppendTo(output, "{");
-    for iCol in [1..nbCol]
-    do
-      if iCol>1 then
-        AppendTo(output, ",");
-      fi;
-      AppendTo(output, eRec.TheMat[iRow][iCol]);
-    od;
-    AppendTo(output, "}");
-  od;
-  AppendTo(output, "};\n");
-  #
-  AppendTo(output, "  int nbRow=", nbRow, ";\n");
-  AppendTo(output, "  int nbCol=", nbCol, ";\n");
-  AppendTo(output, "  MyMatrix<T> RetMat(nbRow, nbCol);\n");
-  AppendTo(output, "  for (int iRow=0; iRow<nbRow; iRow++)\n");
-  AppendTo(output, "    for (int iCol=0; iCol<nbCol; iCol++) {\n");
-  AppendTo(output, "      T eVal=ListListNum[iRow][iCol];\n");
-  AppendTo(output, "      RetMat(iRow, iCol)=eVal/eDen;\n");
-  AppendTo(output, "    }\n");
-  AppendTo(output, "  return RetMat;\n");
-  AppendTo(output, "}\n");
-end;
+end);
 
 
 
-SYMPOL_PrintMatrix:=function(eFile, EXT)
+InstallGlobalFunction(SYMPOL_PrintMatrix,
+function(eFile, EXT)
   local output;
   output:=OutputTextFile(eFile, true);
   AppendTo(output, Length(EXT), " ", Length(EXT[1]), "\n");
   WriteMatrix(output, EXT);
   CloseStream(output);
-end;
+end);
 
 
-SYMPOL_PrintGroup:=function(eFile, n, GRP)
+InstallGlobalFunction(SYMPOL_PrintGroup,
+function(eFile, n, GRP)
   local ListGen, output, eGen, i, j;
   ListGen:=GeneratorsOfGroup(GRP);
   output:=OutputTextFile(eFile, true);
@@ -2120,51 +1406,12 @@ SYMPOL_PrintGroup:=function(eFile, n, GRP)
     AppendTo(output, "\n");
   od;
   CloseStream(output);
-end;
+end);
 
 
-# A n-simplex is a n-dimensional simplex defined by n+1 points
-# v(1), v(2), ...., v(n+1).
-# We define the differences w(1)=v(2) - v(1), ...., w(n)=v(n+1) - v(1).
-# We make the summation over all coordinate subsets in order to get the volume.
-# It is 
-# W = sum_S   (det(w)_S)^2
-# The volume is expressed as 
-#    V = sqrt(W) / Factorial(n!)
-# W is the entry returned by this function
-FuncSquareMvolume:=function(SetVector)
-  local m, Dim, LS, u, SQR, TrLS, Mat, eSet, l;
-  m:=Length(SetVector)-1;
-  Dim:=Length(SetVector[1]);
-  LS:=[];
-  for u in [2..Length(SetVector)]
-  do
-    AddSet(LS, SetVector[u]-SetVector[1]);
-  od;
-  SQR:=0;
-  TrLS:=TransposedMat(LS);
-  for eSet in Combinations([1..Dim], m)
-  do
-    Mat:=[];
-    for u in eSet
-    do
-      Add(Mat, TrLS[u]);
-    od;
-    l:=DeterminantMat(Mat);
-    SQR:=SQR+l*l;
-  od;
-  return SQR;
-end;
 
-
-PersoRankMat:=function(ListVect)
-  if Length(ListVect)=0 then
-    return 0;
-  fi;
-  return RankMat(ListVect);
-end;
-
-GetTranslationClasses:=function(eMat)
+InstallGlobalFunction(GetTranslationClasses,
+function(eMat)
   local n, ListGen, ListTransClass, ListStatus, FuncInsert, nbClass, IsFinished, iClass, eClass, eGen;
   n:=Length(eMat[1]);
   ListGen:=IdentityMat(n);
@@ -2205,9 +1452,12 @@ GetTranslationClasses:=function(eMat)
     Print("Now |ListTransClass|=", Length(ListTransClass), "\n");
   od;
   return ListTransClass;
-end;
+end);
 
-GetFunctionalityTranslationClasses:=function(TheLattice)
+
+
+InstallGlobalFunction(GetFunctionalityTranslationClasses,
+function(TheLattice)
   local ListTrans, nbTrans, GetPosition;
   ListTrans:=GetTranslationClasses(TheLattice);
   nbTrans:=Length(ListTrans);
@@ -2223,97 +1473,21 @@ GetFunctionalityTranslationClasses:=function(TheLattice)
     Error("Failed to find the iTrans");
   end;
   return rec(ListTrans:=ListTrans, GetPosition:=GetPosition);
-end;
+end);
 
-GetFunctionalityStandardLattice:=function(n,d)
-  local ListTrans, GetPosition;
-  ListTrans:=Set(BuildSet(n, [0..d-1]));
-  GetPosition:=function(eTrans)
-    local TheRes;
-    TheRes:=List(eTrans, x->x mod d);
-    return Position(ListTrans, TheRes);
+
+
+InstallGlobalFunction(DihedralCanonicalization,
+function(eList)
+  local MyDihedralGroup, len, GRP, O;
+  MyDihedralGroup:=function(n)
+    local eList1, eList2;
+    eList1:=Concatenation([2..n],[1]);
+    eList2:=Reversed([1..n]);
+    return Group([PermList(eList1), PermList(eList2)]);
   end;
-  return rec(ListTrans:=ListTrans, GetPosition:=GetPosition);
-end;
-
-
-
-
-
-MyDihedralGroup:=function(n)
-  local eList1, eList2;
-  eList1:=Concatenation([2..n],[1]);
-  eList2:=Reversed([1..n]);
-  return Group([PermList(eList1), PermList(eList2)]);
-end;
-
-
-
-DihedralCanonicalization:=function(eList)
-  local len, GRP, O;
   len:=Length(eList);
   GRP:=MyDihedralGroup(len);
   O:=Orbit(GRP, eList, Permuted);
   return Minimum(O);
-end;
-
-
-TransferToHexadecimal:=function(eVal)
-  local eValWork, eRetStr, ListLetter, res;
-  eValWork:=eVal;
-  eRetStr:="";
-  ListLetter:=["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"];
-  while(true)
-  do
-    if eValWork=0 then
-      break;
-    fi;
-    res:=eValWork mod 16;
-    eRetStr:=Concatenation(ListLetter[res+1], eRetStr);
-    eValWork:=(eValWork - res) / 16;
-  od;
-  return eRetStr;
-end;
-
-TransferFromHexadecimal:=function(estr)
-  local ListLetter, len, ThePow, TheSum, i, eLetter, pos;
-  ListLetter:=["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"];
-  len:=Length(estr);
-  ThePow:=1;
-  TheSum:=0;
-  for i in Reversed([1..len])
-  do
-    eLetter:=estr{[i]};
-    pos:=Position(ListLetter, eLetter);
-    TheSum:=TheSum + ThePow*(pos-1);
-    ThePow:=ThePow*16;
-  od;
-  return TheSum;
-end;
-
-
-
-GetBlockPermutationGroup:=function(GRP, ListPart)
-  local ListPermGens, eGen, eList, ePerm;
-  ListPermGens:=[];
-  for eGen in GeneratorsOfGroup(GRP)
-  do
-    eList:=List(ListPart, x->Position(ListPart, OnSets(x, eGen)));
-    ePerm:=PermList(eList);
-    Add(ListPermGens, ePerm);
-  od;
-  return Group(ListPermGens);
-end;
-
-GetAllPosition:=function(eVect, eVal)
-  local len, TheRet, i;
-  len:=Length(eVect);
-  TheRet:=[];
-  for i in [1..len]
-  do
-    if eVect[i]=eVal then
-      Add(TheRet, i);
-    fi;
-  od;
-  return TheRet;
-end;
+end);

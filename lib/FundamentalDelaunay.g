@@ -127,7 +127,7 @@ FindAdjacentDelaunayPolytope:=function(GramMat, EXT, ListInc)
   local iVert, eVert, IndependentBasis, CP, MinRadius, SelectedVertex, reply, i, n, ListGraverOptions, GetCenterRadius, IsImprovement, NewTestVert, TheRadius, TheFac, iCol, eVect;
   n:=Length(GramMat);
   IndependentBasis:=RowReduction(EXT{ListInc}, n).EXT;
-  TheFac:=__FindFacetInequality(EXT, ListInc);
+  TheFac:=FindFacetInequality(EXT, ListInc);
   iCol:=First([2..n+1], x->TheFac[x]<>0);
   eVect:=ListWithIdenticalEntries(n+1, 0);
   eVect[iCol]:=-SignInt(TheFac[iCol]);

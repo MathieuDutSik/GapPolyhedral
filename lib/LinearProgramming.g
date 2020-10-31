@@ -427,7 +427,7 @@ EliminationByRedundancyCone:=function(FAC, EXT)
   for eFac in FAC
   do
     ListIncd:=Filtered(EXT, x->x*eFac=0);
-    if PersoRankMat(ListIncd) = dimSpace-1 then
+    if ZeroRankMat(ListIncd) = dimSpace-1 then
       Add(ListIrred, eFac);
     fi;
   od;
@@ -503,8 +503,7 @@ end;
 
 
 SearchPositiveRelation:=function(ListVect, TheConstraint)
-  local ArithFct, NSP, nbVect, TheDim, nbRelation, ListInequalities, iVect, H, iRel, ToBeMinimized, TheLP, TheSolutionRed, TheSolution, TheCertif, TheProd, eEnt, SetVectorPos, eSet, TheSum;
-  ArithFct:=GetArithmeticityMatrix(ListVect);
+  local NSP, nbVect, TheDim, nbRelation, ListInequalities, iVect, H, iRel, ToBeMinimized, TheLP, TheSolutionRed, TheSolution, TheCertif, TheProd, eEnt, SetVectorPos, eSet, TheSum;
 #  NSP:=NullspaceIntMat(RemoveFractionMatrix(ListVect));
   NSP:=NullspaceMat(ListVect);
   nbVect:=Length(ListVect);
@@ -574,13 +573,13 @@ SearchPositiveRelation:=function(ListVect, TheConstraint)
     TheSolution:=TheSolutionRed*NSP;
     for iVect in TheConstraint.ListStrictlyPositive
     do
-      if ArithFct.IsNegative(TheSolution[iVect]) then
+      if TheSolution[iVect] <= then
         Error("Inconsistency SearchPositiveRelation, case 1");
       fi;
     od;
     for iVect in TheConstraint.ListPositive
     do
-      if ArithFct.IsStrictlyNegative(TheSolution[iVect]) then
+      if TheSolution[iVect] < 0 then
         Error("Inconsistency SearchPositiveRelation, case 2");
       fi;
     od;
@@ -591,7 +590,7 @@ SearchPositiveRelation:=function(ListVect, TheConstraint)
       do
         TheSum:=TheSum+TheSolution[iVect];
       od;
-      if ArithFct.IsNegative(TheSum) then
+      if TheSum <= 0 then
         Error("Inconsistency SearchPositiveRelation, case 3");
       fi;
     od;
@@ -1179,7 +1178,7 @@ GetViolatedFacet:=function(EXT, eVect)
       if test<>fail then
         if Position(test, len+1)=fail then
           EXTred:=List(EXT, x->x{eSelect});
-          eFAC:=__FindFacetInequality(EXTred, test);
+          eFAC:=FindFacetInequality(EXTred, test);
           if Minimum(List(EXTred, x->x*eFAC))<0 then
             Error("We did not find a facet");
           fi;

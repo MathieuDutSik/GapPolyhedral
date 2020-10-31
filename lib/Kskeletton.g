@@ -264,7 +264,7 @@ SPAN_face_ExtremeRay:=function(FaceFAC, Stabface, FAC, EXT)
       Add(ListInc, eExt);
     fi;
   od;
-  k:=CorrectedRankMat(ListInc);
+  k:=ZeroRankMat(ListInc);
   Treated:=ListWithIdenticalEntries(Length(FAC),0);
   Treated{FaceFAC}:=ListWithIdenticalEntries(Length(FaceFAC), 1);
   LIST:=[];
@@ -357,7 +357,7 @@ IsFlag:=function(EXT, eFlagEXT)
     eRecRed:=ColumnReduction(EXTrel);
     EXTrelRed:=List(EXTrel, x->x{eRecRed.Select});
     eSetTest:=List(eSet1, x->Position(eSet2, x));
-    testineq:=__FindFacetInequalityAndTest(EXTrelRed, eSetTest);
+    testineq:=FindFacetInequalityAndTest(EXTrelRed, eSetTest);
     if testineq.success=false then
       return false;
     fi;
@@ -691,7 +691,7 @@ BoundaryOperatorsCellularDecompositionPolytope:=function(GroupEXT, EXT, kSought)
   local rnk, ListOrbitByRank, iRank, TheComputedList, FuncInsert, iFace, eFace, NewListOrbit, eOrbit, ListSetsM2, ListOccuringCoefficients, idx, eOrbitSmall, TheBoundary, eElt, iBound, pos, ListSign, TheRetOrbit, ListIFace, ListElt, TheReturnBoundary, iFaceSelect, IdxSel, eMulSign, eAddElt, ListElementM2, nbBound, iFaceM2, iFaceM1, eSign, eEltM2, ListOrbVertices, TheRec, eO, O, iOrbit, TheSpann, eSpann, eSet, TheStab, IsInKernel, TheContractingHomotopy, MyFuncSignatureDet, FuncSignatureDet, eRotSubgroup, phi, ListSignGens, eStab, GRPsym, eDet, ListMatrGens, iOrb, nbOrb, eGen, EXTwork, eSelect, eRecSel, BoundingSet, nbFace;
   rnk:=RankMat(EXT);
   Print("Computing cellular decomposition with |EXT|=", Length(EXT), " |GRP|=", Order(GroupEXT), " k=", kSought, " rnk=", rnk, "\n");
-  if TestForRepetition(EXT)=true then
+  if TestForRepetition(EXT) then
     Error("The input has some repetition");
   fi;
   BoundingSet:=[];

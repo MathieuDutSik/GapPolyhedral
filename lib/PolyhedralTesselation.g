@@ -2946,8 +2946,8 @@ GetCompleteAndTotalDecomposition:=function(EXT, eStabPerm, FunctionFaceDecomposi
 # 2 corresponds to 5 and 6.
 # 4 corresponds to 4.
 # The other merging is obtained via 5 corresponds to 1 and 2.
-          LIneqLSet:=List(LSet, x->__FindFacetInequality(EXTred, x));
-          LIneqListSetsM1:=List(ListSetsM1red, x->__FindFacetInequality(EXTred, x));
+          LIneqLSet:=List(LSet, x->FindFacetInequality(EXTred, x));
+          LIneqListSetsM1:=List(ListSetsM1red, x->FindFacetInequality(EXTred, x));
           NewListSign:=UntangleAllSigns(ListOccuringCoefficients, lenBound);
         fi;
       fi;
@@ -3117,7 +3117,7 @@ DoClotureOperation:=function(TheBound, eCase)
   do
     Print("DoCloture iRepr=", iRepr, "/", nbRepr, "\n");
     eRepr:=eCase.ListRepresentent[iRepr];
-    if TestForRepetition(eRepr.EXT)=true then
+    if TestForRepetition(eRepr.EXT) then
       Print("The array eRepr.EXT has some repetition\n");
       Print("and this is not allowed in DoClotureOperation\n");
       Error("Please correct");
@@ -3372,7 +3372,7 @@ DoClotureOperation_NextGeneration:=function(TheBound, eCase)
   do
     Print("DoCloture iRepr=", iRepr, "/", nbRepr, "\n");
     eRepr:=eCase.ListRepresentent[iRepr];
-    if TestForRepetition(eRepr.EXT)=true then
+    if TestForRepetition(eRepr.EXT) then
       Print("The array eRepr.EXT has some repetition\n");
       Print("and this is not allowed in DoClotureOperation\n");
       Error("Please correct");
@@ -3468,7 +3468,7 @@ PolyhedralTesselationDecomposeCells:=function(eRecordTessel, eRecIAI, ListCellDe
     for iOrbit in [1..nbOrbit]
     do
       EXT:=eRecordTessel.ListOrbitByRank[iRank+2][iOrbit].EXT;
-      if TestForRepetition(EXT)=true then
+      if TestForRepetition(EXT) then
         Print("We have some repetition in EXT\n");
         Print("In the input eRecordTessel, with more clearly\n");
         Print("This is for iRank=", iRank, " iOrbit=", iOrbit, "\n");
@@ -4160,7 +4160,7 @@ PolyhedralTesselationDecomposeCells:=function(eRecordTessel, eRecIAI, ListCellDe
         if RankMat(EXT)-1<>iRank then
           Error("Non correct rank of EXT");
         fi;
-        if TestForRepetition(EXT)=true then
+        if TestForRepetition(EXT) then
           Print("We have some repetition in EXT\n");
           Error("Clearly a bug");
         fi;
@@ -4267,7 +4267,7 @@ PolyhedralTesselationDecomposeCells_NextGeneration:=function(eRecordTessel, eRec
     for iOrbit in [1..nbOrbit]
     do
       EXT:=eRecordTessel.ListOrbitByRank[iRank+2][iOrbit].EXT;
-      if TestForRepetition(EXT)=true then
+      if TestForRepetition(EXT) then
         Print("We have some repetition in EXT\n");
         Print("In the input eRecordTessel, with more clearly\n");
         Print("This is for iRank=", iRank, " iOrbit=", iOrbit, "\n");
@@ -4959,7 +4959,7 @@ PolyhedralTesselationDecomposeCells_NextGeneration:=function(eRecordTessel, eRec
         if RankMat(EXT)-1<>iRank then
           Error("Non correct rank of EXT");
         fi;
-        if TestForRepetition(EXT)=true then
+        if TestForRepetition(EXT) then
           Error("We have some repetition in EXT");
         fi;
         NewListOrbitByRank[iRank+2][iOrbit].EXT:=EXT;
@@ -5103,7 +5103,7 @@ DetermineMergings:=function(EXT, ListEXTsub, PermGRP)
     for jSub in [iSub+1..nbSub]
     do
       eInt:=Intersection(ListEXTsub[iSub], ListEXTsub[jSub]);
-      if PersoRankMat(EXT{eInt})=rnk-1 then
+      if ZeroRankMat(EXT{eInt})=rnk-1 then
         AddEdgeOrbit(GRAconn, [iSub, jSub]);
         AddEdgeOrbit(GRAconn, [jSub, iSub]);
       fi;
@@ -5400,7 +5400,7 @@ InvarSplitting:=function(TheBound, iRank, iOrbit)
       FACineqDomain:=[];
       for eSet in FAC
       do
-        eFACineq:=__FindFacetInequality(EXTproj, eSet);
+        eFACineq:=FindFacetInequality(EXTproj, eSet);
         Add(FACineqDomain, eFACineq);
       od;
       FACtotal:=Concatenation(FACineqNew, FACineqDomain);
@@ -5494,7 +5494,7 @@ InvarSplitting:=function(TheBound, iRank, iOrbit)
   od;
   if Length(NSP)=1 then
     eFACset:=FAC[1];
-    eFACIneq:=__FindFacetInequality(EXTproj, eFACset);
+    eFACIneq:=FindFacetInequality(EXTproj, eFACset);
     if NSP[1]*eFACIneq > 0 then
       eV:=NSP[1];
     else

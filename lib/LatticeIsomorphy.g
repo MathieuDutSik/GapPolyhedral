@@ -141,8 +141,8 @@ __ExtractInvariantZBasisShortVectorNoGroupGeneral:=function(GramMat, SHVgroup)
   n:=Length(GramMat);
   IsBetterProperty:=function(NewSet, OldSet)
     local rNew, rOld, detNew, detOld, eSelect, NewSetProj, OldSetProj;
-    rNew:=PersoRankMat(NewSet);
-    rOld:=PersoRankMat(OldSet);
+    rNew:=ZeroRankMat(NewSet);
+    rOld:=ZeroRankMat(OldSet);
     if rNew>rOld then
       return true;
     fi;
@@ -162,7 +162,7 @@ __ExtractInvariantZBasisShortVectorNoGroupGeneral:=function(GramMat, SHVgroup)
   end;
   IsWishedSet:=function(TheSet)
     local det;
-    if PersoRankMat(TheSet)<n then
+    if ZeroRankMat(TheSet)<n then
       return false;
     fi;
     det:=AbsInt(DeterminantMat(BaseIntMat(TheSet)));
@@ -195,8 +195,8 @@ __ExtractInvariantZBasisShortVectorNoGroupGeneralLazy:=function(GramMat, GetSHVg
   n:=Length(GramMat);
   IsBetterProperty:=function(NewSet, OldSet)
     local rNew, rOld, detNew, detOld, eSelect, NewSetProj, OldSetProj;
-    rNew:=PersoRankMat(NewSet);
-    rOld:=PersoRankMat(OldSet);
+    rNew:=ZeroRankMat(NewSet);
+    rOld:=ZeroRankMat(OldSet);
     if rNew>rOld then
       return true;
     fi;
@@ -216,7 +216,7 @@ __ExtractInvariantZBasisShortVectorNoGroupGeneralLazy:=function(GramMat, GetSHVg
   end;
   IsWishedSet:=function(TheSet)
     local det;
-    if PersoRankMat(TheSet)<n then
+    if ZeroRankMat(TheSet)<n then
       return false;
     fi;
     det:=AbsInt(DeterminantMat(BaseIntMat(TheSet)));
@@ -480,8 +480,8 @@ __ExtractInvariantZBasisShortVector_Rational:=function(GramMat, PointGRP)
   n:=Length(GramMat);
   IsBetterProperty:=function(NewSet, OldSet)
     local rNew, rOld, detNew, detOld, eSelect, NewSetProj, OldSetProj;
-    rNew:=PersoRankMat(NewSet);
-    rOld:=PersoRankMat(OldSet);
+    rNew:=ZeroRankMat(NewSet);
+    rOld:=ZeroRankMat(OldSet);
     if rNew>rOld then
       return true;
     fi;
@@ -501,7 +501,7 @@ __ExtractInvariantZBasisShortVector_Rational:=function(GramMat, PointGRP)
   end;
   IsWishedSet:=function(TheSet)
     local det;
-    if PersoRankMat(TheSet)<n then
+    if ZeroRankMat(TheSet)<n then
       return false;
     fi;
     det:=AbsInt(DeterminantMat(BaseIntMat(TheSet)));

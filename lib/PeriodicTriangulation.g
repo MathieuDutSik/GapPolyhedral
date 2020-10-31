@@ -1212,7 +1212,7 @@ TRIG_CentralTriangulationDelaunay:=function(RecTransClass, DelCO, EXTspec, L_Lis
     for eTrigEXT in ListTrigEXT
     do
       fTrigEXT:=Filtered(eTrigEXT, x->Position(EXTfacet, x)<>fail);
-      if PersoRankMat(fTrigEXT)=rnk then
+      if ZeroRankMat(fTrigEXT)=rnk then
         eTrigFace:=Set(List(fTrigEXT, x->Position(EXTfacet, x)));
         Add(ListTrigFacet, eTrigFace);
       fi;

@@ -39,7 +39,7 @@ PERFCOV_GetRecordOfPerfectDomainIntersection:=function(eCase, TheGram)
     eO:=Orbit(FinRec.GRPext, eRepr, OnSets);
     for eIncd in eO
     do
-      eFAC:=__FindFacetInequality(FinRec.EXT, eIncd);
+      eFAC:=FindFacetInequality(FinRec.EXT, eIncd);
       Add(FAC, eFAC);
       Add(FACincd, eIncd);
     od;

@@ -10,13 +10,13 @@
 # Number of such equations is D - N.
 # So, if we have m parameters then the dimension of the space of possible parameters
 # is M - (D-N).
-# 
+#
 # Find a number of mu_i as parameter and express other from them.
 # such as mu_k = phi_k(mu_i1, ..., mu_ip)
 # The inequalities becomes phi_k(....) >= 0
 # [ The reduction is done as AX = -BY ]
-#  
-# 
+#
+#
 CONEINT_GetFundamentalObject:=function(BasisSpann, EXT)
   local nbEXT, NSP, nbEqua, TheFullMat, iEXT, iEqua, eScal, eSelect, nbSel, ListVar, nbVar, TheFullMatRed, iSel, TheFullMatPart, iVar, MappingFunction, FAC, eProd;
   nbEXT:=Length(EXT);
@@ -207,7 +207,7 @@ end;
 # ---What we first need to do is compute the group of symmetries of C that also
 #    preserve the subspace W.
 # ---Another tool is ability to check if a point x is in D via linear programming.
-#    If it is not in D. We can 
+#    If it is not in D. We can
 # ---Another tool that we have is the space of equations
 #    sum mu_j <w_j , v'_i> = 0 with mu_j >= 0.
 #    We can minimize a function f(x) on V. This allow to check if an inequality
@@ -352,10 +352,8 @@ CONEINT_ComputeDoubleDescriptionIntersection:=function(BasisSpann, EXT)
     EXTsave:=StructuralCopy(EXTint);
     for eRepr in LOrbFAC
     do
-#      Print("eRepr=", eRepr, "\n");
-      eFAC:=__FindFacetInequality(EXTsave, eRepr);
+      eFAC:=FindFacetInequality(EXTsave, eRepr);
       eRecFAC:=InequalityComputation(eFAC);
-#      Print("eRecFAC.eScal=", eRecFAC.eScal, "\n");
       if eRecFAC.eScal<>0 then
         FuncInsertEXT(eRecFAC.ePointSpann);
         IsComplete:=false;

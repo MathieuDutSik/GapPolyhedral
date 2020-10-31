@@ -484,7 +484,6 @@ RetrievingNonRedundantFacet:=function(FAC, GRPfac)
   TheDim:=Length(FAC[1]);
   Print("RetrievingNonRedundantFacet nbFac=", nbFac, " |Ofac|=", Length(Ofac), " |GRPfac|=", Order(GRPfac), "\n");
   if Order(GRPfac)>0 then
-#    BoundSet:=List(GetInitialRays_LinProg(FAC, TheDim), x->__FindFacetInequality(FAC, x));
     BoundSet:=[];
     ListPos:=EliminationByRedundancyEquivariant(FAC, BoundSet, GRPfac).eSetSelect;
     return ListPos;

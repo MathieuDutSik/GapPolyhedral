@@ -262,7 +262,7 @@ DelaunayTesselation_DelaneySymbol:=function(DataLattice, DelaunayDatabase)
       for eOrb in ListAdj
       do
         O:=Orbit(TheStabPerm, eOrb.eInc, OnSets);
-        ListIneq:=List(O, x->__FindFacetInequality(EXT, x));
+        ListIneq:=List(O, x->FindFacetInequality(EXT, x));
         Append(FAC, ListIneq);
       od;
       Print("iOrb=", iOrb, " |EXT|=", Length(EXT), " |FAC|=", Length(FAC), " |GRP|=", Order(TheStabPerm), "\n");
@@ -2294,7 +2294,7 @@ Periodic_FindAdjacentDelaunayPolytope:=function(GramMat, ListCoset, EXT, ListInc
 #  Print("Beginning of Periodic_FindAdjacentDelaunayPolytope\n");
   n:=Length(GramMat);
   IndependentBasis:=RowReduction(EXT{ListInc}, n).EXT;
-  TheFac:=__FindFacetInequality(EXT, ListInc);
+  TheFac:=FindFacetInequality(EXT, ListInc);
   ListCosetRed:=List(ListCoset, x->x{[2..n+1]});
   ListGraverOptions:=[];
   for i in [1..n]
@@ -3258,7 +3258,7 @@ SCV_GetOrbitVertices:=function(DataLattice, DelaunayDatabase)
         do
           if Position(eSet, eSingVert)<>fail then
             Add(TheFACset, eSet);
-            eIneq:=__FindFacetInequality(EXT, eSet);
+            eIneq:=FindFacetInequality(EXT, eSet);
             Add(TheFACineq, eIneq);
             Add(OriginsFac, iAdj);
           fi;
@@ -4590,7 +4590,7 @@ SingleListOrbit:=function(TheEXT, eSet, AddiInfo)
   do
     Append(RelFAC, Orbit(AddiInfo.Stab, eRep, OnSets));
   od;
-  FAC:=List(RelFAC, x->__FindFacetInequality(TheEXT, x));
+  FAC:=List(RelFAC, x->FindFacetInequality(TheEXT, x));
   RNK:=RankMat(FAC);
   FuncReturnPosition:=function(eVert)
     local iO;
@@ -5621,7 +5621,7 @@ CheckCoherencyDelaunayDecomposition:=function(DataLattice, DelaunayDatabase)
       if RankMat(EXT{eAdj.eInc})<>n then
         Error("Rank incoherency of facet");
       fi;
-      eFac:=__FindFacetInequality(EXT, eAdj.eInc);
+      eFac:=FindFacetInequality(EXT, eAdj.eInc);
       ListP:=Filtered([1..Length(EXT)], x->Position(EXTAdjacentDelaunay, EXT[x])<>fail);
       EXTfac1:=Filtered(EXT, x->x*eFac=0);
       EXTfac2:=Filtered(EXTAdjacentDelaunay, x->x*eFac=0);
@@ -5966,7 +5966,7 @@ DelaunayComputationStandardFunctions:=function(TheGramMat)
         do
           eMatrix:=Image(TheStab.PhiPermMat, ePerm);
           fSet:=OnSets(eAdj.eInc, ePerm);
-          eFAC:=__FindFacetInequality(EXT, fSet);
+          eFAC:=FindFacetInequality(EXT, fSet);
           if eFAC*eEXT < 0 then
             return rec(iDelaunay:=eAdj.iDelaunay, eBigMat:=eAdj.eBigMat*eMatrix*eRec.eBigMat);
           fi;
@@ -6025,7 +6025,7 @@ DelaunayComputationStandardFunctions:=function(TheGramMat)
             do
               eMatrix:=Image(TheStab.PhiPermMat, ePerm);
               fSet:=OnSets(eAdj.eInc, ePerm);
-              eFAC:=__FindFacetInequality(EXT, fSet);
+              eFAC:=FindFacetInequality(EXT, fSet);
               if eFAC*eEXT = 0 then
                 NewRec:=rec(iDelaunay:=eAdj.iDelaunay, eBigMat:=eAdj.eBigMat*eMatrix*eRec.eBigMat);
                 FuncInsert(NewRec);

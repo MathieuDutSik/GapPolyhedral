@@ -89,7 +89,7 @@ EliminationByRedundancyDualDescription:=function(FAC)
         Add(LINC, eEXT);
       fi;
     od;
-    if PersoRankMat(LINC)=TheRank-1 then
+    if ZeroRankMat(LINC)=TheRank-1 then
       Add(FACreturn, eFac);
     fi;
   od;
@@ -218,7 +218,7 @@ __DualDescriptionLRS_Reduction:=function(EXT, GroupExt, ThePath)
   RemoveFileIfExist(FileError);
   #
   output:=OutputTextFile(FileExt, true);
-  eSub:=__ProjectionFrame(EXT);
+  eSub:=ProjectionFrame(EXT);
   EXT2:=List(EXT, x->x{eSub});
   EXT3:=List(EXT2, RemoveFraction);
   if TestConicness(EXT3) then
@@ -296,7 +296,7 @@ __DualDescriptionDoubleDescMethod_Reduction:=function(EXT, GroupExt, ThePath, Th
   RemoveFileIfExist(FileError);
   #
   output:=OutputTextFile(FileExt, true);;
-  eSub:=__ProjectionFrame(EXT);
+  eSub:=ProjectionFrame(EXT);
   EXT2:=List(EXT, x->x{eSub});
   if TestConicness(EXT2) then
     EXTnew:=ShallowCopy(EXT2);
@@ -404,7 +404,7 @@ __DualDescriptionPD_Reduction:=function(EXT, GRP, ThePath)
     O:=Orbit(GRP, eOrb, OnSets);
     for eRepr in O
     do
-      eFAC:=__FindFacetInequality(EXTpoly, eRepr);
+      eFAC:=FindFacetInequality(EXTpoly, eRepr);
       Add(FACnew, eFAC);
     od;
     return FACnew;

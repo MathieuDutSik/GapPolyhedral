@@ -179,7 +179,7 @@ DUAL_InquireRec:=function(ePrefix, EXT, GRP)
         if GRPconj=GRP then
           Print("GRPconj = GRP\n");
           NewListOrb:=List(RecRead.ListOrb, x->OnSets(x, eEquiv));
-          ListIneq:=List(NewListOrb, x->__FindFacetInequality(EXT, x));
+          ListIneq:=List(NewListOrb, x->FindFacetInequality(EXT, x));
           return NewListOrb;
         fi;
       fi;
@@ -258,7 +258,7 @@ IGUSA_FindListNeighboringIntegralMat:=function(eCase, TheGram, Data, BF)
   #
   UpdateByFacetInequality:=function(eOrbIns)
     local eFAC, ListGram, eRecSol, eMatSolExpr, eMatSolBas, eScal, Onew;
-    eFAC:=__FindFacetInequality(ListDirAdj, eOrbIns);
+    eFAC:=FindFacetInequality(ListDirAdj, eOrbIns);
     ListGram:=Concatenation([TheGram], ListAdjInt{eOrbIns});
     eRecSol:=IGUSA_IntegralMinimizationOverTspace(eCase, ListGram, eFAC);
     eMatSolExpr:=SymmetricMatrixToVector(eRecSol.eMatSol);

@@ -360,7 +360,7 @@ AdvancedBalinskiConnectivity_Kernel:=function(eSetFace, RecHeuristic, BF)
       for eSmaRepr in ListSmaRepr
       do
         if IsSubset(eSmaRepr, eSetFace) then
-          eEXT:=__FindFacetInequality(BF.FAC, eSmaRepr);
+          eEXT:=FindFacetInequality(BF.FAC, eSmaRepr);
           eEXTred:=SolutionMat(NSP, eEXT);
           eInc:=Filtered([1..Length(FAC)], x->FAC[x]*eEXTred=0);
           Add(ListOrbitVertices, eInc);
@@ -729,7 +729,7 @@ Tmp_PresentResult:=function(EXT, GRP, ThePrefix)
     fi;
     eRec:=ReadAsFunction(eFile)();
     eInc:=eRec.Inc;
-    eEXT:=__FindFacetInequality(EXT, eInc);
+    eEXT:=FindFacetInequality(EXT, eInc);
     nbFac:=nbFac+eRec.OrbSize;
     eOrdStab:=eOrd/eRec.OrbSize;
     if eRec.Status="NO" then
@@ -868,7 +868,7 @@ end;
 # in this new version all incidences are encoded by sets.
 __ProjectionLiftingFramework_Rational:=function(EXT, OneInc)
   local eSub, EXTproj, EXTproj2, FuncLift, RecReturn;
-  eSub:=__ProjectionFrame(EXT);
+  eSub:=ProjectionFrame(EXT);
   EXTproj:=List(EXT, x->x{eSub});
   EXTproj2:=EXTproj{OneInc};
   # TheInc is a subset of [1..Length(OneInc)]
@@ -1254,7 +1254,7 @@ ListAdjacentOrbitwise_Facet:=function(EXT, TheStab, ListInc, Data, BankFormalism
   local RPLift, Ladj;
   RPLift:=__ProjectionLiftingFramework(EXT, ListInc);
   Ladj:=__ListFacetByAdjacencyDecompositionMethod(EXT{ListInc}, SecondReduceGroupAction(TheStab, ListInc), Data, BankFormalism);
-  return List(Ladj, x->__FindFacetInequality(EXT, RPLift.FuncLift(x)));
+  return List(Ladj, x->FindFacetInequality(EXT, RPLift.FuncLift(x)));
 end;
 
 

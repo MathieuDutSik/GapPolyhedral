@@ -546,7 +546,7 @@ DoFlipping_perfectform:=function(SHVgroups, TheSubset)
   TheGramPerf:=GetCorrespondingPerfectForm(SHV);
   MinPerf:=eVectMin*TheGramPerf*eVectMin;
   ListSymm:=List(SHVgroups, x->SymmetricMatrixToVector(TransposedMat([x[1]])*[x[1]]));
-  eSol:=__FindFacetInequality(ListSymm, TheSubset);
+  eSol:=FindFacetInequality(ListSymm, TheSubset);
   FacetMat:=VectorToSymmetricMatrix(eSol, n);
   for i in [1..n]
   do
@@ -731,7 +731,7 @@ DoFlippingTspace:=function(eCase, TheFormal, TheSubset)
   n:=Length(eCase.Basis[1]);
   DimSpace:=Length(eCase.Basis);
   TheGramPerf:=GetCorrespondingPerfectFormTspace(eCase.Basis, TheFormal.SHV);
-  eEXT:=__FindFacetInequality(TheFormal.SetIneq, TheSubset);
+  eEXT:=FindFacetInequality(TheFormal.SetIneq, TheSubset);
   FacetMat:=NullMat(n,n);
   for i in [1..DimSpace]
   do
@@ -1269,7 +1269,7 @@ Kernel_GetEnumerationPerfectForm:=function(eCaseGen2)
           FlippedGram:=DoFlippingTspace(eCaseGen2, TheFormal, eOrb);
           if IsValidGram(FlippedGram) then
             TheAdj:=FuncInsert(FlippedGram);
-            eFac:=__FindFacetInequality(TheFormal.ListExpressionRays, eOrb);
+            eFac:=FindFacetInequality(TheFormal.ListExpressionRays, eOrb);
             Print("iOrb=", iOrb, "/", nbOrb, " orbit\n");
             TheAdj.eFac:=eFac;
             TheAdj.eOrb:=eOrb;
@@ -1694,7 +1694,7 @@ GetEnumerationPerfectForm:=function(n)
         do
           FlippedGram:=DoFlipping_perfectform(SHVgroups, eOrb);
           TheAdj:=FuncInsert(FlippedGram);
-          eFac:=__FindFacetInequality(ListSymm, eOrb);
+          eFac:=FindFacetInequality(ListSymm, eOrb);
           TheAdj.eFac:=eFac;
           Add(ListAdj, TheAdj);
         od;

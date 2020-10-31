@@ -286,7 +286,7 @@ FindRepartitionningInfoNextGeneration:=function(eIdx, ListOrbitDelaunay, ListInf
   for iComp in [1..Length(ListOrbitCenter)]
   do
     eRec:=ListOrbitCenter[iComp];
-    Add(ListOrbitFacet, rec(eFac:=__FindFacetInequality(TotalListVertices, eRec.Linc), Linc:=eRec.Linc, EXT:=eRec.EXT, Status:="NO", Position:="lower", iDelaunayOrigin:=eRec.iDelaunay, eBigMat:=eRec.eBigMat));
+    Add(ListOrbitFacet, rec(eFac:=FindFacetInequality(TotalListVertices, eRec.Linc), Linc:=eRec.Linc, EXT:=eRec.EXT, Status:="NO", Position:="lower", iDelaunayOrigin:=eRec.iDelaunay, eBigMat:=eRec.eBigMat));
   od;
   FuncInsertFacet:=function(eFac)
     local Linc, EXT, iVert, iOrb, g, ThePos;
@@ -2520,7 +2520,7 @@ DecomposeDomainIntoZoneContracted:=function(ListMatrix, ListOrbitTotallyZoneCont
   eSet1:=Filtered([1..nbVect], x->ListRank[x]=1);
   eSetHigh:=Filtered([1..nbVect], x->ListRank[x]>1);
   nbHigh:=Length(eSetHigh);
-  rnk1:=PersoRankMat(ListVector{eSet1});
+  rnk1:=ZeroRankMat(ListVector{eSet1});
   rnkDiff:=rnk - rnk1;
   ListMatSel:=ListMatrix{eSetHigh};
   #
@@ -2834,7 +2834,7 @@ DecomposeDomainIntoZoneContracted_V1:=function(ListMatrix, ListOrbitTotallyZoneC
       fi;
     od;
     rnkTot:=RankMat(ListVector{eBigSet});
-    rnk1:=PersoRankMat(ListVectRank1);
+    rnk1:=ZeroRankMat(ListVectRank1);
     rnkHigh:=RankMat(ListVectRankHigh);
     if rnk1<>Length(ListVectRank1) then
       Error("Consistency error");

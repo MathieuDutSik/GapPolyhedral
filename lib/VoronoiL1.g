@@ -1218,7 +1218,7 @@ VOR_L1_GetComponentFromPoint:=function(eRecL1, ePoint, minSizeClos, soughtDimLin
       eRecDeg:=VOR_L1_TestMultiplicityDegeneracy(eRecL1, LinSpace, eRec);
       eRelevant:=rec(ePt:=eVect, posIneq:=posIneq);
       UpdateDualDesc:=false;
-      if PersoRankMat(ListIneqIrred) < DimRel then
+      if ZeroRankMat(ListIneqIrred) < DimRel then
         UpdateDualDesc:=true;
         if eRecDeg.IsCorrect=false then
           return rec(Answer:=false, reason:="eSet cause splitting", eDiff:=eDiff, eRec:=eRec, eRecDeg:=eRecDeg);
@@ -1240,7 +1240,7 @@ VOR_L1_GetComponentFromPoint:=function(eRecL1, ePoint, minSizeClos, soughtDimLin
       if UpdateDualDesc=true then
         nbUpdate:=nbUpdate+1;
         eRecIneq:=VOR_L1_GetInequalities(eRecL1, eRecCompFacet);
-        if PersoRankMat(eRecIneq.ListIneqRed) = DimRel then
+        if ZeroRankMat(eRecIneq.ListIneqRed) = DimRel then
           ListIneqIrred:=RemoveRedundancyByDualDescription(eRecIneq.ListIneqRed);
           EXTfac:=DualDescription(ListIneqIrred);
         fi;
@@ -1851,7 +1851,7 @@ VOR_L1_GetCellNeighbors:=function(eRecL1, eRecCompCell)
       Add(ListGenMatrProj, eGenMatProj);
     od;
     GRPmatProj:=Group(ListGenMatrProj);
-    eIneq:=__FindFacetInequality(EXText, eInc);
+    eIneq:=FindFacetInequality(EXText, eInc);
     eIneqRed:=eIneq{[2..n+1]};
     eDir:=-eIneqRed*Inverse(eRecL1.GramMat);
     eDen:=1;
@@ -1954,7 +1954,7 @@ VOR_L1_GetCellNeighbors:=function(eRecL1, eRecCompCell)
             NewRecEXT:=VOR_L1_GetVertices(eRecL1, NewCompCell);
             NewEXText:=List(NewRecEXT.EXT, x->Concatenation([1], x));
             TheIncd:=Filtered(NewEXText, x->x*eIneq=0);
-            rnk:=PersoRankMat(TheIncd);
+            rnk:=ZeroRankMat(TheIncd);
             Print("rnk=", rnk, " n=", n, "\n");
             if rnk=n then
               EXTneigh:=Filtered(NewEXText, x->x*eIneq=0);
@@ -2452,7 +2452,7 @@ VOR_L1_Get_Dvertices:=function(eRecL1, ListRecCompCell)
     eList:=ListListJRec[iRecCompCell];
     eSet:=Filtered([1..Length(eList)], x->ListVertices[eList[x]].IsMax=true);
     Add(ListTrueNbMax, Length(eSet));
-    Add(ListTrueDim, PersoRankMat(ListEXText[iRecCompCell]{eSet}));
+    Add(ListTrueDim, ZeroRankMat(ListEXText[iRecCompCell]{eSet}));
   od;
   IsTrueVertex:=function(eRecVertex)
     local ListPlane, eEntIso, EXT, NSP, nbContEXT, eIso, eRecOrb, fBigMat, eFACimg;
@@ -2477,7 +2477,7 @@ VOR_L1_Get_Dvertices:=function(eRecL1, ListRecCompCell)
         od;
       fi;
     od;
-    if PersoRankMat(ListPlane)=eRecL1.n then
+    if ZeroRankMat(ListPlane)=eRecL1.n then
       return true;
     fi;
     return false;
