@@ -3,6 +3,7 @@ FileGetShortVector:=Filename(DirectoriesPackagePrograms("MyPolyhedral"),"SHORT_G
 FileLattCanonicalization:=Filename(DirectoriesPackagePrograms("MyPolyhedral"),"LATT_canonicalize");
 FileLattCanonicalizationMultiple:=Filename(DirectoriesPackagePrograms("MyPolyhedral"),"LATT_canonicalizeMultiple");
 
+
 SymmetricExtractSubMatrix:=function(SymMat, eSet)
   return List(SymMat{eSet}, x->x{eSet});
 end;

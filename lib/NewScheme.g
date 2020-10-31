@@ -2095,9 +2095,9 @@ InfDel_MyDualDescriptionStandard:=function(EXT, PermGRP, BFpoly)
   TmpDir:=Filename(POLYHEDRAL_tmpdir, "");
   MyDualDescription:=function(EXT, GroupExt, ThePath)
     if Length(EXT) > 1000 then
-      return __DualDescriptionCDD_Reduction(EXT, GroupExt, ThePath);
+      return DualDescriptionCDD_Reduction(EXT, GroupExt, ThePath);
     fi;
-    return __DualDescriptionLRS_Reduction(EXT, GroupExt, ThePath);
+    return DualDescriptionLRS_Reduction(EXT, GroupExt, ThePath);
   end;
   DataPolyhedral:=rec(IsBankSave:=IsBankSave, 
         TheDepth:=0,

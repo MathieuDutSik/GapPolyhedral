@@ -110,7 +110,7 @@ EquivariantSearchDualDescription:=function(EXT, PermGRP)
     return ListEnt;
   end;
   return rec(GetListEnt:=GetListEnt,
-             FuncInsert:=FuncInsert, 
+             FuncInsert:=FuncInsert,
              ComputeKeyInformation_EXT:=ComputeKeyInformation_EXT,
              ComputeKeyInformation_GRP:=ComputeKeyInformation_GRP,
 	     MapSpecificGroupOrbits:=MapSpecificGroupOrbits);
@@ -396,14 +396,14 @@ RepresentationMatrixAndFacetStandard:=function(EXT, PermGRP)
     return true;
   end;
   TmpDir:=Filename(POLYHEDRAL_tmpdir, "");
-  DataPolyhedral:=rec(IsBankSave:=IsBankSave, 
+  DataPolyhedral:=rec(IsBankSave:=IsBankSave,
         TheDepth:=0,
-        IsRespawn:=IsRespawn, 
+        IsRespawn:=IsRespawn,
         Saving:=false,
         GetInitialRays:=GetInitialRays_LinProg,
         ThePathSave:="/irrelevant/",
         ThePath:=TmpDir,
-        DualDescriptionFunction:=__DualDescriptionLRS_Reduction, 
+        DualDescriptionFunction:=DualDescriptionLRS_Reduction,
         GroupFormalism:=OnSetsGroupFormalism(500));
   TheGEN:=DataPolyhedral.GetInitialRays(EXT, 10);
   ListOrbit:=[GetRecord(TheGEN[1])];
@@ -477,7 +477,7 @@ end;
 
 
 
- 
+
 
 KernelBeltComputation:=function(EXT, PermGRP, ListOrbit, ListListOrbitSubset)
   local ListPairsSet, nbOrbit, ListRPLift, ListEXTface, iOrbit, eSet, RPLift, EXTface, TheStab, TheStabRed, eSubset, ePair, nbPairs, ListStatus, DoFlipping, GetLoop, ListOrbitBelt, iPair, TheLoop, ListOrbitNr;

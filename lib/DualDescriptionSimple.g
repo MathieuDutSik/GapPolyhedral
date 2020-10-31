@@ -195,7 +195,7 @@ DualDescriptionAdjacencies:=function(EXT)
 end;
 
 
-__DualDescriptionLRS_Reduction:=function(EXT, GroupExt, ThePath)
+DualDescriptionLRS_Reduction:=function(EXT, GroupExt, ThePath)
   local eSub, EXT2, EXT3, FileExt, FileOut, FileData, FileGroup, FileMetaData, FileSupport, FileScratch, FileOutput, FileError, output, DimEXT, test, EXTnew, ListInc;
 #  Print("Entering polyhedral function LRS_Reduction |GRP|=", Order(GroupExt), "\n");
   FileExt:=Concatenation(ThePath, "LRS_Project.ext");
@@ -265,13 +265,13 @@ end;
 DualDescriptionLRS:=function(EXT, GroupExt)
   local ThePath;
   ThePath:=Filename(POLYHEDRAL_tmpdir,"");
-  return __DualDescriptionLRS_Reduction(EXT, GroupExt, ThePath);
+  return DualDescriptionLRS_Reduction(EXT, GroupExt, ThePath);
 end;
 
 
 
 
-__DualDescriptionDoubleDescMethod_Reduction:=function(EXT, GroupExt, ThePath, TheProg)
+DualDescriptionDoubleDescMethod_Reduction:=function(EXT, GroupExt, ThePath, TheProg)
   local eSub, EXT2, FileExt, FileOut, FileData, FileGroup, FileMetaData, FileSupport, FileScratch, FileOutput, output, DimEXT, test, EXTnew, ListInc, FileDataPre, FileError, TheCommand;
 #  Print("Entering polyhedral function CDD_Reduction |GRP|=", Order(GroupExt), "\n");
   FileExt:=Concatenation(ThePath, "DD_Project.ext");
@@ -338,14 +338,11 @@ __DualDescriptionDoubleDescMethod_Reduction:=function(EXT, GroupExt, ThePath, Th
   poly_private@OutputGroup(GroupExt, Length(EXTnew), FileGroup);
   #
   TheCommand:=Concatenation(FileIsoReduction, " ", FileData, " ", FileMetaData, " ", FileGroup, " ", FileSupport, " ", FileScratch, " ", FileOutput, " 2>", FileError);
-#  Print("TheCommand=", TheCommand, "\n");
   Exec(TheCommand);
   ListInc:=ReadAsFunction(FileOutput)();
   if Length(ListInc)=0 then
     Error("Error in DualDescriptionCDD_Reduction");
   fi;
-  Print("Isomorphy reduction finished\n");
-#  Print(NullMat(5));
   RemoveFile(FileExt);
   RemoveFile(FileOut);
   RemoveFile(FileDataPre);
@@ -363,12 +360,12 @@ end;
 
 
 
-__DualDescriptionCDD_Reduction:=function(EXT, GroupExt, ThePath)
-  return __DualDescriptionDoubleDescMethod_Reduction(EXT, GroupExt, ThePath, "CDD");
+DualDescriptionCDD_Reduction:=function(EXT, GroupExt, ThePath)
+  return DualDescriptionDoubleDescMethod_Reduction(EXT, GroupExt, ThePath, "CDD");
 end;
 
-__DualDescriptionPPL_Reduction:=function(EXT, GroupExt, ThePath)
-  return __DualDescriptionDoubleDescMethod_Reduction(EXT, GroupExt, ThePath, "PPL");
+DualDescriptionPPL_Reduction:=function(EXT, GroupExt, ThePath)
+  return DualDescriptionDoubleDescMethod_Reduction(EXT, GroupExt, ThePath, "PPL");
 end;
 
 
@@ -376,21 +373,21 @@ end;
 DualDescriptionCDD:=function(EXT, GroupExt)
   local ThePath;
   ThePath:=Filename(POLYHEDRAL_tmpdir,"");
-  return __DualDescriptionCDD_Reduction(EXT, GroupExt, ThePath);
+  return DualDescriptionCDD_Reduction(EXT, GroupExt, ThePath);
 end;
 
 
 DualDescriptionPPL:=function(EXT, GroupExt)
   local ThePath;
   ThePath:=Filename(POLYHEDRAL_tmpdir,"");
-  return __DualDescriptionPPL_Reduction(EXT, GroupExt, ThePath);
+  return DualDescriptionPPL_Reduction(EXT, GroupExt, ThePath);
 end;
 
 
 # Here we implement the enumeration by using the PD
 # method equivariantly.
 # That is, once we find a new facet, we add it systematically.
-__DualDescriptionPD_Reduction:=function(EXT, GRP, ThePath)
+DualDescriptionPD_Reduction:=function(EXT, GRP, ThePath)
   local EXTpoly, TheDim, nbVert, ListOrbit, FAC, FuncInsert, FuncInsertIfNew, nb, ListSets, eSet, EXTfind, EXTfindCan, EXTcall, eFAC, EXTpolySet, GetFACnew, ListWrong, iWrong, jWrong, nbWrong, eEXT, ListStatus, fEXT, FACnew;
   EXTpoly:=PolytopizationGeneralCone(EXT);
   EXTpolySet:=Set(EXTpoly);
@@ -485,8 +482,8 @@ __DualDescriptionPD_Reduction:=function(EXT, GRP, ThePath)
   return ListOrbit;
 end;
 
-__DualDescriptionPD_Reduction_Equivariant:=function(EXT, GRP)
+DualDescriptionPD_Reduction_Equivariant:=function(EXT, GRP)
   local ThePath;
   ThePath:="/irrelevant";
-  return __DualDescriptionPD_Reduction(EXT, GRP, ThePath);
+  return DualDescriptionPD_Reduction(EXT, GRP, ThePath);
 end;

@@ -738,7 +738,7 @@ LORENTZ_PrintInfinityInformation:=function(eRecComplex)
   TheDim:=Length(eRecComplex.ListListCells);
   nbPerf:=Length(eRecComplex.ListListCells[1]);
   nbCusp:=Length(eRecComplex.ListListCells[TheDim]);
-  IsConjectureOk:=true;  
+  IsConjectureOk:=true;
   for iPerf in [1..nbPerf]
   do
     ListListMatch:=[ [iPerf] ];
@@ -897,14 +897,14 @@ LORENTZ_EnumeratePerfect:=function(LorMat)
   eInitial:=LORENTZ_GetOnePerfect(LorMat, "isotrop");
   FuncInsertVectFamily(eInitial.ListTotal);
   BF:=BankRecording(rec(Saving:=false, BankPath:="/irrelevant/"), FuncStabilizer, FuncIsomorphy, FuncInvariant, OnSetsGroupFormalism(500));
-  DataPolyhedral:=rec(IsBankSave:=IsBankSave, 
+  DataPolyhedral:=rec(IsBankSave:=IsBankSave,
         TheDepth:=0,
-        IsRespawn:=IsRespawn, 
+        IsRespawn:=IsRespawn,
         Saving:=false,
         GetInitialRays:=GetInitialRays_LinProg,
         ThePathSave:="/irrelevant/",
         ThePath:=TmpDir,
-        DualDescriptionFunction:=__DualDescriptionLRS_Reduction, 
+        DualDescriptionFunction:=DualDescriptionLRS_Reduction,
         GroupFormalism:=OnSetsGroupFormalism(500));
   nbOrbitTreated:=0;
   while(true)
@@ -1161,7 +1161,7 @@ LORENTZ_EnumeratePerfect:=function(LorMat)
       Add(ListSpMat, eSpMat);
     od;
     TheCoho:=GettingCohomologyFromSparseMatrices(ListSpMat);
-    return rec(ListListCells:=ListListCells, 
+    return rec(ListListCells:=ListListCells,
                ListListBoundary:=ListListBoundary,
                ListSpMat:=ListSpMat,
                TheCoho:=TheCoho);
@@ -1237,17 +1237,17 @@ LORENTZ_EnumeratePerfect_DelaunayScheme:=function(LorMat, RecInput)
     Exec("mkdir -p ", ThePathSave);
     Exec("mkdir -p ", PathPermanent);
   fi;
-  DataPolyhedral:=rec(IsBankSave:=IsBankSave, 
+  DataPolyhedral:=rec(IsBankSave:=IsBankSave,
         TheDepth:=0,
-        IsRespawn:=IsRespawn, 
+        IsRespawn:=IsRespawn,
         Saving:=IsSaving,
         GetInitialRays:=GetInitialRays_LinProg,
         ThePathSave:=ThePathSave,
         ThePath:=ThePathTmp,
-        FuncStabilizer:=FuncStabilizer, 
-        FuncIsomorphy:=FuncIsomorphy, 
-        FuncInvariant:=FuncInvariant, 
-        DualDescriptionFunction:=__DualDescriptionLRS_Reduction, 
+        FuncStabilizer:=FuncStabilizer,
+        FuncIsomorphy:=FuncIsomorphy,
+        FuncInvariant:=FuncInvariant,
+        DualDescriptionFunction:=DualDescriptionLRS_Reduction,
         GroupFormalism:=OnSetsGroupFormalism(500));
   #
   # The geometrical part
@@ -1307,7 +1307,7 @@ LORENTZ_EnumeratePerfect_DelaunayScheme:=function(LorMat, RecInput)
   end;
   DataLattice:=rec(n:=n,
                    Saving:=IsSaving,
-		   PathPermanent:=PathPermanent, 
+		   PathPermanent:=PathPermanent,
                    KillingDelaunay:=KillingDelaunay,
                    KillingAdjacency:=KillingAdjacency,
                    FindDelaunayPolytope:=FindDelaunayPolytope,
@@ -1391,7 +1391,7 @@ LORENTZ_PrintEnumerationResult:=function(output, LorMat, ePrefix)
     AppendTo(output,
              "iCone=", iCone, "/", nbCone,
              " nbIso=", nbIso, " nbNonIso=", nbNonIso,
-             " index=", eDet, " |GRP|=", Order(GRP_int), 
+             " index=", eDet, " |GRP|=", Order(GRP_int),
       "\n");
   od;
   #
