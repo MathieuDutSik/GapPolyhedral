@@ -1,4 +1,5 @@
-SolutionMatRepetitive:=function(TheBasis)
+InstallGlobalFunction(SolutionMatRepetitive,
+function(TheBasis)
   local HRL, SelMat, InvMat, MySolutionMat;
   if RankMat(TheBasis)<>Length(TheBasis) then
     Error("It is not ok for this procedure");
@@ -15,11 +16,12 @@ SolutionMatRepetitive:=function(TheBasis)
     return MySol;
   end;
   return MySolutionMat;
-end;
+end);
 
 
 
-DirectSpannEquivariantSpace:=function(TheBasis, TheMatGrp)
+InstallGlobalFunction(DirectSpannEquivariantSpace,
+function(TheBasis, TheMatGrp)
   local ListSpann, MSL, IsFinished, eVect, eGen;
   while(true)
   do
@@ -42,9 +44,12 @@ DirectSpannEquivariantSpace:=function(TheBasis, TheMatGrp)
     TheBasis:=RowReduction(ListSpann).EXT;
   od;
   return TheBasis;
-end;
+end);
 
-OrbitBarycenter:=function(TheExt, TheMatGrp)
+
+
+InstallGlobalFunction(OrbitBarycenter,
+function(TheExt, TheMatGrp)
   local ListSpann, TheBasis, IsFinished, eVect, ListEqua, ListB, eGen, Alpha, RelPointSet, IsInvariant, MSL;
   ListSpann:=List(GeneratorsOfGroup(TheMatGrp), x->RemoveFraction(TheExt*x-TheExt));
   TheBasis:=RowReduction(ListSpann).EXT;
@@ -72,18 +77,22 @@ OrbitBarycenter:=function(TheExt, TheMatGrp)
   Alpha:=SolutionMat(TransposedMat(ListEqua), ListB);
   RelPointSet:=Concatenation([TheExt], List(TheBasis, x->TheExt+x));
   return rec(TheBarycenter:=TheExt+Alpha*TheBasis, RelPointSet:=RelPointSet);
-end;
+end);
 
 
-SymmetricMatrixToVector:=function(SymMat)
+
+InstallGlobalFunction(SymmetricMatrixToVector,
+function(SymMat)
   if Length(SymMat)<>Length(SymMat[1]) then
     Error("The matrix is not square");
   fi;
   return Concatenation(List([1..Length(SymMat)], x->SymMat[x]{[x..Length(SymMat)]}));
-end;
+end);
 
 
-VectorToSymmetricMatrix:=function(SymMatVector, n)
+
+InstallGlobalFunction(VectorToSymmetricMatrix,
+function(SymMatVector, n)
   local SymmMat, idx, i, siz, LS, j;
   SymmMat:=[];
   idx:=0;
@@ -103,11 +112,12 @@ VectorToSymmetricMatrix:=function(SymMatVector, n)
     od;
   od;
   return SymmMat;
-end;
+end);
 
 
 # Action of the group is M |---> t(P) M P
-MatrixTransformationMappingToSymmetricMatrix:=function(eMat)
+InstallGlobalFunction(MatrixTransformationMappingToSymmetricMatrix,
+function(eMat)
   local n, MatDim, eGenSymm, i, eVect, eSymmMat, eImgSymmMat;
   n:=Length(eMat);
   MatDim:=n*(n+1)/2;
@@ -121,13 +131,14 @@ MatrixTransformationMappingToSymmetricMatrix:=function(eMat)
     Add(eGenSymm, SymmetricMatrixToVector(eImgSymmMat));
   od;
   return eGenSymm;
-end;
+end);
 
 
 #
 #
 # Action of the group is M |---> t(P) M P
-OrbitBarycenterSymmetricMatrix:=function(TheSymMat, TheMatGrp)
+InstallGlobalFunction(OrbitBarycenterSymmetricMatrix,
+function(TheSymMat, TheMatGrp)
   local n, MatDim, NewListGens, eGen, eGenNew, i, eVect, eSymmMat, eImgSymmMat, GRPnew, TheVector, TheSingle;
   n:=Length(TheSymMat);
   MatDim:=n*(n+1)/2;
@@ -136,4 +147,4 @@ OrbitBarycenterSymmetricMatrix:=function(TheSymMat, TheMatGrp)
   TheVector:=SymmetricMatrixToVector(TheSymMat);
   TheSingle:=OrbitBarycenter(TheVector, GRPnew);
   return VectorToSymmetricMatrix(TheSingle.TheBarycenter, n);
-end;
+end);
