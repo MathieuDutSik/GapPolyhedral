@@ -163,9 +163,9 @@ end;
 # among all vertices v1, ....., vn
 # then there does not exist lambda1, ...., lambdaN
 # with lambdaI >=0 and sum lambdaI > 0
-# and 
+# and
 # mu1, ...., muP  with muJ >=0
-# such that 
+# such that
 # lambda1 v1 + .... lambdaN vn = mu1 v1 + .... + muP vP
 # Any other formulation is WRONG.
 SPAN_face_LinearProgramming:=function(face, Stabface, ListFacets, GroupFac, BoundingSet)
@@ -185,7 +185,7 @@ SPAN_face_LinearProgramming:=function(face, Stabface, ListFacets, GroupFac, Boun
       for jFac in [1..Length(ListFacets)]
       do
         test:=First(KRN, x->x*ListFacets[jFac]<>0);
-        if test=fail then 
+        if test=fail then
           Add(eCand, jFac);
           VSum:=VSum+ListFacets[jFac];
         fi;
@@ -200,7 +200,6 @@ SPAN_face_LinearProgramming:=function(face, Stabface, ListFacets, GroupFac, Boun
       else
         VSum2:=Sum(DeterSet);
       fi;
-      #Print("eCand=", eCand, "\n");
       TheStab:=Stabilizer(GroupFac, eCand, OnSets);
       ListVectors:=[];
       ListConstPos:=[];
@@ -216,14 +215,8 @@ SPAN_face_LinearProgramming:=function(face, Stabface, ListFacets, GroupFac, Boun
         TheSumAve:=TheSum/Length(eO1);
         Add(ListVectSpann, TheSumAve);
       od;
-      #Print("ListVectSpann=\n");
-      #PrintArray(ListVectSpann);
       BasisSpann:=RowReduction(ListVectSpann).EXT;
-      #Print("BasisSpann=\n");
-      #PrintArray(BasisSpann);
       TheTot:=RowReduction(Concatenation(BasisSpann, IdentityMat(TheDim))).EXT;
-      #Print("TheTot=\n");
-      #PrintArray(TheTot);
       eSetProj:=[1+Length(BasisSpann)..Length(TheTot)];
       ListSelect:=Filtered(Difference([1..Length(ListFacets)], eCand), x->VSum2*ListFacets[x]=0);
       O2:=Orbits(TheStab, ListSelect, OnPoints);
@@ -237,11 +230,7 @@ SPAN_face_LinearProgramming:=function(face, Stabface, ListFacets, GroupFac, Boun
         eSol:=SolutionMat(TheTot, TheSum/Length(eO2));
         Add(ListVectors, RemoveFraction(eSol{eSetProj}));
       od;
-      #Print("ListVectors=\n");
-      #PrintArray(ListVectors);
       SetListVectors:=Set(ListVectors);
-      #Print("SetListVectors=\n");
-      #PrintArray(SetListVectors);
       nbVectSet:=Length(SetListVectors);
       ListConstPos:=[1..nbVectSet];
       eSetSe:=[1..nbVectSet];
@@ -262,7 +251,7 @@ end;
 
 
 #
-# given a k-dimensional face given as intersection of facets, this procedure 
+# given a k-dimensional face given as intersection of facets, this procedure
 # returns the list of all k-1 dimensional faces contained in it.
 # face is a list of indexes for FAC
 SPAN_face_ExtremeRay:=function(FaceFAC, Stabface, FAC, EXT)
@@ -494,7 +483,7 @@ SPAN_K_Faces:=function(GroupFac, ListFace, FAC, SPAN_function)
   return rec(ListRepresentent:=ListRepresentent, ListStabilizer:=ListStabilizer, ListSizes:=ListSizes, nbFace:=nbFace);
 end;
 
-# 
+#
 # create the list of all k_skelettons together with their sizes, listappear
 KernelSkeletonSearch:=function(GroupFac, FAC, LevSearch, SPAN_function)
   local ListOrbit, ListInfos, iK, ListOrbitRepr, ListSizes, ListStabilizer;
@@ -527,9 +516,6 @@ end;
 
 IncompleteSkeletonSearch:=function(GroupFac, FAC, BoundingSet, LevSearch)
   local SPAN_function;
-#  SPAN_function:=function(face, TheStab, FAC)
-#    return SPAN_face_Redcheck(face, TheStab, FAC);
-#  end;
   SPAN_function:=function(face, TheStab, FAC)
     return SPAN_face_LinearProgramming(face, TheStab, FAC, GroupFac, BoundingSet);
   end;
@@ -759,7 +745,7 @@ BoundaryOperatorsCellularDecompositionPolytope:=function(GroupEXT, EXT, kSought)
       TheStab:=Stabilizer(GroupEXT, eSpann1, OnSets);
       nbFace:=nbFace+Order(GroupEXT)/Order(TheStab);
       TheOrbSmall:=OrbitWithAction(TheStab, eSetSmall, OnSets);
-      eOrbit1:=rec(eSet:=eSpann1, TheStab:=TheStab, 
+      eOrbit1:=rec(eSet:=eSpann1, TheStab:=TheStab,
                    ListOrbitSmall:=[rec(iFace:=iFace, ListElement:=TheOrbSmall.ListElement)]);
       Add(TheComputedList, eOrbit1);
     end;
@@ -1040,9 +1026,7 @@ TestDefinitionFace:=function(ListVect, eSet)
     return true;
   fi;
   ListVectRed:=ColumnReduction(ListVect).EXT;
-#  Print("ListVectRed=", ListVectRed, "\n");
   NSP:=NullspaceMat(TransposedMat(ListVectRed{eSet}));
-#  Print("NSP=", NSP, "\n");
   dimNSP:=Length(NSP);
   nbVect:=Length(ListVectRed);
   ListIneq:=[];
@@ -1218,10 +1202,10 @@ TestAdjSkeletonUseSymmetry:=function(eFace1, eFace2, K, dimension, EXT, FAC, GRP
 end;
 
 # GroupFac is a group of permutation acting on the list of all facets
-# Kminus and Kplus are list of faces of dimension K-1 and K+1 written as 
+# Kminus and Kplus are list of faces of dimension K-1 and K+1 written as
 # intersection of facets
 # LISTORB is the list of all orbits of faces of dimension k.
-# each such orbit is presented as list 
+# each such orbit is presented as list
 CreateK_graph:=function(GroupFac, K, dimension, Kminus, LISTORB, Kplus)
   local FuncAdj;
   FuncAdj:=function(S1,S2)

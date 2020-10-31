@@ -101,9 +101,7 @@ OnTuplesSetsStabilizer:=function(GRP, eTuple)
   eTupleReord:=Permuted(eTuple, ePerm);
   for eSet in eTupleReord
   do
-#    Print("|eSet|=", Length(eSet), "\n");
     ReturnedStab:=Stabilizer(ReturnedStab, eSet, OnSets);
-#    Print("|ReturnedStab|=", Order(ReturnedStab), "\n");
   od;
   return ReturnedStab;
 end;
@@ -886,7 +884,6 @@ MatrixGroupPermutationRepresentation:=function(GRP1, GRP2, nbPoint, ListGens1, L
     ListGens1:=List(GeneratorsOfGroup(GRPstab), GetPreImage);
     ListGens2:=GeneratorsOfGroup(TheKer);
     ListGen:=Concatenation(ListGens1, ListGens2);
-    Print("|TheKer|=", Order(TheKer), "\n");
     return Group(ListGen);
   end;
   GetStabilizerPoint_meth2:=function(ePt)
@@ -935,7 +932,6 @@ LinearSpace_GetDivisor:=function(TheSpace)
     if IsOK=true then
       return eDiv;
     fi;
-#    Print("eDiv=", eDiv, "\n");
    eDiv:=eDiv+1;
   od;
   Error("We should never reach that stage");
@@ -1046,12 +1042,10 @@ LinearSpace_ModEquivalence:=function(GRPmatr, TheSpace1, TheSpace2, TheMod)
   end;
   IsEquiv:=function(eEquiv)
     local eVect, eGen, eSol;
-#    Print("eEquiv=", eEquiv, "\n");
     for eVect in TheSpace1
     do
       eSol:=SolutionIntMat(TheSpace2Mod, eVect*eEquiv);
       if eSol=fail then
-#        Print("Leaving eVect=", eVect, "\n");
         return List(eVect*eEquiv, x->x mod TheMod);
       fi;
     od;
@@ -1076,15 +1070,11 @@ LinearSpace_ModEquivalence:=function(GRPmatr, TheSpace1, TheSpace2, TheMod)
     TheSpace1work:=TheSpace1Mod*eElt;
     eSet1:=Filtered([1..Length(O)], x->SolutionIntMat(TheSpace1work, O[x])<>fail);
     eSet2:=Filtered([1..Length(O)], x->SolutionIntMat(TheSpace2Mod, O[x])<>fail);
-    Print("|eSet1|=", Length(eSet1), " |eSet2|=", Length(eSet2), "\n");
     eMat:=RepresentativeAction(GRPwork, eSet1, eSet2, ListMatrGens, ListPermGens, OnSets);
-#    Print("After call to RepresentativeAction\n");
     if eMat=fail then
       return fail;
     fi;
-#    Print("Before computing GRPwork\n");
     GRPwork:=Stabilizer(GRPwork, eSet2, ListMatrGens, ListPermGens, OnSets);
-#    Print("After computing GRPwork\n");
     eElt:=eElt*eMat;
   od;
   for eGen in GeneratorsOfGroup(GRPwork)
@@ -1101,9 +1091,6 @@ LinearSpace_Equivalence:=function(GRPmatr, TheSpace1, TheSpace2)
   n:=Length(TheSpace1);
   LFact1:=LinearSpace_GetDivisor(TheSpace1);
   LFact2:=LinearSpace_GetDivisor(TheSpace2);
-#  eDet1:=AbsInt(DeterminantMat(TheSpace1));
-#  eDet2:=AbsInt(DeterminantMat(TheSpace2));
-#  Print("eDet1=", eDet1, " eDet2=", eDet2, "\n");
   Print("LFact1=", LFact1, " LFact2=", LFact2, "\n");
   if LFact1<>LFact2 then
     return fail;
@@ -1125,7 +1112,6 @@ LinearSpace_Equivalence:=function(GRPmatr, TheSpace1, TheSpace2)
   for i in [1..Length(eList)]
   do
     TheMod:=Product(eList{[1..i]});
-    Print("i=", i, " TheMod=", TheMod, "\n");
     if IsEquivalence(eElt)=true then
       return eElt;
     fi;
