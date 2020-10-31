@@ -5,31 +5,38 @@ FileVectorCddGap:=Filename(DirectoriesPackagePrograms("MyPolyhedral"),"VectorCdd
 FileConvertListFileAsVector:=Filename(DirectoriesPackagePrograms("MyPolyhedral"),"ConvListFile");
 
 
-RemoveFileIfExist:=function(FileName)
+
+InstallGlobalFunction(RemoveFileIfExist,
+function(FileName)
   if IsExistingFile(FileName)=true then
     RemoveFile(FileName);
   fi;
-end;
+end);
 
-SaveDataToFile:=function(FileName, OBJ)
+
+
+InstallGlobalFunction(SaveDataToFile,
+function(FileName, OBJ)
   local output;
   Exec("rm -f ", FileName,"\n");
   output:=OutputTextFile(FileName, true);;
   AppendTo(output, "return ", OBJ, ";\n");
   CloseStream(output);
-end;
+end);
 
 
 
-
+InstallGlobalFunction(
 GetFinalFile:=function(eFile)
   local LStr;
   LStr:=STRING_Split(eFile, "/").ListStrInter;
   return LStr[Length(LStr)];
-end;
+end);
 
 
-GetDirectoryFromFile:=function(eFile)
+
+InstallGlobalFunction(GetDirectoryFromFile,
+function(eFile)
   local len, i, pos;
   len:=Length(eFile);
   pos:=-1;
@@ -43,58 +50,70 @@ GetDirectoryFromFile:=function(eFile)
     Error("We did not find the / in the string");
   fi;
   return eFile{[1..pos]};
-end;
+end);
 
 
-SaveDataToFilePlusTouch:=function(FileName, OBJ)
+
+InstallGlobalFunction(SaveDataToFilePlusTouch,
+function(FileName, OBJ)
   local FileTouch;
   FileTouch:=Concatenation(FileName, "_touch");
   RemoveFileIfExist(FileTouch);
   SaveDataToFile(FileName, OBJ);
   SaveDataToFile(FileTouch, 0);
-end;
+end);
 
-IsExistingFilePlusTouch:=function(FileName)
+
+
+InstallGlobalFunction(IsExistingFilePlusTouch,
+function(FileName)
   local FileTouch;
   if IsExistingFile(FileName)=false then
     return false;
   fi;
   FileTouch:=Concatenation(FileName, "_touch");
   return IsExistingFile(FileTouch);
-end;
+end);
 
 
 
-
-
-IsEmptyFile:=function(FileName)
+InstallGlobalFunction(IsEmptyFile,
+function(FileName)
   local FileRep, TheRep;
   FileRep:=Filename(POLYHEDRAL_tmpdir, "FileInterpretation");
   Exec(FileIsEmptyFile, " ", FileName, " > ", FileRep);
   TheRep:=ReadAsFunction(FileRep)();
   RemoveFile(FileRep);
   return TheRep;
-end;
+end);
 
-ReadVectorFile:=function(FileName)
+
+
+InstallGlobalFunction(ReadVectorFile,
+function(FileName)
   local Ftmp, DataVar;
   Ftmp:=Filename(POLYHEDRAL_tmpdir, "GapFile");
   Exec(FileVectorCddGap, " ", FileName, "> ", Ftmp);
   DataVar:=ReadAsFunction(Ftmp)();
   RemoveFile(Ftmp);
   return DataVar;
-end;
+end);
 
 
-SaveStringToFile:=function(FileName, eStr)
+
+InstallGlobalFunction(SaveStringToFile,
+function(FileName, eStr)
   local output;
   Exec("rm -f ", FileName,"\n");
   output:=OutputTextFile(FileName, true);;
   AppendTo(output, "return \"", eStr, "\";");
   CloseStream(output);
-end;
+end);
 
-SaveDataToFilePlusGzip:=function(FileName, OBJ)
+
+
+InstallGlobalFunction(SaveDataToFilePlusGzip,
+function(FileName, OBJ)
   local output, FileNameGzip;
   FileNameGzip:=Concatenation(FileName, ".gz");
   Exec("rm -f ", FileName, "\n");
@@ -103,44 +122,51 @@ SaveDataToFilePlusGzip:=function(FileName, OBJ)
   AppendTo(output, "return ", OBJ, ";\n");
   CloseStream(output);
   Exec("gzip ", FileName);
-end;
+end);
 
 
-RemoveFilePlusTouch:=function(FileName)
+
+InstallGlobalFunction(RemoveFilePlusTouch,
+function(FileName)
   local FileTouch;
   FileTouch:=Concatenation(FileName, "_touch");
   RemoveFile(FileName);
   RemoveFile(FileTouch);
-end;
+end);
 
 
 
-
-SaveDataToFilePlusTouchPlusTest:=function(FileName, OBJ, test)
+InstallGlobalFunction(SaveDataToFilePlusTouchPlusTest,
+function(FileName, OBJ, test)
   if test=true then
     SaveDataToFilePlusTouch(FileName, OBJ);
   fi;
-end;
+end);
 
-SaveDataToFilePlusGzipPlusTouch:=function(FileName, OBJ)
+
+
+InstallGlobalFunction(SaveDataToFilePlusGzipPlusTouch,
+function(FileName, OBJ)
   local FileTouch;
   FileTouch:=Concatenation(FileName, "_touch");
   RemoveFileIfExist(FileTouch);
   SaveDataToFilePlusGzip(FileName, OBJ);
   SaveDataToFile(Concatenation(FileName, "_touch"), 0);
-end;
+end);
 
 
-SaveDataToFilePlusGzipPlusTouchPlusTest:=function(FileName, OBJ, test)
+
+InstallGlobalFunction(SaveDataToFilePlusGzipPlusTouchPlusTest,
+function(FileName, OBJ, test)
   if test=true then
     SaveDataToFilePlusGzipPlusTouch(FileName, OBJ);
   fi;
-end;
+end);
 
 
 
-
-ReadAsFunctionPlusGzip:=function(FileName)
+InstallGlobalFunction(ReadAsFunctionPlusGzip,
+function(FileName)
   local FilePre, FileD, W, FileGziped;
   FileGziped:=Concatenation(FileName, ".gz");
   FileD:=Filename(POLYHEDRAL_tmpdir,"Uncompressed");
@@ -148,11 +174,12 @@ ReadAsFunctionPlusGzip:=function(FileName)
   W:=ReadAsFunction(FileD);
   RemoveFile(FileD);
   return W;
-end;
+end);
 
 
 
-ComputeAndSave:=function(FileName, FCT)
+InstallGlobalFunction(ComputeAndSave,
+function(FileName, FCT)
   local TheData;
   if IsExistingFile(FileName)=true then
     return ReadAsFunction(FileName)();
@@ -161,14 +188,12 @@ ComputeAndSave:=function(FileName, FCT)
     SaveDataToFile(FileName, TheData);
     return TheData;
   fi;
-end;
+end);
 
 
 
-
-
-
-ComputeAndSaveIfTest:=function(FileName, TheTest, FCT)
+InstallGlobalFunction(ComputeAndSaveIfTest,
+function(FileName, TheTest, FCT)
   local TheData;
   if TheTest=true and IsExistingFile(FileName)=true then
     return ReadAsFunction(FileName)();
@@ -179,46 +204,56 @@ ComputeAndSaveIfTest:=function(FileName, TheTest, FCT)
     fi;
     return TheData;
   fi;
-end;
+end);
 
 
 
-
-RemoveDirectoryPlusTest:=function(FileDirectory, test)
+InstallGlobalFunction(RemoveDirectoryPlusTest,
+function(FileDirectory, test)
   if test=true then
     Exec("rm -rf ", FileDirectory);
   fi;
-end;
+end);
 
-CreateDirectory:=function(FileDirectory)
+
+
+InstallGlobalFunction(CreateDirectory,
+function(FileDirectory)
   Exec("mkdir -p ", FileDirectory);
-end;
+end);
 
-CreateDirectoryPlusTest:=function(FileDirectory, test)
+
+
+InstallGlobalFunction(CreateDirectoryPlusTest,
+function(FileDirectory, test)
   if test=true then
     Exec("mkdir -p ", FileDirectory);
   fi;
-end;
+end);
 
 
 
-RemoveFileIfExistPlusTouch:=function(FileName)
+InstallGlobalFunction(RemoveFileIfExistPlusTouch,
+function(FileName)
   local FileTouch;
   RemoveFileIfExist(FileName);
   FileTouch:=Concatenation(FileName, "_touch");
   RemoveFileIfExist(FileTouch);
-end;
+end);
 
-RemoveFileIfExistPlusTouchPlusTest:=function(FileName, test)
+
+
+InstallGlobalFunction(RemoveFileIfExistPlusTouchPlusTest,
+function(FileName, test)
   if test=true then
     RemoveFileIfExistPlusTouch(FileName);
   fi;
-end;
+end);
 
 
 
-
-IsExistingFilePlusGzipPlusTouchPlusTest:=function(FileName, test)
+InstallGlobalFunction(IsExistingFilePlusGzipPlusTouchPlusTest,
+function(FileName, test)
   local FileTouch, FileGziped;
   if test=false then
     return false;
@@ -227,11 +262,12 @@ IsExistingFilePlusGzipPlusTouchPlusTest:=function(FileName, test)
     FileGziped:=Concatenation(FileName, ".gz");
     return IsExistingFile(FileTouch) and IsExistingFile(FileGziped);
   fi;
-end;
+end);
 
 
 
-IsExistingFilePlusTouchPlusTest:=function(FileName, test)
+InstallGlobalFunction(IsExistingFilePlusTouchPlusTest,
+function(FileName, test)
   local FileTouch;
   if test=false then
     return false;
@@ -242,21 +278,23 @@ IsExistingFilePlusTouchPlusTest:=function(FileName, test)
     fi;
     return IsExistingFile(FileTouch);
   fi;
-end;
+end);
 
 
 
-RecollectTest:=function(FileName, test)
+InstallGlobalFunction(RecollectTest,
+function(FileName, test)
   if test=true then
     if IsExistingFile(FileName)=true then
       Error("Forget to run a Recollect function");
     fi;
   fi;
-end;
+end);
 
 
 
-ReadAsFunctionPlusTouchPlusTest:=function(FileName, DefaultVal, test)
+InstallGlobalFunction(ReadAsFunctionPlusTouchPlusTest,
+function(FileName, DefaultVal, test)
   if test=false then
     return DefaultVal;
   else
@@ -266,11 +304,12 @@ ReadAsFunctionPlusTouchPlusTest:=function(FileName, DefaultVal, test)
     fi;
     return ReadAsFunction(FileName)();
   fi;
-end;
+end);
 
 
 
-ComputeAndSave:=function(FileName, FCT)
+InstallGlobalFunction(ComputeAndSave,
+function(FileName, FCT)
   local TheData, FileTouch;
   FileTouch:=Concatenation(FileName, "_touch");
   if IsExistingFile(FileName)=true then
@@ -280,11 +319,12 @@ ComputeAndSave:=function(FileName, FCT)
     SaveDataToFilePlusTouch(FileName, TheData);
     return TheData;
   fi;
-end;
+end);
 
 
 
-ComputeAndSavePlusTouch:=function(FileName, FCT)
+InstallGlobalFunction(ComputeAndSavePlusTouch,
+function(FileName, FCT)
   local TheData;
   if IsExistingFilePlusTouch(FileName)=true then
     return ReadAsFunction(FileName)();
@@ -293,21 +333,23 @@ ComputeAndSavePlusTouch:=function(FileName, FCT)
     SaveDataToFilePlusTouch(FileName, TheData);
     return TheData;
   fi;
-end;
+end);
 
 
 
-ComputeAndSavePlusTouchPlusTest:=function(FileName, FCT, test)
+InstallGlobalFunction(ComputeAndSavePlusTouchPlusTest,
+function(FileName, FCT, test)
   if test=false then
     return FCT(1);
   else
     return ComputeAndSavePlusTouch(FileName, FCT);
   fi;
-end;
+end);
 
 
 
-SaveDataToFileRecoverablePrevState:=function(FileName, Data)
+InstallGlobalFunction(SaveDataToFileRecoverablePrevState,
+function(FileName, Data)
   local File1, File2, File1touch, File2touch;
   File1:=Concatenation(FileName, "_1");
   File2:=Concatenation(FileName, "_2");
@@ -319,19 +361,21 @@ SaveDataToFileRecoverablePrevState:=function(FileName, Data)
   RemoveFileIfExist(File1);
   Exec("cp ", File2, " ", File1);
   Exec("cp ", File2touch, " ", File1touch);
-end;
+end);
 
 
 
-SaveDataToFileRecoverablePrevStatePlusTest:=function(FileName, Data, test)
+InstallGlobalFunction(SaveDataToFileRecoverablePrevStatePlusTest,
+function(FileName, Data, test)
   if test=true then
     SaveDataToFileRecoverablePrevState(FileName, Data);
   fi;
-end;
+end);
 
 
 
-ReadAsFunctionRecoverablePrevState:=function(FileName)
+InstallGlobalFunction(ReadAsFunctionRecoverablePrevState,
+function(FileName)
   local File1, File2, File1touch, File2touch;
   File1:=Concatenation(FileName, "_1");
   File2:=Concatenation(FileName, "_2");
@@ -343,11 +387,12 @@ ReadAsFunctionRecoverablePrevState:=function(FileName)
   if IsExistingFile(File2touch)=true then
     return ReadAsFunction(File2)();
   fi;
-end;
+end);
 
 
 
-IsExistingFileRecoverablePrevState:=function(FileName)
+InstallGlobalFunction(IsExistingFileRecoverablePrevState,
+function(FileName)
   local File1, File2, File1touch, File2touch;
   File1:=Concatenation(FileName, "_1");
   File2:=Concatenation(FileName, "_2");
@@ -360,12 +405,13 @@ IsExistingFileRecoverablePrevState:=function(FileName)
     return true;
   fi;
   return false;
-end;
+end);
 
 
 # TheComm can be something like
 # "ssh r ls TheComputation/LEGO/DATAcase"
-LSoperation:=function(TheComm)
+InstallGlobalFunction(LSoperation,
+function(TheComm)
   local FileList, TheCommFull, FileFinal, TheListFinal, TheCommand;
   FileList:=Filename(POLYHEDRAL_tmpdir, "ListFile");
   TheCommFull:=Concatenation(TheComm, " > ", FileList);
@@ -379,10 +425,13 @@ LSoperation:=function(TheComm)
   RemoveFileIfExist(FileFinal);
   RemoveFileIfExist(FileList);
   return TheListFinal;
-end;
+end);
+
+
 
 # Replace the / by _
-FullFileAsString:=function(eFile)
+InstallGlobalFunction(FullFileAsString,
+function(eFile)
   local LStr, eStr, i;
   LStr:=STRING_Split(eFile, "/").ListStrInter;
   eStr:=LStr[1];
@@ -391,4 +440,4 @@ FullFileAsString:=function(eFile)
     eStr:=Concatenation(eStr, "_", LStr[i]);
   od;
   return eStr;
-end;
+end);
