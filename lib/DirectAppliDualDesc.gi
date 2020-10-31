@@ -1,4 +1,5 @@
-EquivariantSearchDualDescription:=function(EXT, PermGRP)
+InstallGlobalFunction(EquivariantSearchDualDescription,
+function(EXT, PermGRP)
   local ListEnt, ListInv, EXTred, TheDim, nbVert, ScalarMat, eLine, FuncInsert, ComputeForSpecificGroup, GetListEnt, FuncInv, ComputeKeyInformation_EXT, ComputeKeyInformation_GRP, MapSpecificGroupOrbits, eTool;
   EXTred:=ColumnReduction(EXT).EXT;
   TheDim:=Length(EXTred[1]);
@@ -114,11 +115,12 @@ EquivariantSearchDualDescription:=function(EXT, PermGRP)
              ComputeKeyInformation_EXT:=ComputeKeyInformation_EXT,
              ComputeKeyInformation_GRP:=ComputeKeyInformation_GRP,
 	     MapSpecificGroupOrbits:=MapSpecificGroupOrbits);
-end;
+end);
 
 
 
-SearchSymmetricFacet:=function(eCase, RecOpt)
+InstallGlobalFunction(SearchSymmetricFacet,
+function(eCase, RecOpt)
   local PrefixSave, eComm, EXT, FileSave, PermGRP, ListGRP_CJ, CJ, ListGRP_CJ2, CJ2, ListGRP_CJtot, GetOrbitDualDescription, RetrieveListOrbit, ListCasesDone, iCJ, eCJ, NeedCompute, ESDD, KeyGRP, KeyEXT, nbSubcase, ListOrbitRaw, ListOrbSma, ListOrbFound, eOrbRaw, nbCaseDone, Key_NbVert, Key_rank, Key_grp, RecRead, RecWrite;
   #
   PrefixSave:=eCase.PrefixSave;
@@ -294,20 +296,12 @@ SearchSymmetricFacet:=function(eCase, RecOpt)
     SaveDataToFilePlusTouch(FileSave, RecWrite);
   fi;
   return rec(GRP:=PermGRP, nbSubcase:=nbSubcase, ListOrbFound:=ListOrbFound);
-end;
+end);
 
 
 
-
-
-
-
-
-
-
-
-
-RepresentationMatrixAndFacetStandard:=function(EXT, PermGRP)
+InstallGlobalFunction(RepresentationMatrixAndFacetStandard,
+function(EXT, PermGRP)
   local WorkingDim, FuncStabilizer, FuncIsomorphy, FuncGetIndex, FuncInvariant, BF, GetRecord, TmpDir, DataPolyhedral, TheGEN, ListOrbit, TheRepresentationMatrix, IsFinished, nbOrbit, iOrbit, NewData, RPLift, Ladj, eInc, idx, eRedStab, nbAdj, GetDiagMatrix, ListRepresentatives, ListIncidence, ListStabOrder, ListOrbSize, DMat, DiscriminantList, eReordPerm, ReordListRepresentatives, ReordDiscriminantList, ReordListOrbSize, ReordDMat, ReordRepresentationMatrix, IsBankSave, IsRespawn;
   WorkingDim:=RankMat(EXT);
   #
@@ -464,22 +458,11 @@ RepresentationMatrixAndFacetStandard:=function(EXT, PermGRP)
     Error("We have reached an inconsistency 2");
   fi;
   return rec(ListRepresentatives:=ReordListRepresentatives, ListOrbSize:=ReordListOrbSize, TheRepresentationMatrix:=ReordRepresentationMatrix);
-end;
+end);
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-KernelBeltComputation:=function(EXT, PermGRP, ListOrbit, ListListOrbitSubset)
+poly_private@KernelBeltComputation:=function(EXT, PermGRP, ListOrbit, ListListOrbitSubset)
   local ListPairsSet, nbOrbit, ListRPLift, ListEXTface, iOrbit, eSet, RPLift, EXTface, TheStab, TheStabRed, eSubset, ePair, nbPairs, ListStatus, DoFlipping, GetLoop, ListOrbitBelt, iPair, TheLoop, ListOrbitNr;
   if IsCentrallySymmetric(EXT)=false then
     Error("The polytope is not centrally symmetric");
@@ -571,8 +554,8 @@ end;
 
 
 
-
-BeltComputationStandard:=function(EXT, PermGRP)
+InstallGlobalFunction(BeltComputationStandard,
+function(EXT, PermGRP)
   local ListOrbit, nbOrbit, ListRPLift, iOrbit, eSet, EXTface, TheStab, TheStabRed, ListOrbitSubset, ListListOrbitSubset;
   if IsCentrallySymmetric(EXT)=false then
     Error("The polytope is not centrally symmetric");
@@ -593,11 +576,13 @@ BeltComputationStandard:=function(EXT, PermGRP)
     ListOrbitSubset:=DualDescriptionStandard(EXTface, TheStabRed);
     Add(ListListOrbitSubset, ListOrbitSubset);
   od;
-  return KernelBeltComputation(EXT, PermGRP, ListOrbit, ListListOrbitSubset);
-end;
+  return poly_private@KernelBeltComputation(EXT, PermGRP, ListOrbit, ListListOrbitSubset);
+end);
 
 
-FindSolutionToLinearProgram:=function(ListInequalities, ToBeMinimized)
+
+InstallGlobalFunction(FindSolutionToLinearProgram,
+function(ListInequalities, ToBeMinimized)
   local TheLP, TheDim, eVect, eEnt;
   TheLP:=LinearProgramming(ListInequalities, ToBeMinimized);
   TheDim:=Length(ToBeMinimized)-1;
@@ -610,7 +595,7 @@ FindSolutionToLinearProgram:=function(ListInequalities, ToBeMinimized)
     eVect[eEnt[1]]:=eEnt[2];
   od;
   return eVect;
-end;
+end);
 
 
 
@@ -622,7 +607,8 @@ end;
 # the face that realize the maximum.
 # This is expensive, but the result is a vertex that is invariant
 # under affine transformation.
-FindGeometricallyUniqueSolutionToLinearProgramming:=function(ListInequalities, ToBeMinimized)
+InstallGlobalFunction(FindGeometricallyUniqueSolutionToLinearProgramming,
+function(ListInequalities, ToBeMinimized)
   local TheLP, eVect, eEnt, eVectAdd, testNonDeg, ListMatchingIneq, eIneq, eIneqRed, nbIneq, ListStatus, ListToBeConsidered, iIneq, pos, len, TheConstraint, eNewIneq, ListVertices, eVert, NSP, NewListInequalities, TheSumVert, TheSoughtVert, eSolPositive, eVal, ListIdx, TheDim, TheSoughtVertRed, TheSecondSoughtVert, NSPext, DimFace;
   TheLP:=LinearProgramming(ListInequalities, ToBeMinimized);
   TheDim:=Length(ToBeMinimized)-1;
@@ -679,14 +665,12 @@ FindGeometricallyUniqueSolutionToLinearProgramming:=function(ListInequalities, T
   NSP:=NullspaceIntMat(TransposedMat(RemoveFractionMatrix(ListMatchingIneq{ListIdx})));
   DimFace:=Length(NSP);
   NSPext:=List(NSP, x->Concatenation([0], x));
-#  Print("NSP=", NSP, "\n");
   NewListInequalities:=[];
   for eIneq in ListInequalities
   do
     eIneqRed:=eIneq{[2..TheDim+1]};
     eVal:=eIneq*eVectAdd;
     if First(NSP, x->x*eIneqRed<>0)<>fail then
-#      Print("eIneqRed=", eIneqRed, "\n");
       eNewIneq:=Concatenation([eVal], List(NSP, x->x*eIneqRed));
       Add(NewListInequalities, eNewIneq);
     fi;
@@ -701,14 +685,11 @@ FindGeometricallyUniqueSolutionToLinearProgramming:=function(ListInequalities, T
   TheSoughtVertRed:=TheSoughtVert{[2..DimFace+1]};
   TheSecondSoughtVert:=eVectAdd + TheSoughtVertRed*NSPext;
   return TheSecondSoughtVert{[2..TheDim+1]};
-end;
+end);
 
 
 
-
-
-# ListFacets is orbitwise or not
-GetSpaceInteriorPoint_Kernel:=function(ListAddEqua, ListFacets, MatrixFaceStab, eMethod)
+poly_private@GetSpaceInteriorPoint_Kernel:=function(ListAddEqua, ListFacets, MatrixFaceStab, eMethod)
   local ListEqua, TheDim, eGen, DiffMat, NSP, ListInequalities, ListInequalitiesRed, ToBeMinimized, eRepFac, H, eVect, TheSol, eEqua, eVectAdd, testNonDeg;
   ListEqua:=[];
   TheDim:=Length(ListFacets[1]);
@@ -755,14 +736,15 @@ GetSpaceInteriorPoint_Kernel:=function(ListAddEqua, ListFacets, MatrixFaceStab, 
   return TheSol;
 end;
 
-GetSpaceInteriorPoint:=function(ListAddEqua, ListFacets, MatrixFaceStab)
-  return GetSpaceInteriorPoint_Kernel(ListAddEqua, ListFacets, MatrixFaceStab, "unique");
-end;
+InstallGlobalFunction(GetSpaceInteriorPoint,
+function(ListAddEqua, ListFacets, MatrixFaceStab)
+  return poly_private@GetSpaceInteriorPoint_Kernel(ListAddEqua, ListFacets, MatrixFaceStab, "unique");
+end);
 
 
-GetSpaceInteriorPoint_NoGroup:=function(FAC)
+InstallGlobalFunction(GetSpaceInteriorPoint_NoGroup,
+function(FAC)
   local n, ListAddEqua, MatrixFaceStab, eInterior;
-#  Error("FAC case");
   n:=Length(FAC[1]);
   ListAddEqua:=[];
   MatrixFaceStab:=Group([IdentityMat(n)]);
@@ -771,12 +753,13 @@ GetSpaceInteriorPoint_NoGroup:=function(FAC)
     Error("Problem in the business of finding interior points");
   fi;
   return eInterior;
-end;
+end);
 
 
 
 
-IsIntersectionListConesRelativeInterior:=function(ListEXT)
+InstallGlobalFunction(IsIntersectionListConesRelativeInterior,
+function(ListEXT)
   local ListEquaTot, BasisIntersection, GetInequality, ListIneqTot, TheSpa, ePointInt, ePointIntB, EXT, eSol, dimSpa, eVectZero, pos;
   ListEquaTot:=Concatenation(List(ListEXT, x->NullspaceMat(TransposedMat(x))));
   BasisIntersection:=NullspaceMat(TransposedMat(ListEquaTot));
@@ -813,11 +796,12 @@ IsIntersectionListConesRelativeInterior:=function(ListEXT)
   else
     return rec(result:=false);
   fi;
-end;
+end);
 
 
 
-CheckPairwiseDecomposition:=function(ListEXT)
+InstallGlobalFunction(CheckPairwiseDecomposition,
+function(ListEXT)
   local TotDim, ListFAC, TestIntersection, iPoly, jPoly, nbPoly;
   TotDim:=Length(ListEXT[1][1]);
   nbPoly:=Length(ListEXT);
@@ -860,4 +844,4 @@ CheckPairwiseDecomposition:=function(ListEXT)
     od;
   od;
   return true;
-end;
+end);
