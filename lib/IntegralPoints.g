@@ -3,7 +3,7 @@ FileIntPoints:=Filename(DirectoriesPackagePrograms("MyPolyhedral"),"POLY_Integra
 
 
 
-GetIntegralPointsIteration_Kernel:=function(FAC, EXT)
+poly_private@GetIntegralPointsIteration_Kernel:=function(FAC, EXT)
   local FileFAC, FileEXT, FileOUT, ListPoint, TheCommand;
   FileFAC:=Filename(POLYHEDRAL_tmpdir,"Iter.FAC");
   FileEXT:=Filename(POLYHEDRAL_tmpdir,"Iter.EXT");
@@ -28,7 +28,7 @@ GetIntegralPointsIteration:=function(FAC)
   local EXT, n, ListPointsEXT, ListPoints;
   EXT:=DualDescription(FAC);
   n:=Length(FAC[1])-1;
-  ListPointsEXT:=GetIntegralPointsIteration_Kernel(FAC, EXT);
+  ListPointsEXT:=poly_private@GetIntegralPointsIteration_Kernel(FAC, EXT);
   ListPoints:=List(ListPointsEXT, x->x{[2..n+1]});
   return ListPoints;
 end;
@@ -36,7 +36,7 @@ end;
 
 
 
-MyWriteVector:=function(output, eLine)
+poly_private@IntWriteVector:=function(output, eLine)
   local eEnt;
   for eEnt in eLine
   do
@@ -69,13 +69,12 @@ RunZsolve:=function(FACin)
   eLineRhs:=List(FAC, x->-x[1]);
   #
   SaveDataToFile(FileFac, FAC);
-#  Print("FileFac = ", FileFac, "\n");
   #
   output:=OutputTextFile(FileMat, true);
   AppendTo(output, nbIneq, " ", p-1, "\n");
   for eLine in FACred
   do
-    MyWriteVector(output, eLine);
+    poly_private@IntWriteVector(output, eLine);
   od;
   CloseStream(output);
   #
@@ -90,7 +89,7 @@ RunZsolve:=function(FACin)
   #
   output:=OutputTextFile(FileRhs, true);
   AppendTo(output, "1 ", nbIneq, "\n");
-  MyWriteVector(output, eLineRhs);
+  poly_private@IntWriteVector(output, eLineRhs);
   CloseStream(output);
   #
   output:=OutputTextFile(FileSgn, true);
@@ -103,19 +102,15 @@ RunZsolve:=function(FACin)
   CloseStream(output);
   #
   TheCommand:=Concatenation(FileZsolve, " ", FilePre, " > ", FileLog);
-#  Print("TheCommand=", TheCommand, "\n");
   Exec(TheCommand);
   #
   if IsExistingFile(FileHom)=false or IsExistingFile(FileInh)=false then
-    Print("The run of zsolve was apparentily not correct\n");
-    Error("Please debug");
+    Error("The run of zsolve was apparentily not correct\n");
   fi;
   TheCommand:=Concatenation("cat ", FileHom, " | tail -n +2 > ", FileHomTail);
-#  Print("TheCommand=", TheCommand, "\n");
   Exec(TheCommand);
   #
   TheCommand:=Concatenation("cat ", FileInh, " | tail -n +2 > ", FileInhTail);
-#  Print("TheCommand=", TheCommand, "\n");
   Exec(TheCommand);
   #
   TheHOM:=ReadVectorFile(FileHomTail);
@@ -146,8 +141,6 @@ GetIntegralPointsZsolve:=function(FAC)
   n:=Length(FAC[1])-1;
   FACred:=RemoveRedundancy(FAC);
   TheResult:=RunZsolve(FACred);
-  Print("|TheResult.TheHOM|=", Length(TheResult.TheHOM), "\n");
-  Print("|TheResult.TheINH|=", Length(TheResult.TheINH), "\n");
   if Position(TheResult.TheINH, ListWithIdenticalEntries(n,0))=fail then
     Error("Major errror to be solved");
   fi;
@@ -201,7 +194,6 @@ FindIntegralsolutions_Exhaustive:=function(RecMatrix, TheOpt)
       od;
     od;
     ListPartSol:=Set(NewListPartSol);
-    Print("|ListPartSol|=", Length(ListPartSol), "\n");
     if Length(ListPartSol)=0 then
       break;
     fi;
@@ -225,7 +217,6 @@ FindIntegralsolutions_Zsolve:=function(RecMatrix, TheOpt)
     Print("|eVect|=", Length(RecMatrix.eVect), "\n");
     Error("Inconsistency in input");
   fi;
-  Print("nbRow=", nbRow, " nbCol=", nbCol, " dimNSP=", dimNSP, "\n");
   ListIneq:=[];
   for iRow in [1..nbRow]
   do
@@ -243,7 +234,6 @@ FindIntegralsolutions_Zsolve:=function(RecMatrix, TheOpt)
       Add(ListIneq, fIneq);
     fi;
   od;
-  Print("|ListIneq|=", Length(ListIneq), "\n");
   eRecSolve:=RunZsolve(ListIneq);
   ListSol:=[];
   for eSol in eRecSolve.TheINH
@@ -259,7 +249,7 @@ end;
 
 
 
-Kernel_FindIntegralsolutions_Libexact:=function(RecMatrix, TheOpt)
+poly_private@Kernel_FindIntegralsolutions_Libexact:=function(RecMatrix, TheOpt)
   local nbRow, nbCol, VectXcond, VectYcond, ListSol, ListVectSol, eSol, eVect;
   if TheOpt<>"binary" then
     Error("Right now libexact strategy works only if the variable is binary. Could work if we have an upper bound on the value though");
@@ -312,11 +302,9 @@ FindIntegralsolutions_Libexact:=function(RecMatrix, TheOpt)
     fi;
   od;
   ListRowSelect:=Filtered([1..nbRow], x->ListStatus[x]=1);
-#  Print("ListRowSelect=", ListRowSelect, "\n");
   eVectRed:=RecMatrix.eVect{ListPlus};
   RecMatrixRed:=rec(TheMat:=TheMatRed, eVect:=eVectRed);
-  ListSolRed:=Kernel_FindIntegralsolutions_Libexact(RecMatrixRed, TheOpt);
-#  Error("Debug from here");
+  ListSolRed:=poly_private@Kernel_FindIntegralsolutions_Libexact(RecMatrixRed, TheOpt);
   ListSol:=[];
   for eSolRed in ListSolRed
   do

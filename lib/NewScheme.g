@@ -151,9 +151,6 @@ InfDel_Intersection:=function(TheDelaunay1, TheDelaunay2)
   ListEqua:=Concatenation(ListEqua1, ListEqua2);
   VectSpaceInt:=NullspaceIntMat(TransposedMat(ListEqua));
   #
-#  Print("|VectSpaceInt|=", Length(VectSpaceInt), "\n");
-#  Print("|TheDelaunay1.VectSpace|=", Length(TheDelaunay1.VectSpace), "\n");
-#  Print("|TheDelaunay2.VectSpace|=", Length(TheDelaunay2.VectSpace), "\n");
   SPCdiff1:=InfDel_BasisCompletion(VectSpaceInt, TheDelaunay1.VectSpace, n);
   SPCdiff2:=InfDel_BasisCompletion(VectSpaceInt, TheDelaunay2.VectSpace, n);
   AffSPCdiff1:=List(SPCdiff1, x->Concatenation([0], x));
@@ -1008,7 +1005,6 @@ InfDel_HeuristicSimplification:=function(eQuadFunction)
             if InfDel_IsEqual(TheReply.TheRec, TheZerSet)=true then
               WeFindSomething:=true;
               WorkQuadFunc:=NewMat;
-#              Print("PrevNormL1=", PrevNormL1, " NewNormL1=", NewNormL1, "\n");
               PrevNormL1:=NewNormL1;
             fi;
           fi;
@@ -1095,7 +1091,6 @@ InfDel_GetCanonicalPosQuadFuncExpression:=function(TheRec)
   pLin:=Length(TheLinSpace);
   TheLinSpaceRed:=List(TheLinSpace, ReduceFunction);
   ListAdditionalVertices:=[];
-  Print("|GRPmatr|=", Order(GRPmatr), "\n");
   WeComputedDelaunayTessel:=false;
   while(true)
   do
@@ -1174,7 +1169,6 @@ InfDel_GetLocalCone:=function(TheRec)
   pLin:=Length(TheLinSpace);
   TheLinSpaceRed:=List(TheLinSpace, ReduceFunction);
   ListAdditionalVertices:=[];
-  Print("|GRPmatr|=", Order(GRPmatr), "\n");
   WeComputedDelaunayTessel:=false;
   ListOrbitQuadFuncRed:=[];
   while(true)
@@ -1257,7 +1251,6 @@ InfDel_LtypeSimplification:=function(TheRec)
   TheRecRed:=rec(n:=p, EXT:=NewEXT, VectSpace:=[]);
   GRPrec:=InfDel_Stabilizer(TheRecRed);
   GRPmatr:=GRPrec.GRPmatr;
-  Print("Ltype Simpl |GRPperm|=", Order(GRPrec.GRPperm), "\n");
   CongrGRP:=Group(List(GeneratorsOfGroup(GRPmatr), TransposedMat));
   TheQuadFuncRed:=ReduceFunction(NewRec.TheQuadFunction);
   TheQuadFormRed:=InfDel_GetQuadForm(TheQuadFuncRed);
@@ -1293,7 +1286,6 @@ InfDel_LtypeSimplification:=function(TheRec)
           if IsSubset(TheGRP, TheSymmSpace)=false then
             Error("We have a serious error");
           fi;
-          Print("Rigidity degree=", TheRigid, "   |TheGRP|=", Order(TheGRP), "  |TheSymmSpace|=", Order(TheSymmSpace), "\n");
           if TheRigid=Length(eCase.Basis) then
             break;
           fi;
@@ -1363,10 +1355,7 @@ InfDel_LtypeSimplification:=function(TheRec)
     od;
     return NSP*eVect;
   end;
-  Print("Print LP solved correctly\n");
-  Print("n=", n, "  p=", p, "\n");
   eVect:=GetRandom();
-#  eVect:=GetFromFullSymm();
   TheFunc:=NullMat(p+1,p+1);
   for i in [1..pLin]
   do
@@ -1781,7 +1770,6 @@ InfDel_OrbitSplitting:=function(TheSuperDelaunay, TheDelaunay, ListOrbit)
     return ListOrbit;
   fi;
   TheBigGroup:=InfDel_Stabilizer(TheDelaunay);
-  Print("|TheBigGroup|=", Order(TheBigGroup.GRPperm), " |TheStabPair|=", Order(TheStabPair.GRPperm), "\n");
   ListRightCosets:=[];
   LRCS:=RightCosets(TheBigGroup.GRPperm, TheStabPair.GRPperm);
   for eRCS in LRCS
@@ -1826,23 +1814,17 @@ end;
 
 InfDel_OrbitSplitting_atp:=function(TheSuperDelaunay, TheDelaunay, ListOrbit)
   local n, NewListOrbit, eOrbit, PartialNewListOrbit, FuncInsert, IsFinished, nbOrbit, iOrbit, eRecDelaunay, eBigGen, eGen, TheImage, TheBigGroup, NewVectSpace, iOrbitMain, TheStab, testIsStab, ListStatus, ListMatrGens, TheBigGroupComplete, TheStabPair, TheSPC, p, TheBasis, AffBasis, InvAff, ListPermGens, NewEXTred, eEXTimg, New_eEXTimg, NewEXT, eList, TheInducedStab, FuncInsertOrbit, ListEXTrelevant, GetPositionListRelevant, eSet, GRPpermBig, GRPpermBigStab, GRPpermPair, eDCS, eMatr, eEXT, pos, phi, New_eEXTimgRed, VectSpaceExt, nbOrbitMain, LDCS, ListPermGensPair;
-#  SaveDataToFile("ForDEBUG", rec(TheSuperDelaunay:=TheSuperDelaunay, TheDelaunay:=TheDelaunay, ListOrbit:=ListOrbit));
-  Print("Begin InfDel_OrbitSplitting, |ListOrbit|=", Length(ListOrbit), "\n");
   n:=TheSuperDelaunay.n;
   NewListOrbit:=[];
   TheBigGroupComplete:=InfDel_CompleteStabilizer(TheDelaunay);
   TheStabPair:=InfDel_PairStabilizer(TheSuperDelaunay, TheDelaunay);
   testIsStab:=InfDel_IsStabilizer(TheSuperDelaunay, TheBigGroupComplete.GRPmatr);
-  Print("|inner group|=", Order(TheBigGroupComplete.GRPperm), " |stab|=", Order(TheStabPair.GRPperm), " testIsStab=", testIsStab, "\n");
   if testIsStab=true then
     return ListOrbit;
   fi;
   TheBigGroup:=InfDel_Stabilizer(TheDelaunay);
-  Print("We have TheBigGroup\n");
   TheSPC:=InfDel_BasisCompletion(TheDelaunay.VectSpace, IdentityMat(n), n);
   p:=Length(TheSPC);
-  Print("|TheSuperDelaunay.VectSpace|=", Length(TheSuperDelaunay.VectSpace), "\n");
-  Print("|TheDelaunay.VectSpace|=", Length(TheDelaunay.VectSpace), " p=", p, "\n");
   TheBasis:=Concatenation(TheSPC, TheDelaunay.VectSpace);
   AffBasis:=InfDel_GetAffineBasis(TheBasis);
   InvAff:=Inverse(AffBasis);
@@ -1867,7 +1849,6 @@ InfDel_OrbitSplitting_atp:=function(TheSuperDelaunay, TheDelaunay, ListOrbit)
   nbOrbitMain:=Length(ListOrbit);
   for iOrbitMain in [1..nbOrbitMain]
   do
-    Print("iOrbitMain=", iOrbitMain, " / ", nbOrbitMain, "\n");
     eOrbit:=ListOrbit[iOrbitMain];
     VectSpaceExt:=List(eOrbit.VectSpace, x->Concatenation([0], x));
     ListEXTrelevant:=[];
@@ -1924,7 +1905,6 @@ InfDel_OrbitSplitting_atp:=function(TheSuperDelaunay, TheDelaunay, ListOrbit)
     do
       FuncInsertOrbit(eEXT);
     od;
-    Print("All points have been inserted\n");
     GetPositionListRelevant:=function(eEXT)
       local iEXT;
       for iEXT in [1..Length(ListEXTrelevant)]
@@ -1948,24 +1928,19 @@ InfDel_OrbitSplitting_atp:=function(TheSuperDelaunay, TheDelaunay, ListOrbit)
       eList:=List(ListEXTrelevant, x->GetPositionListRelevant(x*eGen));
       Add(ListPermGens, PermList(eList));
     od;
-    Print("ListPermGens computed\n");
     GRPpermBig:=Group(ListPermGens);
     phi:=GroupHomomorphismByImagesNC(GRPpermBig, TheBigGroupComplete.GRPmatr, ListPermGens, ListMatrGens);
-    Print("phi computed\n");
     ListPermGensPair:=[];
     for eGen in GeneratorsOfGroup(TheStabPair.TheMatrGRP)
     do
       eList:=List(ListEXTrelevant, x->GetPositionListRelevant(x*eGen));
       Add(ListPermGensPair, PermList(eList));
     od;
-    Print("ListPermGensPair computed\n");
     GRPpermPair:=Group(ListPermGensPair);
     eSet:=Set(List(eOrbit.EXT, GetPositionListRelevant));
-    Print("eSet computed\n");
     GRPpermBigStab:=Stabilizer(GRPpermBig, eSet, OnSets);
     PartialNewListOrbit:=[];
     LDCS:=DoubleCosets(GRPpermBig, GRPpermBigStab, GRPpermPair);
-    Print("LDCS computed\n");
     for eDCS in LDCS
     do
       eMatr:=Image(phi, Representative(eDCS));
@@ -2062,7 +2037,6 @@ InfDel_MyDualDescriptionStandard:=function(EXT, PermGRP, BFpoly)
   IsRespawn:=function(OrdGRP, EXT, TheDepth)
     local rnk;
     rnk:=RankMat(EXT);
-    Print("OrdGRP=", OrdGRP, " TheDepth=", TheDepth, " |EXT|=", Length(EXT), " rnk=", rnk, "\n");
     if OrdGRP>=100 and TheDepth<=2 and Length(EXT) > 10 + rnk then
       return true;
     fi;
@@ -2188,11 +2162,8 @@ InfDel_SubDelaunayPolytopes:=function(Data, TheDelaunay)
   if testBank<>false then
     return testBank;
   fi;
-  Print("|GRPinner.GRPperm|=", Order(GRPinner.GRPperm), "\n");
   if Length(TheDelaunay.VectSpace)=0 then
     ListIncidentValues:=List(TheDelaunay.EXT, InfDel_GetValueVector);
-    Print("Calling DualDescriptionStandard with\n");
-    Print("|ListIncidentValues|=", Length(ListIncidentValues), " |GRPperm|=", Order(GRPinner.GRPperm), "\n");
     ListOrbHinge:=InfDel_MyDualDescriptionStandard(ListIncidentValues, GRPinner.GRPperm, Data.BFpoly);
     ListOrbit:=[];
     for eOrbit in ListOrbHinge
@@ -2300,7 +2271,6 @@ InfDel_SubDelaunayPolytopes:=function(Data, TheDelaunay)
       for iOrbitSub in [1..nbOrbitSub]
       do
         eOrbitSub:=ListOrbitSubsSplitted[iOrbitSub];
-        Print("iOrbitSub=", iOrbitSub, "/", nbOrbitSub, "\n");
         TheLiftDelaunay:=InfDel_LiftingDelaunay(eOrbitSub, ListOrbit[iOrbitSelect], TheDelaunay);
         InfDel_CheckCoherencyDelaunay(TheLiftDelaunay);
         FuncInsert(TheLiftDelaunay);
@@ -2315,6 +2285,8 @@ InfDel_SubDelaunayPolytopes:=function(Data, TheDelaunay)
   return ListOrbit;
 end;
 
+
+
 InfDel_BankingFormalism:=function(ThePath)
   local ListOrbitDelaunay, FuncRetrieveListOrbit, FuncCreateAccount, FuncGetAllInfo, FileSave, FileSaveDesc, iFile;
   ListOrbitDelaunay:=[];
@@ -2323,8 +2295,6 @@ InfDel_BankingFormalism:=function(ThePath)
   do
     FileSave:=Concatenation(ThePath, "EXT", String(iFile+1));
     FileSaveDesc:=Concatenation(ThePath, "EXTdesc", String(iFile+1));
-#    Print("FileSave=", FileSave, "\n");
-#    Print("FileSaveDesc=", FileSaveDesc, "\n"); 
     if IsExistingFilePlusTouch(FileSave)=false or IsExistingFilePlusTouch(FileSaveDesc)=false then
       break;
     fi;
@@ -2478,10 +2448,8 @@ RandomFindNegativeVector:=function(EXTinput, QuadFunc)
   while(true)
   do
     EXTwork:=ExtendByTriangleIneq(EXTwork);
-    Print("|EXTwork|=", Length(EXTwork), "\n");
     ListNeg:=Filtered(EXTwork, x->x*QuadFunc*x<0);
     if Length(ListNeg)>0 then
-      Print("|ListNeg|=", Length(ListNeg), "\n");
       return ListNeg;
     fi;
   od;
@@ -2628,11 +2596,6 @@ TestRealizabilityDelaunay_Space:=function(EXT, TheBasis)
       eIneq:=Concatenation([-1], List(ListQuadFunc, x->eVert*x*eVert));
       Add(ListIneq, eIneq);
     od;
-    Print("  |ListIneq|=", Length(ListIneq), "\n");
-#    if Length(ListIneq)=200 then
-#      Print("Try your luck at this point\n");
-#      Print(NullMat(5));
-#    fi;
     TheLP:=LinearProgramming(ListIneq, ToBeMinimized);
     if IsBound(TheLP.primal_direction) then
       Error("A priori, the trace should be well defined and at least non-negative");
@@ -2665,9 +2628,7 @@ TestRealizabilityDelaunay_Space:=function(EXT, TheBasis)
     CritVal:=100000;
     DoGeom:=false;
     if InfDel_L1Norm(TheFuncInt) > CritVal and DoGeom then
-#      Print("  Before call to FindGeometricallyUniqueSolutionLP\n");
       eVect:=FindGeometricallyUniqueSolutionToLinearProgramming(ListIneq, ToBeMinimized);
-#      Print("  After call to FindGeometricallyUniqueSolutionLP\n");
       TheFunc:=NullMat(n+1,n+1);
       for i in [1..pLin]
       do
@@ -2826,7 +2787,6 @@ TestRealizabilityDelaunay:=function(EXT)
       Add(ListDiff, eVect);
     od;
     rnk:=RankMat(ListDiff);
-    Print("i=", i, " rnk=", rnk, "\n");
     if rnk=n-1 then
       NSP:=RemoveFractionMatrix(NullspaceMat(TransposedMat(ListDiff)));
       eBasis:=NullspaceIntMat(TransposedMat(NSP));
@@ -2834,7 +2794,6 @@ TestRealizabilityDelaunay:=function(EXT)
       fVect:=fDiffVert{[2..n+1]};
       nBasis:=Concatenation(eBasis, [fVect]);
       TheDet:=AbsInt(DeterminantMat(nBasis));
-      Print("  TheDet=", TheDet, "\n");
       if TheDet=1 then
         EXTred:=[];
         for iVert in eDiff

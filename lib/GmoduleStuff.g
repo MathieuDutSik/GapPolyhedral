@@ -1,8 +1,12 @@
-GMOD_GetZero:=function()
+InstallGlobalFunction(GMOD_GetZero,
+function()
   return rec(ListVal:=[], ListElt:=[]);
-end;
+end);
 
-GMOD_GetZeroVector:=function(n)
+
+
+InstallGlobalFunction(GMOD_GetZeroVector,
+function(n)
   local ListReturn, i;
   ListReturn:=[];
   for i in [1..n]
@@ -10,15 +14,21 @@ GMOD_GetZeroVector:=function(n)
     Add(ListReturn, rec(ListVal:=[], ListElt:=[]));
   od;
   return ListReturn;
-end;
-GMOD_GetZeroMatrix:=function(nbLine,nbCol)
+end);
+
+
+
+InstallGlobalFunction(GMOD_GetZeroMatrix,
+function(nbLine,nbCol)
   local TheMat;
   TheMat:=List([1..nbLine], x->GMOD_GetZeroVector(nbCol));
   return rec(nbLine:=nbLine, nbCol:=nbCol, TheMat:=TheMat);
-end;
+end);
 
 
-GmoduleMultiplication:=function(GM1, GM2)
+
+InstallGlobalFunction(GmoduleMultiplication,
+function(GM1, GM2)
   local ListNewVals, ListNewElts, FuncInsert, nbR1, nbR2, iR1, iR2, eSet;
   ListNewVals:=[];
   ListNewElts:=[];
@@ -43,10 +53,12 @@ GmoduleMultiplication:=function(GM1, GM2)
   od;
   eSet:=Filtered([1..Length(ListNewVals)], x->ListNewVals[x]<>0);
   return rec(ListVal:=ListNewVals{eSet}, ListElt:=ListNewElts{eSet});
-end;
+end);
 
 
-GmoduleAddition:=function(GM1, GM2)
+
+InstallGlobalFunction(GmoduleAddition,
+function(GM1, GM2)
   local ListNewVals, ListNewElts, FuncInsert, nbR1, nbR2, iR1, iR2, eSet;
   ListNewVals:=StructuralCopy(GM1.ListVal);
   ListNewElts:=StructuralCopy(GM1.ListElt);
@@ -67,10 +79,12 @@ GmoduleAddition:=function(GM1, GM2)
   od;
   eSet:=Filtered([1..Length(ListNewVals)], x->ListNewVals[x]<>0);
   return rec(ListVal:=ListNewVals{eSet}, ListElt:=ListNewElts{eSet});
-end;
+end);
+
 
 # returns GM1 - GM2
-GmoduleSoustraction:=function(GM1, GM2)
+InstallGlobalFunction(GmoduleSoustraction,
+function(GM1, GM2)
   local ListNewVals, ListNewElts, FuncInsert, nbR1, nbR2, iR1, iR2, eSet;
   ListNewVals:=StructuralCopy(GM1.ListVal);
   ListNewElts:=StructuralCopy(GM1.ListElt);
@@ -91,21 +105,28 @@ GmoduleSoustraction:=function(GM1, GM2)
   od;
   eSet:=Filtered([1..Length(ListNewVals)], x->ListNewVals[x]<>0);
   return rec(ListVal:=ListNewVals{eSet}, ListElt:=ListNewElts{eSet});
-end;
+end);
 
-VectorGmoduleSoustraction:=function(vectGM1, vectGM2)
+
+
+InstallGlobalFunction(VectorGmoduleSoustraction,
+function(vectGM1, vectGM2)
   local TheLen;
   TheLen:=Length(vectGM1);
   return List([1..TheLen], x->GmoduleSoustraction(vectGM1[x], vectGM2[x]));
-end;
+end);
 
 
-MatrixGmoduleTranspose:=function(TheMat)
+
+InstallGlobalFunction(MatrixGmoduleTranspose,
+function(TheMat)
   return rec(nbLine:=TheMat.nbCol, nbCol:=TheMat.nbLine, TheMat:=TransposedMat(TheMat.TheMat));
-end;
+end);
 
 
-VectorMatrixGmoduleMultiplication:=function(eVect1, TheMat2)
+
+InstallGlobalFunction(VectorMatrixGmoduleMultiplication,
+function(eVect1, TheMat2)
   local nbCol1, nbLine2, nbCol2, eLine, iCol, TheVal, idx, TheProd;
   nbCol1:=Length(eVect1);
   nbLine2:=TheMat2.nbLine;
@@ -121,21 +142,25 @@ VectorMatrixGmoduleMultiplication:=function(eVect1, TheMat2)
     TheVal:=rec(ListVal:=[], ListElt:=[]);
     for idx in [1..nbCol1]
     do
-#   I know it is strange but that is how it should be:
       TheProd:=GmoduleMultiplication(TheMat2.TheMat[idx][iCol], eVect1[idx]);
       TheVal:=GmoduleAddition(TheVal, TheProd);
     od;
     Add(eLine, TheVal);
   od;
   return eLine;
-end;
+end);
 
-MatrixMatrixGmoduleMultiplication:=function(TheMat1, TheMat2)
+
+
+InstallGlobalFunction(MatrixMatrixGmoduleMultiplication,
+function(TheMat1, TheMat2)
   return rec(nbLine:=TheMat1.nbLine, nbCol:=TheMat2.nbCol, TheMat:=List(TheMat1.TheMat, x->VectorMatrixGmoduleMultiplication(x, TheMat2)));
-end;
+end);
 
 
-GMOD_IsItGmoduleVector:=function(TheVect, TheGRP)
+
+InstallGlobalFunction(GMOD_IsItGmoduleVector,
+function(TheVect, TheGRP)
   local eRec, eEnt;
   for eRec in TheVect
   do
@@ -147,10 +172,12 @@ GMOD_IsItGmoduleVector:=function(TheVect, TheGRP)
     od;
   od;
   return true;
-end;
+end);
 
 
-VectorGmoduleAddition:=function(TheVect1, TheVect2)
+
+InstallGlobalFunction(VectorGmoduleAddition,
+function(TheVect1, TheVect2)
   local TheRet, iCol;
   TheRet:=[];
   for iCol in [1..Length(TheVect1)]
@@ -158,10 +185,12 @@ VectorGmoduleAddition:=function(TheVect1, TheVect2)
     Add(TheRet, GmoduleAddition(TheVect1[iCol], TheVect2[iCol]));
   od;
   return TheRet;
-end;
+end);
 
 
-MatrixGmoduleAddition:=function(TheMat1, TheMat2)
+
+InstallGlobalFunction(MatrixGmoduleAddition,
+function(TheMat1, TheMat2)
   local nbLine1, nbCol1, nbLine2, nbCol2, NewMat, iLine, eLine, iCol;
   nbLine1:=TheMat1.nbLine;
   nbCol1:=TheMat1.nbCol;
@@ -181,10 +210,12 @@ MatrixGmoduleAddition:=function(TheMat1, TheMat2)
     Add(NewMat, eLine);
   od;
   return rec(nbLine:=nbLine1, nbCol:=nbCol1, TheMat:=NewMat);
-end;
+end);
 
 
-GMOD_MatrixTwisting:=function(TheMatrix, FctSign)
+
+InstallGlobalFunction(GMOD_MatrixTwisting,
+function(TheMatrix, FctSign)
   local nbLine, nbCol, NewMat, iLine, eLine, iCol, eEnt, nbC, ListVal, iC, eSign;
   nbLine:=TheMatrix.nbLine;
   nbCol:=TheMatrix.nbCol;
@@ -207,10 +238,12 @@ GMOD_MatrixTwisting:=function(TheMatrix, FctSign)
     Add(NewMat, eLine);
   od;
   return rec(nbLine:=nbLine, nbCol:=nbCol, TheMat:=NewMat);
-end;
+end);
 
 
-MatrixGmoduleOpposite:=function(TheMat)
+
+InstallGlobalFunction(MatrixGmoduleOpposite,
+function(TheMat)
   local nbLine, nbCol, NewMat, iLine, eLine, iCol;
   nbLine:=TheMat.nbLine;
   nbCol:=TheMat.nbCol;
@@ -225,8 +258,12 @@ MatrixGmoduleOpposite:=function(TheMat)
     Add(NewMat, eLine);
   od;
   return rec(nbLine:=nbLine, nbCol:=nbCol, TheMat:=NewMat);
-end;
-VectorGmoduleOpposite:=function(TheVector)
+end);
+
+
+
+InstallGlobalFunction(VectorGmoduleOpposite,
+function(TheVector)
   local eLine, iCol;
   eLine:=[];
   for iCol in [1..Length(TheVector)]
@@ -234,13 +271,19 @@ VectorGmoduleOpposite:=function(TheVector)
     Add(eLine, rec(ListVal:=-TheVector[iCol].ListVal, ListElt:=TheVector[iCol].ListElt));
   od;
   return eLine;
-end;
+end);
 
 
-IsZeroReducedGmoduleElt:=function(eElt)
+
+InstallGlobalFunction(IsZeroReducedGmoduleElt,
+function(eElt)
   return Length(eElt.ListVal)=0;
-end;
-IsZeroReducedGmoduleVector:=function(TheVect)
+end);
+
+
+
+InstallGlobalFunction(IsZeroReducedGmoduleVector,
+function(TheVect)
   local eCol, test;
   for eCol in TheVect
   do
@@ -250,8 +293,12 @@ IsZeroReducedGmoduleVector:=function(TheVect)
     fi;
   od;
   return true;
-end;
-IsZeroReducedGmoduleMatrix:=function(TheMat)
+end);
+
+
+
+InstallGlobalFunction(IsZeroReducedGmoduleMatrix,
+function(TheMat)
   local eLine, test;
   for eLine in TheMat.TheMat
   do
@@ -261,11 +308,12 @@ IsZeroReducedGmoduleMatrix:=function(TheMat)
     fi;
   od;
   return true;
-end;
+end);
 
 
 
-IsEqualReducedGmoduleElt:=function(TheRec1, TheRec2)
+InstallGlobalFunction(IsEqualReducedGmoduleElt,
+function(TheRec1, TheRec2)
   local ListElt1, ListElt2, eElt, pos1, pos2;
   ListElt1:=TheRec1.ListElt;
   ListElt2:=TheRec2.ListElt;
@@ -281,9 +329,12 @@ IsEqualReducedGmoduleElt:=function(TheRec1, TheRec2)
     fi;
   od;
   return true;
-end;
+end);
 
-IsEqualReducedGmoduleVector:=function(TheVect1, TheVect2)
+
+
+InstallGlobalFunction(IsEqualReducedGmoduleVector,
+function(TheVect1, TheVect2)
   local iCol;
   if Length(TheVect1)<>Length(TheVect2) then
     return false;
@@ -295,9 +346,12 @@ IsEqualReducedGmoduleVector:=function(TheVect1, TheVect2)
     fi;
   od;
   return true;
-end;
+end);
 
-IsEqualReducedGmoduleMatrix:=function(TheMat1, TheMat2)
+
+
+InstallGlobalFunction(IsEqualReducedGmoduleMatrix,
+function(TheMat1, TheMat2)
   local iLine;
   if TheMat1.nbLine<>TheMat2.nbLine then
     return false;
@@ -309,11 +363,12 @@ IsEqualReducedGmoduleMatrix:=function(TheMat1, TheMat2)
     fi;
   od;
   return true;
-end;
+end);
 
 
 
-ReducedGmoduleForm:=function(TheRec)
+InstallGlobalFunction(ReducedGmoduleForm,
+function(TheRec)
   local SetElt, NewListVal, NewListElt, eElt, HC, TheSum;
   SetElt:=Set(TheRec.ListElt);
   NewListVal:=[];
@@ -328,35 +383,61 @@ ReducedGmoduleForm:=function(TheRec)
     fi;
   od;
   return rec(ListVal:=NewListVal, ListElt:=NewListElt);
-end;
-ReducedGmoduleVector:=function(TheVect)
+end);
+
+
+
+InstallGlobalFunction(ReducedGmoduleVector,
+function(TheVect)
   return List(TheVect, ReducedGmoduleForm);
-end;
-ReducedGmoduleMatrix:=function(TheMat)
+end);
+
+
+
+InstallGlobalFunction(ReducedGmoduleMatrix,
+function(TheMat)
   return rec(nbLine:=TheMat.nbLine, nbCol:=TheMat.nbCol, TheMat:=List(TheMat.TheMat, ReducedGmoduleVector));
-end;
+end);
 
-IsZeroGmoduleElt:=function(eElt)
+
+
+InstallGlobalFunction(IsZeroGmoduleElt,
+function(eElt)
   return IsZeroReducedGmoduleElt(ReducedGmoduleForm(eElt));
-end;
-IsZeroGmoduleVector:=function(TheVect)
+end);
+
+
+
+InstallGlobalFunction(IsZeroGmoduleVector,
+function(TheVect)
   return IsZeroReducedGmoduleVector(ReducedGmoduleVector(TheVect));
-end;
-IsZeroGmoduleMatrix:=function(TheMat)
+end);
+
+
+
+InstallGlobalFunction(IsZeroGmoduleMatrix,
+function(TheMat)
   return IsZeroReducedGmoduleMatrix(ReducedGmoduleMatrix(TheMat));
-end;
+end);
 
 
 
-IsEqualGmoduleVector:=function(TheVect1, TheVect2)
+InstallGlobalFunction(IsEqualGmoduleVector,
+function(TheVect1, TheVect2)
   return IsEqualReducedGmoduleVector(ReducedGmoduleVector(TheVect1), ReducedGmoduleVector(TheVect2));
-end;
-IsEqualGmoduleMatrix:=function(TheMat1, TheMat2)
+end);
+
+
+
+InstallGlobalFunction(IsEqualGmoduleMatrix,
+function(TheMat1, TheMat2)
   return IsEqualReducedGmoduleMatrix(ReducedGmoduleMatrix(TheMat1), ReducedGmoduleMatrix(TheMat2));
-end;
+end);
 
 
-RightCosetExpression:=function(TheStab, TheElt)
+
+InstallGlobalFunction(RightCosetExpression,
+function(TheStab, TheElt)
   local ListRightCoset, FuncInsertValue, iVal;
   ListRightCoset:=[];
   FuncInsertValue:=function(eVal, eElt)
@@ -377,10 +458,12 @@ RightCosetExpression:=function(TheStab, TheElt)
     FuncInsertValue(TheElt.ListVal[iVal], TheElt.ListElt[iVal]);
   od;
   return ListRightCoset;
-end;
+end);
 
 
-RightCosetVectorExpression:=function(TheStab, eVectSel)
+
+InstallGlobalFunction(RightCosetVectorExpression,
+function(TheStab, eVectSel)
   local ListRightCoset, TheDimInput, FuncInsertValue, iCol, iVal;
   ListRightCoset:=[];
   TheDimInput:=Length(eVectSel);
@@ -408,12 +491,13 @@ RightCosetVectorExpression:=function(TheStab, eVectSel)
     od;
   od;
   return ListRightCoset;
-end;
+end);
 
 
 # we solve the equation TheElt = x * TheMulti
 # with all elements in a G module
-GMOD_SolutionMultiplication:=function(TheElt, TheMulti, TheGroup)
+InstallGlobalFunction(GMOD_SolutionMultiplication,
+function(TheElt, TheMulti, TheGroup)
   local ListElement, eElt, nbElt, ListEqua, TheVect, nbEnt, iEnt, eProd, pos, TheB, eSol, TheReturn;
   # Curiously, if we use Elements(TheGroup)
   # then we get some big bad errors in the solutioning
@@ -452,11 +536,12 @@ GMOD_SolutionMultiplication:=function(TheElt, TheMulti, TheGroup)
     Error("GMOD_SolutionMultiplication was not correct");
   fi;
   return TheReturn;
-end;
+end);
 
 
 
-GMOD_SolutionMatrixMultiplication:=function(TheVect, TheMatrix, TheGroup)
+InstallGlobalFunction(GMOD_SolutionMatrixMultiplication,
+function(TheVect, TheMatrix, TheGroup)
   local nbLine, eElt, nbCol, ListElement, nbElt, GetVector, ListEqua, iLine, iElt, iIdent, TheB, TheSol, TheReturn, pos, ListVal, ListElt;
   nbLine:=TheMatrix.nbLine;
   nbCol:=TheMatrix.nbCol;
@@ -516,5 +601,5 @@ GMOD_SolutionMatrixMultiplication:=function(TheVect, TheMatrix, TheGroup)
     Add(TheReturn, rec(ListVal:=ListVal, ListElt:=ListElt));
   od;
   return TheReturn;
-end;
+end);
 

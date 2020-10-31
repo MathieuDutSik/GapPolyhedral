@@ -570,7 +570,6 @@ BankRecording:=function(DataBank, FuncStabilizer, FuncIsomorphy, FuncInvariant, 
   else
     nbRec:=0;
   fi;
-#  Print("Setting up database. Right now nbRec=", nbRec, "\n");
   #
   MinNbVert:=-1;
   if DataBank.Saving then
@@ -588,7 +587,6 @@ BankRecording:=function(DataBank, FuncStabilizer, FuncIsomorphy, FuncInvariant, 
   else
     WRL:=[];
   fi;
-#  Print("At database loading. MinNbVert=", MinNbVert, "\n");
   #
   if DataBank.Saving=false then
     ListCompleteInformation:=[];
@@ -608,7 +606,6 @@ BankRecording:=function(DataBank, FuncStabilizer, FuncIsomorphy, FuncInvariant, 
     fi;
     Add(ListInvariant, eInv);
   od;
-#  Print("Invariants have been loaded\n");
   FuncRetrieveObject:=function(EXT, GivenSymmetry)
     local eChar, iAccount, eTransform, FileName, CompleteAccount, EXTaccount, ListObjectAccount, TransListObject, GRPaccount, TheGrp, NewGrp, eInc, RPL, eInvariant;
     if Length(EXT) < MinNbVert then
@@ -616,7 +613,6 @@ BankRecording:=function(DataBank, FuncStabilizer, FuncIsomorphy, FuncInvariant, 
     fi;
     eChar:=GroupFormalism.BankKeyInformation(EXT, GivenSymmetry);
     eInvariant:=FuncInvariant(EXT);
-#    Print("Beginning search in |database|=", nbRec, "\n");
     for iAccount in [1..nbRec]
     do
       if eInvariant=ListInvariant[iAccount] then
@@ -653,7 +649,6 @@ BankRecording:=function(DataBank, FuncStabilizer, FuncIsomorphy, FuncInvariant, 
         fi;
       fi;
     od;
-#    Print("Ending search in database\n");
     return false;
   end;
   FuncCreateAccount:=function(EXT, GroupExt, ListObject)
@@ -665,9 +660,7 @@ BankRecording:=function(DataBank, FuncStabilizer, FuncIsomorphy, FuncInvariant, 
     else
       MinNbVert:=Minimum(MinNbVert, nbVert);
     fi;
-#    Print("We have eInfoEXT\n");
     eInvariant:=FuncInvariant(EXT);
-#    Print("We have eInvariant\n");
     nbRec:=nbRec+1;
     #
     CompleteInfo:=GroupFormalism.BankCompleteInformation(EXT, GroupExt, ListObject);
@@ -677,7 +670,6 @@ BankRecording:=function(DataBank, FuncStabilizer, FuncIsomorphy, FuncInvariant, 
     else
       Add(ListCompleteInformation, CompleteInfo);
     fi;
-#    Print("After write FAC\n");
     #
     if DataBank.Saving then
       FileNameEXT:=Concatenation(DataBank.BankPath, "AccountEXT_", String(nbRec));
@@ -685,14 +677,12 @@ BankRecording:=function(DataBank, FuncStabilizer, FuncIsomorphy, FuncInvariant, 
     else
       Add(WRL, eInfoEXT);
     fi;
-#    Print("After write EXT\n");
     #
     if DataBank.Saving then
       FileNameINV:=Concatenation(DataBank.BankPath, "AccountINV_", String(nbRec));
       SaveDataToFilePlusTouch(FileNameINV, eInvariant);
     fi;
     Add(ListInvariant, eInvariant);
-#    Print("After write INV\n");
   end;
   FuncClearAccount:=function()
     local iRec, FileNameFAC, FileNameEXT, FileNameINV;
@@ -999,16 +989,12 @@ __ListFacetByAdjacencyDecompositionMethod:=function(EXT, GivenSymmetry, Data, Ba
   if IsDirectoryPath(Data.ThePath)=false then
     Error("Directory Data.ThePath=", Data.ThePath, " is nonexistent");
   fi;
-#  Print("Before testBank\n");
   testBank:=BankFormalism.FuncRetrieveObject(EXT, GivenSymmetry);
-#  Print("After testBank\n");
   if testBank<>false then
-#    Print("Retrieve data from the bank\n");
     return Data.GroupFormalism.LiftingOrbits(EXT, testBank.ListOrbitFacet, GivenSymmetry, testBank.GRP);
   fi;
   TheDate1:=GetDate();
   # we would like to use IsBankSave but it is not possible with EllaspedTime
-#  Print("Before TestNeedMoreSymmetry\n");
   TestNeedMoreSymmetry:=function(EXT)
     if Length(EXT)> RankMat(EXT)+4 then
       return true;
@@ -1021,14 +1007,12 @@ __ListFacetByAdjacencyDecompositionMethod:=function(EXT, GivenSymmetry, Data, Ba
   else
     testSym:=TestNeedMoreSymmetry(EXT);
   fi;
-#  Print("After TestNeedMoreSymmetry\n");
   if testSym=true then
     WorkingSymGroup:=Data.GroupFormalism.GroupUnion(BankFormalism.FuncStabilizer(EXT), GivenSymmetry);
   else
     WorkingSymGroup:=GivenSymmetry;
   fi;
   OrdGRP:=Data.GroupFormalism.Order(WorkingSymGroup);
-#  Print("OrdGRP=", OrdGRP, "\n");
   if Data.IsRespawn(OrdGRP, EXT, Data.TheDepth)=false then
     ReturnedList:=Data.DualDescriptionFunction(EXT, Data.GroupFormalism.ToPermGroup(EXT, GivenSymmetry), Data.ThePath);
     TheDate2:=GetDate();
@@ -1037,15 +1021,11 @@ __ListFacetByAdjacencyDecompositionMethod:=function(EXT, GivenSymmetry, Data, Ba
       Print("EllapsedTime=", EllapsedTime, "\n");
     fi;
     if Data.IsBankSave(EllapsedTime, OrdGRP, EXT, Data.TheDepth)=true then
-      Print("Before FuncCreateAccount\n");
       BankFormalism.FuncCreateAccount(EXT, GivenSymmetry, ReturnedList);
-      Print("After FuncCreateAccount\n");
     fi;
   else
     TheDim:=RankMat(EXT)-1;
     Print("RESPAWN a new ADM computation |GRP|=", OrdGRP, " TheDim=", TheDim, " |EXT|=", Length(EXT), "\n");
-#    FileSaveEXT:=Concatenation("EXT", String(Length(EXT)));
-#    SaveDataToFile(FileSaveEXT, EXT);
     RPL:=Data.GroupFormalism.OrbitGroupFormalism(EXT, WorkingSymGroup, Data.ThePathSave, Data.Saving);
     Print("nbOrbit=", RPL.FuncNumberOrbit(), "\n");
     if RPL.FuncNumberOrbit()=0 then
@@ -1242,13 +1222,6 @@ DualDescriptionStandard:=function(EXT, PermGRP)
 end;
 
 
-ListAdjacentOrbitwise_Incidence:=function(EXT, TheStab, ListInc, Data, BankFormalism)
-  local RPLift, Ladj;
-  RPLift:=Data.ProjectionLiftingFramework(EXT, ListInc);
-  Ladj:=__ListFacetByAdjacencyDecompositionMethod(EXT{ListInc}, SecondReduceGroupAction(TheStab, ListInc), Data, BankFormalism);
-  return List(Ladj, RPLift.FuncLift);
-end;
-
 
 ListAdjacentOrbitwise_Facet:=function(EXT, TheStab, ListInc, Data, BankFormalism)
   local RPLift, Ladj;
@@ -1321,7 +1294,6 @@ SamplingGroupFormalism:=function()
   end;
   BankKeyInformation:=function(EXT, GroupExt)
     return rec(EXT:=EXT, Group:=GroupExt);
-#    return EXT; I was right not to be sure.
   end;
   BankCompleteInformation:=function(EXT, GroupExt, ListObject)
     return ListObject;
