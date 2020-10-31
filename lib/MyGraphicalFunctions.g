@@ -2005,27 +2005,6 @@ CharacteristicGraphOfSubset:=function(TheGRA, TheSub)
 end;
 
 
-
-EnumerationPossibleVectors:=function(n, k)
-  local IdMat, ListPoss, iter, NewListPoss, i, eVect, fVect;
-  IdMat:=IdentityMat(n);
-  ListPoss:=[ListWithIdenticalEntries(n, 0)];
-  for iter in [1..k]
-  do
-    NewListPoss:=[];
-    for eVect in ListPoss
-    do
-      for i in [1..n]
-      do
-        fVect:=eVect + IdMat[i];
-        Add(NewListPoss, fVect);
-      od;
-    od;
-    ListPoss:=Set(NewListPoss);
-  od;
-  return ListPoss;
-end;
-
 GRAPH_Pyramid:=function(GRA)
   local nbVert, GRAvert, iVert, eAdj;
   nbVert:=GRA.order;

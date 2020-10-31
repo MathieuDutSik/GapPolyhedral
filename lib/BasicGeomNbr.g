@@ -117,12 +117,6 @@ end;
 
 
 
-
-
-
-
-
-
 #
 #
 # this function takes as argument a distance vector d in HYPnand return
@@ -141,18 +135,6 @@ DistanceMatrixToGramMatrix:=function(DistMat)
   od;
   return GramMatrix;
 end;
-
-NorderApproximationSqrt2:=function(N)
-  local eApprox, i;
-  eApprox:=1;
-  for i in [1..N]
-  do
-    eApprox:=2+1/eApprox;
-  od;
-  return 1+1/eApprox;
-end;
-
-
 
 
 #
@@ -222,27 +204,6 @@ end;
 
 
 
-
-
-
-GramMatrixToDistanceMatrix:=function(GramMat)
-  local DistMat, n, iCol, iLin;
-  n:=Length(GramMat);
-  DistMat:=NullMat(n+1,n+1);
-  for iCol in [2..n+1]
-  do
-    DistMat[iCol][1]:=GramMat[iCol-1][iCol-1];
-    DistMat[1][iCol]:=GramMat[iCol-1][iCol-1];
-  od;
-  for iCol in [2..n+1]
-  do
-    for iLin in [2..n+1]
-    do
-      DistMat[iCol][iLin]:=GramMat[iCol-1][iCol-1]+GramMat[iLin-1][iLin-1]-2*GramMat[iCol-1][iLin-1];
-    od;
-  od;
-  return DistMat;
-end;
 
 
 InvariantSpace:=function(TheBasis, MatrixGRP)
