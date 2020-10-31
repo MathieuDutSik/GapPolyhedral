@@ -3947,6 +3947,42 @@ end;
 
 
 
+poly_private@InitialDirectProduct:=function(ListLen)
+  return ListWithIdenticalEntries(Length(ListLen),1);
+end;
+
+poly_private@NextDirectProduct:=function(ListLen, eList)
+  local k, xpos, i, retList;
+  k:=Length(ListLen);
+  xpos:=-1;
+  for i in [1..k]
+  do
+    if xpos=-1 then
+      if eList[i]<ListLen[i] then
+        xpos:=i;
+      fi;
+    fi;
+  od;
+  if xpos=-1 then
+    return false;
+  fi;
+  retList:=[];
+  for i in [1..xpos-1]
+  do
+    Add(retList, 1);
+  od;
+  Add(retList, eList[xpos]+1);
+  for i in [xpos+1..k]
+  do
+    Add(retList, eList[i]);
+  od;
+  return retList;
+end;
+
+
+
+
+
 
 FreedomStructure_TestConfiguration_NextGeneration:=function(DataLattice, ListListStrongTrans, FreeInformations, ListRelevantVector, eSetInput)
   local eMatrixGRP, n, ListFreeVect, FuncGetPermutation, ListPermGens, ListMatrGens, eBigGen, eGen, ePerm, PermGRPfree, phi, i, eOrbit, eCent, eRecO, len, ListFreeVectTot, phiTot, ListPermGensTot, ePermTot, PermGRPfreeTot, eElt, eEltImg1, eEltImg2, ListVectorTrans, iPos, eImg1, eImg2, EXTcomplete, EXTdesc, nbOrbit, iOrbit, ListVectZon, ListVectZonAdd, eSetFace, ListOrbitFacetsInc, eFaceEXT, EXTsum, ListOrbitClusterFacet, ListEXT, eVect, eVectExt, EXTtot, ListPermGensEXT, eList, ListBelt, PermGRPext, eVectTrans, eVectTransSum, preEXTsum, eStab, eStabTot, eSetTot, nbFree, eEltRed, eStabMatr, ListMatrStabGens, iRank, preEXTsumDirect, ListPlanes, ePlane, EXTface, eFacIneq, eVertRed, eVertOpp, ListEquaFace, rnk, DoPolyhedralCheck, GetListBelt, FuncInsertVertex, ListReprCoset, O, ListReprElement, eNewVert, lenDoubl, TheIncident, NSP, ListPlus, ListMinus, ListOrbitInfo, iDoubl, TheOption, LFC, DoCheckVoronoi, iFaceEXT, nbFaceEXT, TestFacetDefinition, eRecOrbit, testFacet, GetIntersectionPolytope, GetDefinedLinearSpann, iOrbitFacet, nbOrbitFacet, TheLinSpann, rnkLin, rnkFace, GetVertexExpression, GetListVoronoi, AllFacetCentrallySymmetric, ListVertVoronoi, eStabCell, GetSumDirectMethod;
@@ -4214,7 +4250,7 @@ FreedomStructure_TestConfiguration_NextGeneration:=function(DataLattice, ListLis
     ListLen:=ListWithIdenticalEntries(nbVect, 2);
     Add(ListLen, Length(ListVertVoronoi));
     TheProd:=2^(nbVect) * Length(ListVertVoronoi);
-    eListPos:=InitialDirectProduct(ListLen);
+    eListPos:=poly_private@InitialDirectProduct(ListLen);
     ListFoundSymbol:=[];
     while(true)
     do
@@ -4233,7 +4269,7 @@ FreedomStructure_TestConfiguration_NextGeneration:=function(DataLattice, ListLis
       if eSumVert=eAskVert then
         Add(ListFoundSymbol, eListPos);
       fi;
-      eListPos:=NextDirectProduct(ListLen, eListPos);
+      eListPos:=poly_private@NextDirectProduct(ListLen, eListPos);
       if eListPos=false then
         break;
       fi;
