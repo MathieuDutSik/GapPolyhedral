@@ -1,0 +1,9 @@
+DeclareGlobalFunction("DualDescription");
+DeclareGlobalFunction("EliminationByRedundancyDualDescription");
+DeclareGlobalFunction("DualDescriptionSets");
+DeclareGlobalFunction("RemoveRedundancyByDualDescription");
+DeclareGlobalFunction("DualDescriptionAdjacencies");
+DeclareGlobalFunction("DualDescriptionLRS");
+DeclareGlobalFunction("DualDescriptionCDD");
+DeclareGlobalFunction("DualDescriptionPPL");
+DeclareGlobalFunction("DualDescriptionPD");

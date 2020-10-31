@@ -34,7 +34,8 @@ end;
 
 
 
-DualDescription:=function(EXT)
+InstallGlobalFunction(DualDescription,
+function(EXT)
   local FileExt, FileIne, FileIneNude, output, FAC, FileErr, EXTred;
   if Length(Set(List(EXT,Length)))<>1 then
     Error("DualDescription_Rational: Input should be vectors of the same length");
@@ -68,10 +69,12 @@ DualDescription:=function(EXT)
   RemoveFile(FileIne);
   RemoveFile(FileIneNude);
   return FAC;
-end;
+end);
 
 
-EliminationByRedundancyDualDescription:=function(FAC)
+
+InstallGlobalFunction(EliminationByRedundancyDualDescription,
+function(FAC)
   local FACred, EXTred, TheRank, FACreturn, nbFac, iFac, eFac, eFacRed, LINC, eEXT;
   FACred:=ColumnReduction(FAC).EXT;
   EXTred:=DualDescription(FACred);
@@ -94,22 +97,22 @@ EliminationByRedundancyDualDescription:=function(FAC)
     fi;
   od;
   return FACreturn;
-end;
+end);
 
 
 
-
-DualDescriptionSets:=function(EXT)
+InstallGlobalFunction(DualDescriptionSets,
+function(EXT)
   local eSelect, EXTproj, FACproj;
   eSelect:=ColumnReduction(EXT).Select;
   EXTproj:=List(EXT, x->x{eSelect});
   FACproj:=DualDescription(EXTproj);
   return List(FACproj, x->Filtered([1..Length(EXTproj)], y->EXTproj[y]*x=0));
-end;
+end);
 
 
 
-RemoveRedundancyByDualDescription_Kernel:=function(EXT)
+poly_private@RemoveRedundancyByDualDescription_Kernel:=function(EXT)
   local eSelect, EXTproj, FACproj, eSet, len, idx, FACinc;
   if Length(EXT)=1 then
     return EXT;
@@ -133,17 +136,19 @@ end;
 
 
 
-RemoveRedundancyByDualDescription:=function(EXT0)
+InstallGlobalFunction(RemoveRedundancyByDualDescription,
+function(EXT0)
   local EXT1, EXT2, EXT3;
   EXT1:=Filtered(EXT0, x->x*x>0);
   EXT2:=List(EXT1, RemoveFraction);
   EXT3:=Set(EXT2);
-  return RemoveRedundancyByDualDescription_Kernel(EXT3);
-end;
+  return poly_private@RemoveRedundancyByDualDescription_Kernel(EXT3);
+end);
 
 
 
-DualDescriptionAdjacencies:=function(EXT)
+InstallGlobalFunction(DualDescriptionAdjacencies,
+function(EXT)
   local FileExt, FileIne, FileLog, FileErr, FileDdl, FileIneNude, FileIad, FileEad, FileIadNauty, FileEadNauty, FileIadGrape, FileEadGrape, output, RidgeGraph, SkeletonGraph, FAC;
   FileExt:=Filename(POLYHEDRAL_tmpdir,"Desc.ext");
   FileIne:=Filename(POLYHEDRAL_tmpdir,"Desc.ine");
@@ -192,7 +197,8 @@ DualDescriptionAdjacencies:=function(EXT)
     Error("Error in DualDescriptionAdjacencies");
   fi;
   return rec(FAC:=FAC, SkeletonGraph:=SkeletonGraph, RidgeGraph:=RidgeGraph);
-end;
+end);
+
 
 
 poly_private@DualDescriptionLRS_Reduction:=function(EXT, GroupExt, ThePath)
@@ -262,12 +268,13 @@ poly_private@DualDescriptionLRS_Reduction:=function(EXT, GroupExt, ThePath)
 end;
 
 
-DualDescriptionLRS:=function(EXT, GroupExt)
+
+InstallGlobalFunction(DualDescriptionLRS,
+function(EXT, GroupExt)
   local ThePath;
   ThePath:=Filename(POLYHEDRAL_tmpdir,"");
   return poly_private@DualDescriptionLRS_Reduction(EXT, GroupExt, ThePath);
-end;
-
+end);
 
 
 
@@ -358,11 +365,11 @@ end;
 
 
 
-
-
 poly_private@DualDescriptionCDD_Reduction:=function(EXT, GroupExt, ThePath)
   return poly_private@DualDescriptionDoubleDescMethod_Reduction(EXT, GroupExt, ThePath, "CDD");
 end;
+
+
 
 poly_private@DualDescriptionPPL_Reduction:=function(EXT, GroupExt, ThePath)
   return poly_private@DualDescriptionDoubleDescMethod_Reduction(EXT, GroupExt, ThePath, "PPL");
@@ -370,18 +377,21 @@ end;
 
 
 
-DualDescriptionCDD:=function(EXT, GroupExt)
+InstallGlobalFunction(DualDescriptionCDD,
+function(EXT, GroupExt)
   local ThePath;
   ThePath:=Filename(POLYHEDRAL_tmpdir,"");
   return poly_private@DualDescriptionCDD_Reduction(EXT, GroupExt, ThePath);
-end;
+end);
 
 
-DualDescriptionPPL:=function(EXT, GroupExt)
+
+InstallGlobalFunction(DualDescriptionPPL,
+function(EXT, GroupExt)
   local ThePath;
   ThePath:=Filename(POLYHEDRAL_tmpdir,"");
   return poly_private@DualDescriptionPPL_Reduction(EXT, GroupExt, ThePath);
-end;
+end);
 
 
 # Here we implement the enumeration by using the PD
@@ -482,8 +492,11 @@ poly_private@DualDescriptionPD_Reduction:=function(EXT, GRP, ThePath)
   return ListOrbit;
 end;
 
-poly_private@DualDescriptionPD_Reduction_Equivariant:=function(EXT, GRP)
+
+
+InstallGlobalFunction(DualDescriptionPD,
+function(EXT, GRP)
   local ThePath;
   ThePath:="/irrelevant";
   return poly_private@DualDescriptionPD_Reduction(EXT, GRP, ThePath);
-end;
+end);
