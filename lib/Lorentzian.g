@@ -904,7 +904,7 @@ LORENTZ_EnumeratePerfect:=function(LorMat)
         GetInitialRays:=GetInitialRays_LinProg,
         ThePathSave:="/irrelevant/",
         ThePath:=TmpDir,
-        DualDescriptionFunction:=DualDescriptionLRS_Reduction,
+        DualDescriptionFunction:=poly_private@DualDescriptionLRS_Reduction,
         GroupFormalism:=OnSetsGroupFormalism(500));
   nbOrbitTreated:=0;
   while(true)
@@ -1247,7 +1247,7 @@ LORENTZ_EnumeratePerfect_DelaunayScheme:=function(LorMat, RecInput)
         FuncStabilizer:=FuncStabilizer,
         FuncIsomorphy:=FuncIsomorphy,
         FuncInvariant:=FuncInvariant,
-        DualDescriptionFunction:=DualDescriptionLRS_Reduction,
+        DualDescriptionFunction:=poly_private@DualDescriptionLRS_Reduction,
         GroupFormalism:=OnSetsGroupFormalism(500));
   #
   # The geometrical part

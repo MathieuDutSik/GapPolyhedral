@@ -195,7 +195,7 @@ DualDescriptionAdjacencies:=function(EXT)
 end;
 
 
-DualDescriptionLRS_Reduction:=function(EXT, GroupExt, ThePath)
+poly_private@DualDescriptionLRS_Reduction:=function(EXT, GroupExt, ThePath)
   local eSub, EXT2, EXT3, FileExt, FileOut, FileData, FileGroup, FileMetaData, FileSupport, FileScratch, FileOutput, FileError, output, DimEXT, test, EXTnew, ListInc;
 #  Print("Entering polyhedral function LRS_Reduction |GRP|=", Order(GroupExt), "\n");
   FileExt:=Concatenation(ThePath, "LRS_Project.ext");
@@ -247,7 +247,7 @@ DualDescriptionLRS_Reduction:=function(EXT, GroupExt, ThePath)
   Exec(FileIsoReduction, " ", FileData, " ", FileMetaData, " ", FileGroup, " ", FileSupport, " ", FileScratch, " ", FileOutput, "2>", FileError);
   ListInc:=ReadAsFunction(FileOutput)();
   if Length(ListInc)=0 then
-    Error("Error in DualDescriptionLRS_Reduction");
+    Error("Error in poly_private@DualDescriptionLRS_Reduction");
   fi;
   RemoveFile(FileExt);
   RemoveFile(FileOut);
@@ -265,13 +265,13 @@ end;
 DualDescriptionLRS:=function(EXT, GroupExt)
   local ThePath;
   ThePath:=Filename(POLYHEDRAL_tmpdir,"");
-  return DualDescriptionLRS_Reduction(EXT, GroupExt, ThePath);
+  return poly_private@DualDescriptionLRS_Reduction(EXT, GroupExt, ThePath);
 end;
 
 
 
 
-DualDescriptionDoubleDescMethod_Reduction:=function(EXT, GroupExt, ThePath, TheProg)
+poly_private@DualDescriptionDoubleDescMethod_Reduction:=function(EXT, GroupExt, ThePath, TheProg)
   local eSub, EXT2, FileExt, FileOut, FileData, FileGroup, FileMetaData, FileSupport, FileScratch, FileOutput, output, DimEXT, test, EXTnew, ListInc, FileDataPre, FileError, TheCommand;
 #  Print("Entering polyhedral function CDD_Reduction |GRP|=", Order(GroupExt), "\n");
   FileExt:=Concatenation(ThePath, "DD_Project.ext");
@@ -341,7 +341,7 @@ DualDescriptionDoubleDescMethod_Reduction:=function(EXT, GroupExt, ThePath, TheP
   Exec(TheCommand);
   ListInc:=ReadAsFunction(FileOutput)();
   if Length(ListInc)=0 then
-    Error("Error in DualDescriptionCDD_Reduction");
+    Error("Error in poly_private@DualDescriptionCDD_Reduction");
   fi;
   RemoveFile(FileExt);
   RemoveFile(FileOut);
@@ -360,12 +360,12 @@ end;
 
 
 
-DualDescriptionCDD_Reduction:=function(EXT, GroupExt, ThePath)
-  return DualDescriptionDoubleDescMethod_Reduction(EXT, GroupExt, ThePath, "CDD");
+poly_private@DualDescriptionCDD_Reduction:=function(EXT, GroupExt, ThePath)
+  return poly_private@DualDescriptionDoubleDescMethod_Reduction(EXT, GroupExt, ThePath, "CDD");
 end;
 
-DualDescriptionPPL_Reduction:=function(EXT, GroupExt, ThePath)
-  return DualDescriptionDoubleDescMethod_Reduction(EXT, GroupExt, ThePath, "PPL");
+poly_private@DualDescriptionPPL_Reduction:=function(EXT, GroupExt, ThePath)
+  return poly_private@DualDescriptionDoubleDescMethod_Reduction(EXT, GroupExt, ThePath, "PPL");
 end;
 
 
@@ -373,21 +373,21 @@ end;
 DualDescriptionCDD:=function(EXT, GroupExt)
   local ThePath;
   ThePath:=Filename(POLYHEDRAL_tmpdir,"");
-  return DualDescriptionCDD_Reduction(EXT, GroupExt, ThePath);
+  return poly_private@DualDescriptionCDD_Reduction(EXT, GroupExt, ThePath);
 end;
 
 
 DualDescriptionPPL:=function(EXT, GroupExt)
   local ThePath;
   ThePath:=Filename(POLYHEDRAL_tmpdir,"");
-  return DualDescriptionPPL_Reduction(EXT, GroupExt, ThePath);
+  return poly_private@DualDescriptionPPL_Reduction(EXT, GroupExt, ThePath);
 end;
 
 
 # Here we implement the enumeration by using the PD
 # method equivariantly.
 # That is, once we find a new facet, we add it systematically.
-DualDescriptionPD_Reduction:=function(EXT, GRP, ThePath)
+poly_private@DualDescriptionPD_Reduction:=function(EXT, GRP, ThePath)
   local EXTpoly, TheDim, nbVert, ListOrbit, FAC, FuncInsert, FuncInsertIfNew, nb, ListSets, eSet, EXTfind, EXTfindCan, EXTcall, eFAC, EXTpolySet, GetFACnew, ListWrong, iWrong, jWrong, nbWrong, eEXT, ListStatus, fEXT, FACnew;
   EXTpoly:=PolytopizationGeneralCone(EXT);
   EXTpolySet:=Set(EXTpoly);
@@ -482,8 +482,8 @@ DualDescriptionPD_Reduction:=function(EXT, GRP, ThePath)
   return ListOrbit;
 end;
 
-DualDescriptionPD_Reduction_Equivariant:=function(EXT, GRP)
+poly_private@DualDescriptionPD_Reduction_Equivariant:=function(EXT, GRP)
   local ThePath;
   ThePath:="/irrelevant";
-  return DualDescriptionPD_Reduction(EXT, GRP, ThePath);
+  return poly_private@DualDescriptionPD_Reduction(EXT, GRP, ThePath);
 end;

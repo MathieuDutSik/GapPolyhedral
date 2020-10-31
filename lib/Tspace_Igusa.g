@@ -449,7 +449,7 @@ IGUSA_GetVerticesPolyhedron:=function(eCaseGen2)
   PathSave:="/irrelevant/";
   SavingIrrelevant:=false;
   TheFunc:=function(EXT, GRP, ThePath)
-    return DualDescriptionCDD_Reduction(EXT, GRP, ThePath);
+    return poly_private@DualDescriptionCDD_Reduction(EXT, GRP, ThePath);
   end;
   Data:=rec(TheDepth:=0,
             ThePath:=TmpDir,

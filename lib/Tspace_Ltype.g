@@ -1260,7 +1260,7 @@ EnumerationProcedureLtypeStandard:=function(eCase, PathSave, IsSaving, MemorySav
   RepartPath:=Concatenation(PathSave, "Repartitionning/");
   Exec("mkdir -p ", RepartPath);
   DataPolyhedralTiling:=rec(PathSAVE:=RepartPath, Saving:=IsSaving);
-  DataPolyhedralTiling.DualDescriptionFunction:=DualDescriptionLRS_Reduction;
+  DataPolyhedralTiling.DualDescriptionFunction:=poly_private@DualDescriptionLRS_Reduction;
   if eCase.IsBravaisSpace=false then
     GetDiscInfo:=function(GramMat)
       local TheAutGroup;
@@ -1335,7 +1335,7 @@ Periodic_EnumerationProcedureLtypeStandard:=function(eCase, PathSave, IsSaving, 
   RepartPath:=Concatenation(PathSave, "Repartitionning/");
   Exec("mkdir -p ", RepartPath);
   DataPolyhedralTiling:=rec(PathSAVE:=RepartPath,
-                            DualDescriptionFunction:=DualDescriptionLRS_Reduction,
+                            DualDescriptionFunction:=poly_private@DualDescriptionLRS_Reduction,
 			    Saving:=IsSaving);
   GetDiscInfo:=function(GramMat)
     local TheAutGroup;

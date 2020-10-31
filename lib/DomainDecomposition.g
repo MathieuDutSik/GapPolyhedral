@@ -505,7 +505,7 @@ POLYDEC_EnumerationLtype:=function(eCase)
   RepartPath:=Concatenation(PathSave, "Repartitionning/");
   Exec("mkdir -p ", RepartPath);
   DataPolyhedralTiling:=rec(PathSAVE:=RepartPath, Saving:=IsSaving,
-                            DualDescriptionFunction:=DualDescriptionLRS_Reduction);
+                            DualDescriptionFunction:=poly_private@DualDescriptionLRS_Reduction);
   KillingFace:=function(eFac)
     return false;
   end;
