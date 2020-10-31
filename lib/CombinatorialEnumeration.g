@@ -7,7 +7,8 @@ FileLibexactConvertGAP:=Filename(DirectoriesPackagePrograms("MyPolyhedral"),"lib
 #
 # VectXcond specifies the range of x (if equal 1, var is binary)
 # VectYcond specified the range of y 
-EnumerateLibexactSolution:=function(TheMat, VectXcond, VectYcond)
+InstallGlobalFunction(EnumerateLibexactSolution,
+function(TheMat, VectXcond, VectYcond)
   local nbRow, nbCol, FileIN, FileOUT, FileRES, output, iCol, iRow, TheCommand, ListSol, eVal;
   nbRow:=Length(TheMat);
   nbCol:=Length(TheMat[1]);
@@ -62,7 +63,7 @@ EnumerateLibexactSolution:=function(TheMat, VectXcond, VectYcond)
   RemoveFileIfExist(FileOUT);
   RemoveFileIfExist(FileRES);
   return ListSol;
-end;
+end);
 
 
 
@@ -73,7 +74,7 @@ end;
 
 
 
-Generic_EnumerationSubsets:=function(nbVect, PermGRP, KillingFunction, TheRec)
+poly_private@Generic_EnumerationSubsets:=function(nbVect, PermGRP, KillingFunction, TheRec)
   local ListSolution, ListMaximal, NewListSolution, FuncInsert, eSol, TheStab, TheDiff, O, eO, eSet, IsMaximal, TotalListSolution, ordGRP, ListNbSol, TotalNbSol, eMax, eVal, TheSize;
   ordGRP:=Order(PermGRP);
   ListSolution:=[ [] ];
@@ -169,21 +170,23 @@ end;
 
 
 
-MyEnumerationMaximal:=function(nbVect, PermGRP, KillingFunction)
+InstallGlobalFunction(MyEnumerationMaximal,
+function(nbVect, PermGRP, KillingFunction)
   local TheRec;
   TheRec:=rec(AllMaximal:=true,
               TotalNbSol:=false,
               MinimumStrategy:=false,
 	      MaximumSize:=-1,
               AllSolution:=false);
-  return Generic_EnumerationSubsets(nbVect, PermGRP, KillingFunction, TheRec).ListMaximal;
-end;
+  return poly_private@Generic_EnumerationSubsets(nbVect, PermGRP, KillingFunction, TheRec).ListMaximal;
+end);
 
 
 
 
 
-MyEnumerationMaximalMinimalSpanning:=function(IsSaving, ThePrefix, nbVect, PermGRP, SpanningFunction)
+InstallGlobalFunction(MyEnumerationMaximalMinimalSpanning,
+function(IsSaving, ThePrefix, nbVect, PermGRP, SpanningFunction)
   local ListSolution, ListMaximalSurviving, NewListSolution, eSol, TheStab, TheDiff, O, eO, eSet, ListOrbitMinimallyKilled, ListMinimallyKilled, IsMaximal, idx, IsKilledByBook, FuncInsertListMinimallyKilled, ListTested, IsPresentKill, IsPresentKept, FileSave, testKillBook, ListKilled, testListKept, testListKill, Ocorrect, Oincorrect, TheSpann;
   ListSolution:=[ [] ];
   ListMaximalSurviving:=[];
@@ -276,7 +279,7 @@ MyEnumerationMaximalMinimalSpanning:=function(IsSaving, ThePrefix, nbVect, PermG
   od;
   return rec(ListMaximalSurviving:=ListMaximalSurviving, 
              ListOrbitMinimallyKilled:=ListOrbitMinimallyKilled);
-end;
+end);
 
 
 
